@@ -10,5 +10,5 @@
 # import文
 
 # 関数本体
-# docstringを書きましょうddd
+# docstringを書きましょう
 # https://qiita.com/methane/items/e95c578c3d8fc5f1f62e
