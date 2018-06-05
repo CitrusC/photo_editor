@@ -10,8 +10,6 @@ class Filter(metaclass=ABCMeta):
 
 class Nega(Filter):
     def apply(self, array):
-        print('run')
-        array = array.astype(np.float32)
         array[:, :, 0] = 255 - array[:, :, 0]
         array[:, :, 1] = 255 - array[:, :, 1]
         array[:, :, 2] = 255 - array[:, :, 2]
@@ -22,7 +20,6 @@ class Brightness(Filter):
     brightness = 0
 
     def set_parameter(self, brightness):
-        print(brightness)
         self.brightness = brightness
 
     def apply(self, array):
