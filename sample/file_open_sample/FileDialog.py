@@ -4,20 +4,21 @@
 
 import sys
 from PyQt5.QtWidgets import (QMainWindow, QTextEdit,
-    QAction, QFileDialog, QApplication)
+                             QAction, QFileDialog, QApplication)
 from PyQt5.QtGui import QIcon
+
 
 # テキストフォーム中心の画面のためQMainWindowを継承する
 class MainWindow(QMainWindow):
 
+    # ひな形
     def __init__(self):
         super().__init__()
 
         self.initUI()
-
+    # ここまで
 
     def initUI(self):
-
         self.textEdit = QTextEdit()
         self.setCentralWidget(self.textEdit)
         self.statusBar()
@@ -39,16 +40,15 @@ class MainWindow(QMainWindow):
         self.setWindowTitle('File dialog')
         self.show()
 
-
     def showDialog(self):
-
         # 第二引数はダイアログのタイトル、第三引数は表示するパス
-        fname = QFileDialog.getOpenFileName(self, 'Open file', '/home')
+        fname = QFileDialog.getOpenFileName(self, 'Open file', './picture')
         # fnameにパス名が入る
 
         # fname[0]は選択したファイルのパス（ファイル名を含む）
         if fname[0]:
             # ファイル読み込み
+            # ファイル名の拡張子で判別する処理を加える
             f = open(fname[0], 'r')
 
             # テキストエディタにファイル内容書き込み
@@ -56,8 +56,8 @@ class MainWindow(QMainWindow):
                 data = f.read()
                 self.textEdit.setText(data)
 
-if __name__ == '__main__':
 
+if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = MainWindow()
     sys.exit(app.exec_())
