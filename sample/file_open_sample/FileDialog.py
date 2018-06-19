@@ -2,11 +2,14 @@
 # -*- coding: utf-8 -*-
 
 
+import os
 import sys
-from PyQt5.QtWidgets import (QMainWindow, QTextEdit,
-                             QAction, QFileDialog, QApplication)
-from PyQt5.QtGui import QIcon
 
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import (QMainWindow, QTextEdit, QAction, QFileDialog, QApplication)
+
+import numpy as np
+from PIL import Image
 
 # テキストフォーム中心の画面のためQMainWindowを継承する
 class MainWindow(QMainWindow):
@@ -29,7 +32,7 @@ class MainWindow(QMainWindow):
         openFile.setShortcut('Ctrl+O')
         # ステータスバー設定
         openFile.setStatusTip('Open new File')
-        openFile.triggered.connect(self.showDialog)
+        openFile.triggered.connect(self.fileOpen)
 
         # メニューバー作成
         menubar = self.menuBar()
@@ -40,21 +43,23 @@ class MainWindow(QMainWindow):
         self.setWindowTitle('File dialog')
         self.show()
 
-    def showDialog(self):
+    def fileOpen(self):
         # 第二引数はダイアログのタイトル、第三引数は表示するパス
-        fname = QFileDialog.getOpenFileName(self, 'Open file', './pice')
+        fname = QFileDialog.getOpenFileName(self, 'Open file', os.getenv("HOMEDRIVE") + os.getenv("HOMEPATH") + "\\Desktop", filter="JPG(*.jpg);;PNG(*.png);;BMP(*.bmp)")
         # fnameにパス名が入る
 
         # fname[0]は選択したファイルのパス（ファイル名を含む）
         if fname[0]:
-            # ファイル読み込み
-            # ファイル名の拡張子で判別する処理を加える
-            f = open(fname[0], 'r')
+            self.array = np.array(Image.open(fname[0]).convert("RGBA"), np.float32)
 
-            # テキストエディタにファイル内容書き込み
-            with f:
-                data = f.read()
-                self.textEdit.setText(data)
+            # ファイル読み込み
+
+            # f = open(fname[0], 'r')
+            #
+            # # テキストエディタにファイル内容書き込み
+            # with f:
+            #     data = f.read()
+            #     self.textEdit.setText(data)
                 
 
 if __name__ == '__main__':
