@@ -64,24 +64,12 @@ class PhotoViewer(QtWidgets.QGraphicsView):
                 self._zoom = 0
 
 
-# def toggleDragMode(self):
-    #     if self.dragMode() == QtWidgets.QGraphicsView.ScrollHandDrag:
-    #         self.setDragMode(QtWidgets.QGraphicsView.NoDrag)
-    #     elif not self._photo.pixmap().isNull():
-    #         self.setDragMode(QtWidgets.QGraphicsView.ScrollHandDrag)
-
-    # def mousePressEvent(self, event):
-    #     if self._photo.isUnderMouse():
-    #         self.photoClicked.emit(QtCore.QPoint(event.pos()))
-    #     super(PhotoViewer, self).mousePressEvent(event)
-
-
 class Window(QtWidgets.QWidget):
     def __init__(self):
         super(Window, self).__init__()
         self.viewer = PhotoViewer(self)
-        bw = 32                     # buttonWidth
-        iw = 24                     # iconWidth
+        bw = 32  # buttonWidth
+        iw = 24  # iconWidth
         # 'Load image' button
         self.btnLoad = QtWidgets.QToolButton(self)
         self.btnLoad.setIcon(QtGui.QIcon("../icons/add_files.png"))
@@ -99,13 +87,13 @@ class Window(QtWidgets.QWidget):
         self.btnZoomIn.setIcon(QtGui.QIcon("../icons/zoom_in.png"))
         self.btnZoomIn.setFixedSize(bw, bw)
         self.btnZoomIn.setIconSize(QtCore.QSize(iw, iw))
-        # self.btnZoomIn.clicked.connect(self.zoomIn)
+        self.btnZoomIn.clicked.connect(self.zoomIn)
         # 'Zoom out' button
         self.btnZoomOut = QtWidgets.QToolButton(self)
         self.btnZoomOut.setIcon(QtGui.QIcon("../icons/zoom_out.png"))
         self.btnZoomOut.setFixedSize(bw, bw)
         self.btnZoomOut.setIconSize(QtCore.QSize(iw, iw))
-        # self.btnExport.clicked.connect(self.zoomOut)
+        self.btnZoomOut.clicked.connect(self.zoomOut)
         # 'Undo' button
         self.btnUndo = QtWidgets.QToolButton(self)
         self.btnUndo.setIcon(QtGui.QIcon("../icons/undo.png"))
@@ -119,6 +107,11 @@ class Window(QtWidgets.QWidget):
         self.btnRedo.setIconSize(QtCore.QSize(iw, iw))
         # self.btnRedo.clicked.connect(   )
 
+        # SideBar
+        self.sideBar = QtWidgets.QScrollArea(self)
+        self.sideBar.setFixedWidth(250)
+        self.sideBar.setWidgetResizable(True)
+
         # Arrange layout
         VBlayout = QtWidgets.QVBoxLayout(self)
         TopBar = QtWidgets.QHBoxLayout()
@@ -129,54 +122,47 @@ class Window(QtWidgets.QWidget):
         VBlayout.addLayout(TopBar)
         MainView = QtWidgets.QHBoxLayout()
         LeftView = QtWidgets.QVBoxLayout()
+        LeftView.addWidget(self.viewer)
         EditBar = QtWidgets.QHBoxLayout()
         EditBar.setAlignment(QtCore.Qt.AlignLeft)
         EditBar.addWidget(self.btnZoomIn)
         EditBar.addWidget(self.btnZoomOut)
         EditBar.addWidget(self.btnUndo)
         EditBar.addWidget(self.btnRedo)
-        VBlayout.addWidget(self.viewer)
-        VBlayout.addLayout(EditBar)
+        LeftView.addLayout(EditBar)
         MainView.addLayout(LeftView)
-        # MainView.addWidget(SideBar)
+        MainView.addWidget(self.sideBar)
         VBlayout.addLayout(MainView)
 
     def loadImage(self):
         self.viewer.setPhoto(QtGui.QPixmap('IMG_7843.jpg'))
 
-
     def zoomIn(self):
-        if PhotoViewer.hasPhoto(self):
+        if self.viewer.hasPhoto():
             factor = 1.25
-            PhotoViewer._zoom += 1
-            if PhotoViewer._zoom > 0:
-                PhotoViewer.scale(factor, factor)
-            elif PhotoViewer._zoom == 0:
-                PhotoViewer.fitInView()
+            self.viewer._zoom += 1
+            if self.viewer._zoom > 0:
+                self.viewer.scale(factor, factor)
+            elif self.viewer._zoom == 0:
+                self.viewer.fitInView()
             else:
-                PhotoViewer._zoom = 0
+                self.viewer._zoom = 0
 
     def zoomOut(self):
-        if PhotoViewer.hasPhoto(self):
+        if self.viewer.hasPhoto():
             factor = 0.8
-            PhotoViewer._zoom -= 1
-            if PhotoViewer._zoom > 0:
-                PhotoViewer.scale(factor, factor)
-            elif PhotoViewer._zoom == 0:
-                PhotoViewer.fitInView()
+            self.viewer._zoom -= 1
+            if self.viewer._zoom > 0:
+                self.viewer.scale(factor, factor)
+            elif self.viewer._zoom == 0:
+                self.viewer.fitInView()
             else:
-                PhotoViewer._zoom = 0
-
-    # def pixInfo(self):
-    #     self.viewer.toggleDragMode()
-
-    # def photoClicked(self, pos):
-    #     if self.viewer.dragMode()  == QtWidgets.QGraphicsView.NoDrag:
-    #         self.editPixInfo.setText('%d, %d' % (pos.x(), pos.y()))
+                self.viewer._zoom = 0
 
 
 if __name__ == '__main__':
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     window = Window()
     window.setGeometry(500, 300, 800, 600)
