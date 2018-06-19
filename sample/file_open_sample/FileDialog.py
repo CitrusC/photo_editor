@@ -42,7 +42,7 @@ class MainWindow(QMainWindow):
 
     def showDialog(self):
         # 第二引数はダイアログのタイトル、第三引数は表示するパス
-        fname = QFileDialog.getOpenFileName(self, 'Open file', './picture')
+        fname = QFileDialog.getOpenFileName(self, 'Open file', './pice')
         # fnameにパス名が入る
 
         # fname[0]は選択したファイルのパス（ファイル名を含む）
@@ -55,7 +55,7 @@ class MainWindow(QMainWindow):
             with f:
                 data = f.read()
                 self.textEdit.setText(data)
-
+                
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
