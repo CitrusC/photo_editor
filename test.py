@@ -1,24 +1,11 @@
-# -*- coding: utf-8 -*-
+import numpy as np
 
-import sys
-from PyQt5.QtWidgets import (QWidget, QToolTip,
-    QPushButton, QApplication)
-
-
-class MainWindow(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.initUI()
-
-    def initUI(self):
-        self.resize(600,400)
-        self.move(300, 300)
-        self.setWindowTitle('Simple')
-        self.show()
-
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    win=MainWindow()
-    sys.exit(app.exec_())
-
+array = np.array([[250, 250, 250], [250, 250, 250], [250, 250, 250], ], dtype=np.uint8)
+array = np.array([[255, 255, 255], [250, 250, 250], [0, 0, 0], ], dtype=np.uint8)
+print(array)
+array = array.astype(np.float32)
+array = 255-array
+array = np.clip(array, 0, 255)
+array = array.astype(np.uint8)
+print(array)
+print(array.flags.writable)

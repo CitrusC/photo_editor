@@ -7,22 +7,26 @@ class Filter(metaclass=ABCMeta):
     def apply(self, array):
         pass
 
+    @abstractmethod
+    def get_name(self):
+        pass
+
 
 class Nega(Filter):
     def apply(self, array):
-        print('run')
-        array = array.astype(np.float32)
         array[:, :, 0] = 255 - array[:, :, 0]
         array[:, :, 1] = 255 - array[:, :, 1]
         array[:, :, 2] = 255 - array[:, :, 2]
         return array
+
+    def get_name(self):
+        return 'Nega filter'
 
 
 class Brightness(Filter):
     brightness = 0
 
     def set_parameter(self, brightness):
-        print(brightness)
         self.brightness = brightness
 
     def apply(self, array):
@@ -32,7 +36,13 @@ class Brightness(Filter):
         array = np.clip(array, 0, 255)
         return array
 
+    def get_name(self):
+        return 'Brightness filter'
+
 
 class DoNothing(Filter):
     def apply(self, array):
         pass
+
+    def get_name(self):
+        return 'DoNothing filter'

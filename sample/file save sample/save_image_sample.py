@@ -1,22 +1,23 @@
-#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 
 import sys
-from PyQt5.QtWidgets import (QMainWindow, QTextEdit,
-                             QAction, QFileDialog, QApplication)
+from PyQt5.QtWidgets import (QMainWindow, QTextEdit, QAction, QFileDialog, QApplication)
 from PyQt5.QtGui import QIcon
+import numpy as np
+from PIL import Image
+
+import os
 
 
 # テキストフォーム中心の画面のためQMainWindowを継承する
 class MainWindow(QMainWindow):
 
-    # ひな形
     def __init__(self):
         super().__init__()
+        self.array = np.array(Image.open("gazou3.jpg"))
 
         self.initUI()
-    # ここまで
 
     def initUI(self):
         self.textEdit = QTextEdit()
@@ -24,12 +25,12 @@ class MainWindow(QMainWindow):
         self.statusBar()
 
         # メニューバーのアイコン設定
-        openFile = QAction(QIcon('imoyokan.jpg'), 'Open', self)
+        openFile = QAction(QIcon('imoyokan.jpg'), 'Save', self)
         # ショートカット設定
         openFile.setShortcut('Ctrl+O')
         # ステータスバー設定
         openFile.setStatusTip('Open new File')
-        openFile.triggered.connect(self.showDialog)
+        openFile.triggered.connect(self.save_image)
 
         # メニューバー作成
         menubar = self.menuBar()
@@ -40,22 +41,29 @@ class MainWindow(QMainWindow):
         self.setWindowTitle('File dialog')
         self.show()
 
-    def showDialog(self):
         # 第二引数はダイアログのタイトル、第三引数は表示するパス
-        fname = QFileDialog.getOpenFileName(self, 'Open file', './pice')
+
+    def save_image(self):
+        fname = QFileDialog.getSaveFileName(self, 'Save file',
+                                            os.getenv("HOMEDRIVE") + os.getenv("HOMEPATH") + "\\Desktop",
+                                            filter="JPG(*.jpg);;PNG(*.png);;BMP(*.bmp)")
+        print(fname)
+        if fname[0]:
+            pil_img = Image.fromarray(self.array)
+            pil_img.save(fname[0])
+
         # fnameにパス名が入る
 
         # fname[0]は選択したファイルのパス（ファイル名を含む）
-        if fname[0]:
-            # ファイル読み込み
-            # ファイル名の拡張子で判別する処理を加える
-            f = open(fname[0], 'r')
+        # if fname[0]:
+        #     # ファイル読み込み
+        #     #f = open(fname[0], 'r')
+        #
+        #     # テキストエディタにファイル内容書き込み
+        #     with f:
+        #         data = f.read()
+        #         self.textEdit.setText(data)
 
-            # テキストエディタにファイル内容書き込み
-            with f:
-                data = f.read()
-                self.textEdit.setText(data)
-                
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

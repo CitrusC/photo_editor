@@ -62,9 +62,7 @@ class MainWindow(QWidget):
         # フィルタを適用する
         self.array = self.nega.apply(self.array)
         # 画面更新
-        print(self.array.dtype)
         self.update_image(self.array.astype(np.uint8))
-        print(self.array.dtype)
 
     def button_clicked2(self):
         # フィルタを適用する
@@ -74,6 +72,7 @@ class MainWindow(QWidget):
 
     def release_mouse(self):
         self.br.set_parameter(self.sld.value())
+
 
 
 if __name__ == '__main__':
