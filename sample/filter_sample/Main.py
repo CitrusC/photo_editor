@@ -74,6 +74,7 @@ class MainWindow(QWidget):
         self.br.set_parameter(self.sld.value())
 
 
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     win = MainWindow()

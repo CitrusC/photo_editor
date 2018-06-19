@@ -7,15 +7,15 @@ from PyQt5.QtGui import QIcon
 import numpy as np
 from PIL import Image
 
-
 import os
+
 
 # テキストフォーム中心の画面のためQMainWindowを継承する
 class MainWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.array=np.array(Image.open("gazou3.jpg"))
+        self.array = np.array(Image.open("gazou3.jpg"))
 
         self.initUI()
 
@@ -41,17 +41,18 @@ class MainWindow(QMainWindow):
         self.setWindowTitle('File dialog')
         self.show()
 
-
         # 第二引数はダイアログのタイトル、第三引数は表示するパス
+
     def save_image(self):
-        fname = QFileDialog.getSaveFileName(self, 'Save file', os.getenv("HOMEDRIVE") + os.getenv("HOMEPATH") + "\\Desktop",filter="JPG(*.jpg);;PNG(*.png);;BMP(*.bmp)")
+        fname = QFileDialog.getSaveFileName(self, 'Save file',
+                                            os.getenv("HOMEDRIVE") + os.getenv("HOMEPATH") + "\\Desktop",
+                                            filter="JPG(*.jpg);;PNG(*.png);;BMP(*.bmp)")
         print(fname)
         if fname[0]:
             pil_img = Image.fromarray(self.array)
             pil_img.save(fname[0])
 
         # fnameにパス名が入る
-
 
         # fname[0]は選択したファイルのパス（ファイル名を含む）
         # if fname[0]:
