@@ -44,8 +44,11 @@ class MainWindow(QMainWindow):
         # 第二引数はダイアログのタイトル、第三引数は表示するパス
 
     def save_image(self):
+        # fname = QFileDialog.getSaveFileName(self, 'Save file',
+        #                                     os.getenv("HOMEDRIVE") + os.getenv("HOMEPATH") + "\\Desktop",
+        #                                     filter="JPG(*.jpg);;PNG(*.png);;BMP(*.bmp)")
         fname = QFileDialog.getSaveFileName(self, 'Save file',
-                                            os.getenv("HOMEDRIVE") + os.getenv("HOMEPATH") + "\\Desktop",
+                                            "./",
                                             filter="JPG(*.jpg);;PNG(*.png);;BMP(*.bmp)")
         print(fname)
         if fname[0]:
