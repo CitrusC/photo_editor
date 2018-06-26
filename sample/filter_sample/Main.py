@@ -37,13 +37,13 @@ class MainWindow(QWidget):
         btn2.move(400, 100)
         btn2.clicked.connect(self.button_clicked2)
         btn3 = QPushButton("Median", self)
-        btn3.move(400, 125)
+        btn3.move(400, 150)
         btn3.clicked.connect(self.button_clicked3)
 
         # 数字のウィジェットを作成
         lcd = QLCDNumber(self)
         lcd.resize(150, 100)
-        lcd.move(400, 150)
+        lcd.move(400, 200)
         # スライダーウィジェット作成
         self.sld = QSlider(Qt.Horizontal, self)
         self.sld.resize(150, 30)
