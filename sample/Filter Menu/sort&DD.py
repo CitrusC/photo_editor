@@ -13,6 +13,7 @@ class Widget(QWidget):
             self.list_widget.addItem('Item {:02d}'.format(x))
             # self.list_widget.setSizeHint(Qsize(50,50))
             self.list_widget.setItemWidget(self, list_widget, '×')
+            # self.list_widget.addI
 
         # # add delete button.
         # for x in range(1, 11):
