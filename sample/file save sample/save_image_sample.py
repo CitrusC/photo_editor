@@ -15,7 +15,7 @@ class MainWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.array = np.array(Image.open("gazou3.jpg"))
+        self.array = np.array(Image.open("gazou3.jpg").convert('RGBA'), np.float32)
 
         self.initUI()
 
@@ -52,7 +52,7 @@ class MainWindow(QMainWindow):
                                             filter="JPG(*.jpg);;PNG(*.png);;BMP(*.bmp)")
         print(fname)
         if fname[0]:
-            pil_img = Image.fromarray(self.array)
+            pil_img = Image.fromarray(self.array.astype(np.uint8)).convert('RGB')
             pil_img.save(fname[0])
 
         # fnameにパス名が入る
