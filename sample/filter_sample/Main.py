@@ -23,10 +23,10 @@ class MainWindow(QWidget):
         self.resize(600, 500)
         self.setWindowTitle('filter_sample')
         # 画像を読み込んで、arrayにセット
-        self.array = np.array(Image.open("e-noise.png").convert("RGBA"), np.float32)
+        self.array = np.array(Image.open("sample.jpg").convert("RGBA"), np.float32)
         print(self.array.dtype)
         # 画像を読み込んで、ラベルに貼り付け
-        pixmap = QPixmap("e-noise.png")
+        pixmap = QPixmap("sample.jpg")
         self.lbl = QLabel(self)
         self.lbl.setPixmap(pixmap)
         # フィルタ適用用のボタンを作って、関数にリンク
@@ -76,10 +76,9 @@ class MainWindow(QWidget):
         self.update_image(self.array.astype(np.uint8))
 
     def button_clicked3(self):
-        #フィルタを適用する
-        self.array =self.med.apply(self.array)
-        print('run')
-        #画面更新
+        # フィルタを適用する
+        self.array = self.med.apply(self.array)
+        # 画面更新
         self.update_image(self.array.astype(np.uint8))
 
     def release_mouse(self):

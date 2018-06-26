@@ -48,6 +48,7 @@ class DoNothing(Filter):
     def get_name(self):
         return 'DoNothing filter'
 
+
 class Median(Filter):
     size = 3  # 奇数のみ有効
 
@@ -59,7 +60,6 @@ class Median(Filter):
         height, width = array.shape[0], array.shape[1]
         d = int(self.size / 2)
         array_c = array.copy()
-
         for y in range(d, height - d):
             for x in range(d, width - d):
                 array_c[y, x, 0] = np.median(array[y - d: y + d, x - d: x + d, 0])
