@@ -3,13 +3,6 @@ import numpy as np
 
 
 class Filter(metaclass=ABCMeta):
-
-    def set_image_id(self, image_id):
-        self.image_id = image_id
-
-    def get_image_id(self):
-        return self.image_id
-
     @abstractmethod
     def apply(self, array):
         pass
