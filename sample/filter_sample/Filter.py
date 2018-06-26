@@ -1,5 +1,6 @@
 from abc import ABCMeta, abstractmethod
 import numpy as np
+import numba
 
 
 class Filter(metaclass=ABCMeta):
@@ -46,3 +47,25 @@ class DoNothing(Filter):
 
     def get_name(self):
         return 'DoNothing filter'
+
+class Median(Filter):
+    size = 3  # 奇数のみ有効
+
+    def set_parameter(self, size):
+        self.size = size
+
+    @numba.jit
+    def apply(self, array):
+        height, width = array.shape[0], array.shape[1]
+        d = int(self.size / 2)
+        array_c = array.copy()
+
+        for y in range(d, height - d):
+            for x in range(d, width - d):
+                array_c[y, x, 0] = np.median(array[y - d: y + d, x - d: x + d, 0])
+                array_c[y, x, 1] = np.median(array[y - d: y + d, x - d: x + d, 1])
+                array_c[y, x, 2] = np.median(array[y - d: y + d, x - d: x + d, 2])
+        return array_c
+
+    def get_name(self):
+        return 'Median filter'
