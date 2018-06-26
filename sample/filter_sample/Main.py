@@ -16,25 +16,30 @@ class MainWindow(QWidget):
         self.initUI()
         self.nega = Filter.Nega()
         self.br = Filter.Brightness()
+        self.med = Filter.Median()
         self.show()
 
     def initUI(self):
         self.resize(600, 500)
         self.setWindowTitle('filter_sample')
         # 画像を読み込んで、arrayにセット
-        self.array = np.array(Image.open("sample.jpg").convert("RGBA"), np.float32)
+        self.array = np.array(Image.open("e-noise.png").convert("RGBA"), np.float32)
         print(self.array.dtype)
         # 画像を読み込んで、ラベルに貼り付け
-        pixmap = QPixmap("sample.jpg")
+        pixmap = QPixmap("e-noise.png")
         self.lbl = QLabel(self)
         self.lbl.setPixmap(pixmap)
         # フィルタ適用用のボタンを作って、関数にリンク
         btn1 = QPushButton("Nega", self)
         btn1.move(400, 50)
         btn1.clicked.connect(self.button_clicked1)
-        btn1 = QPushButton("Brightness", self)
-        btn1.move(400, 100)
-        btn1.clicked.connect(self.button_clicked2)
+        btn2 = QPushButton("Brightness", self)
+        btn2.move(400, 100)
+        btn2.clicked.connect(self.button_clicked2)
+        btn3 = QPushButton("Median", self)
+        btn3.move(400, 125)
+        btn3.clicked.connect(self.button_clicked3)
+
         # 数字のウィジェットを作成
         lcd = QLCDNumber(self)
         lcd.resize(150, 100)
@@ -70,9 +75,15 @@ class MainWindow(QWidget):
         # 画面更新
         self.update_image(self.array.astype(np.uint8))
 
+    def button_clicked3(self):
+        #フィルタを適用する
+        self.array =self.med.apply(self.array)
+        print('run')
+        #画面更新
+        self.update_image(self.array.astype(np.uint8))
+
     def release_mouse(self):
         self.br.set_parameter(self.sld.value())
-
 
 
 if __name__ == '__main__':
