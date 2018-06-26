@@ -1,4 +1,9 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import QImage, qRgb
+from PyQt5.QtWidgets import QFileDialog
+import numpy as np
+from PIL import Image
+import os
 
 
 class PhotoViewer(QtWidgets.QGraphicsView):
@@ -75,7 +80,7 @@ class Window(QtWidgets.QWidget):
         self.btnLoad.setIcon(QtGui.QIcon("../icons/add_files.png"))
         self.btnLoad.setFixedSize(bw, bw)
         self.btnLoad.setIconSize(QtCore.QSize(iw, iw))
-        self.btnLoad.clicked.connect(self.loadImage)
+        self.btnLoad.clicked.connect(self.fileOpen)
         # 'Export image' button
         self.btnExport = QtWidgets.QToolButton(self)
         self.btnExport.setIcon(QtGui.QIcon("../icons/export.png"))
@@ -134,8 +139,28 @@ class Window(QtWidgets.QWidget):
         MainView.addWidget(self.sideBar)
         VBlayout.addLayout(MainView)
 
-    def loadImage(self):
-        self.viewer.setPhoto(QtGui.QPixmap('IMG_7843.jpg'))
+    def fileOpen(self):
+        if os.name == 'nt':
+            fname = QFileDialog.getOpenFileName(self, 'Open file',
+                                                os.getenv("HOMEDRIVE") + os.getenv("HOMEPATH") + "\\Desktop",
+                                                filter="JPG(*.jpg);;PNG(*.png);;BMP(*.bmp)")
+        else:
+            fname = QFileDialog.getOpenFileName(self, 'Open file',
+                                                "./",
+                                                filter="JPG(*.jpg);;PNG(*.png);;BMP(*.bmp)")
+
+        if fname[0]:
+            self.array = np.array(Image.open(fname[0]).convert("RGBA"), np.float32)
+            self.update_image(self.array)
+
+    def update_image(self, array):
+        self.viewer.setPhoto(self.ndarray_to_qpixmap(array.astype(np.uint8)))
+
+    def ndarray_to_qpixmap(self, image):
+        qimage = QtGui.QImage(image.data, image.shape[1], image.shape[0], image.shape[1] * 4,
+                              QtGui.QImage.Format_RGBA8888)
+        pixmap = QtGui.QPixmap.fromImage(qimage)
+        return pixmap
 
     def zoomIn(self):
         if self.viewer.hasPhoto():
