@@ -86,7 +86,7 @@ class Window(QtWidgets.QWidget):
         self.btnExport.setIcon(QtGui.QIcon("../icons/export.png"))
         self.btnExport.setFixedSize(bw, bw)
         self.btnExport.setIconSize(QtCore.QSize(iw, iw))
-        # self.btnExport.clicked.connect(   )
+        self.btnExport.clicked.connect(self.saveImage)
         # 'Zoom in' button
         self.btnZoomIn = QtWidgets.QToolButton(self)
         self.btnZoomIn.setIcon(QtGui.QIcon("../icons/zoom_in.png"))
@@ -152,6 +152,19 @@ class Window(QtWidgets.QWidget):
         if fname[0]:
             self.array = np.array(Image.open(fname[0]).convert("RGBA"), np.float32)
             self.update_image(self.array)
+
+    def saveImage(self):
+        if os.name == 'nt':
+            fname = QFileDialog.getSaveFileName(self, 'Save file',
+                                                os.getenv("HOMEDRIVE") + os.getenv("HOMEPATH") + "\\Desktop",
+                                                filter="JPG(*.jpg);;PNG(*.png);;BMP(*.bmp)")
+        else:
+            fname = QFileDialog.getSaveFileName(self, 'Save file',
+                                                "./",
+                                                filter="JPG(*.jpg);;PNG(*.png);;BMP(*.bmp)")
+        if fname[0]:
+            pil_img = Image.fromarray(self.array.astype(np.uint8)).convert("RGB")
+            pil_img.save(fname[0])
 
     def update_image(self, array):
         self.viewer.setPhoto(self.ndarray_to_qpixmap(array.astype(np.uint8)))

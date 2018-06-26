@@ -16,6 +16,7 @@ class MainWindow(QWidget):
         self.initUI()
         self.nega = Filter.Nega()
         self.br = Filter.Brightness()
+        self.med = Filter.Median()
         self.show()
 
     def initUI(self):
@@ -32,13 +33,17 @@ class MainWindow(QWidget):
         btn1 = QPushButton("Nega", self)
         btn1.move(400, 50)
         btn1.clicked.connect(self.button_clicked1)
-        btn1 = QPushButton("Brightness", self)
-        btn1.move(400, 100)
-        btn1.clicked.connect(self.button_clicked2)
+        btn2 = QPushButton("Brightness", self)
+        btn2.move(400, 100)
+        btn2.clicked.connect(self.button_clicked2)
+        btn3 = QPushButton("Median", self)
+        btn3.move(400, 150)
+        btn3.clicked.connect(self.button_clicked3)
+
         # 数字のウィジェットを作成
         lcd = QLCDNumber(self)
         lcd.resize(150, 100)
-        lcd.move(400, 150)
+        lcd.move(400, 200)
         # スライダーウィジェット作成
         self.sld = QSlider(Qt.Horizontal, self)
         self.sld.resize(150, 30)
@@ -70,9 +75,14 @@ class MainWindow(QWidget):
         # 画面更新
         self.update_image(self.array.astype(np.uint8))
 
+    def button_clicked3(self):
+        # フィルタを適用する
+        self.array = self.med.apply(self.array)
+        # 画面更新
+        self.update_image(self.array.astype(np.uint8))
+
     def release_mouse(self):
         self.br.set_parameter(self.sld.value())
-
 
 
 if __name__ == '__main__':
