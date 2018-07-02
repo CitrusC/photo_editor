@@ -17,6 +17,7 @@ class MainWindow(QWidget):
         self.nega = Filter.Nega()
         self.br = Filter.Brightness()
         self.med = Filter.Median()
+        self.med.set_parameter(9)
         self.show()
 
     def initUI(self):
