@@ -150,8 +150,7 @@ class Window(QtWidgets.QWidget):
                                                 filter="JPG(*.jpg);;PNG(*.png);;BMP(*.bmp)")
 
         if fname[0]:
-            self.array = np.array(Image.open(fname[0]).convert("RGBA"), np.float32)
-            self.update_image(self.array)
+            self.update_image(np.array(Image.open(fname[0]).convert("RGBA"), np.float32))
 
     def saveImage(self):
         if os.name == 'nt':
@@ -167,6 +166,7 @@ class Window(QtWidgets.QWidget):
             pil_img.save(fname[0])
 
     def update_image(self, array):
+        self.array = array
         self.viewer.setPhoto(self.ndarray_to_qpixmap(array.astype(np.uint8)))
 
     def ndarray_to_qpixmap(self, image):
