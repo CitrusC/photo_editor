@@ -11,12 +11,24 @@ class Widget(QWidget):
         self.list_widget = QListWidget()
         for x in range(1, 11):
             self.list_widget.addItem('Item {:02d}'.format(x))
+            # self.list_widget.setSizeHint(Qsize(50,50))
+            self.list_widget.setItemWidget(self, list_widget, '×')
+            # self.list_widget.addI
+
+        # # add delete button.
+        # for x in range(1, 11):
+        #     self.list_widget.addButon()
+        #     self.clicked.connect(self.deleteButtonClicked)
 
         # Enable drag & drop ordering of items.
         self.list_widget.setDragDropMode(QAbstractItemView.InternalMove)
 
         self.widget_layout.addWidget(self.list_widget)
         self.setLayout(self.widget_layout)
+
+    # def deleteButtonClicked
+    #     delete item
+
 
 
 if __name__ == '__main__':
