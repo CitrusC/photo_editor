@@ -11,16 +11,20 @@ class CustomQWidget(QWidget, QListWidgetItem):
         super(CustomQWidget, self).__init__(parent)
         self.item = item
         self.parent_list = parent
-        label = QLabel('item' + str(id))
-        self.name = 'item' + str(id)
+        label = QLabel('Filter ' + str(id)) # 表示用
+        self.name = 'Filter' + str(id)
         button = QPushButton('button')
         layout = QHBoxLayout()
         layout.addWidget(label)
         layout.addWidget(button)
 
-        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu) # 右クリックのメニューを出す
         self.customContextMenuRequested.connect(self.buildContextMenu)
         self.setLayout(layout)
+
+        # def initUI(self):  # ウインドウの設定
+        #     btn1 = QPushButton("Button01", self)
+        #     btn1.clicked.connect(self.button01Clicked)
 
     def buildContextMenu(self, qPoint):
         menu = QMenu(self)
@@ -40,19 +44,21 @@ class CustomQWidget(QWidget, QListWidgetItem):
                     self.parent_list.remove_item(self)
 
 
-
-
+    # Add a New Filter
     def get_layout(self, parent):
         super(CustomQWidget, self).__init__(parent)
-        label = QLabel(self.get_name())
+        label = QLabel('Add a New Filter (' + str(id) + ')' )
+        # label = QLabel(self.get_name())
         layout = QHBoxLayout()
         layout.addWidget(label)
+        QPushiButton =
         return layout
 
-class Brightness():
+    # Brightness
     def get_layout(self, parent):
         super(CustomQWidget, self).__init__(parent)
         label = QLabel(self.get_name())
+        self.name = 'Filter' + str(id)
         self.slider = QSlider(Qt.Horizontal, parent)
         self.slider.setRange(-255, 255)
         self.slider.sliderReleased.connect(self.release_mouse)
@@ -61,7 +67,58 @@ class Brightness():
         layout.addWidget(self.slider)
         return layout
 
+    # Tone Curve
+    def get_layout(self, parent):
+        super(CustomQWidget, self).__init__(parent)
+        label = QLabel(self.get_name())
+        layout = QHBoxLayout()
+        layout.addWidget(label)
+        return layout
 
+    # Liner Filter
+    def get_layout(self, parent):
+        super(CustomQWidget, self).__init__(parent)
+        label = QLabel(self.get_name())
+
+        self.mask()
+
+        layout = QHBoxLayout()
+        layout.addWidget(label)
+        return layout
+
+    # Median Filter
+    def get_layout(self, parent):
+        super(CustomQWidget, self).__init__(parent)
+        label = QLabel(self.get_name())
+        layout = QHBoxLayout()
+        layout.addWidget(label)
+        return layout
+
+    # Liner Filter
+    def get_layout(self, parent):
+        super(CustomQWidget, self).__init__(parent)
+        label = QLabel(self.get_name())
+        layout = QHBoxLayout()
+        layout.addWidget(label)
+        return layout
+
+    # Bilateral Filter
+    def get_layout(self, parent):
+        super(CustomQWidget, self).__init__(parent)
+        label = QLabel(self.get_name())
+        layout = QHBoxLayout()
+        layout.addWidget(label)
+        return layout
+
+    # Half Tone Filter
+    def get_layout(self, parent):
+        super(CustomQWidget, self).__init__(parent)
+        label = QLabel(self.get_name())
+        layout = QHBoxLayout()
+        layout.addWidget(label)
+        return layout
+
+    # Frequency Filter
     def get_layout(self, parent):
         super(CustomQWidget, self).__init__(parent)
         label = QLabel(self.get_name())
@@ -101,6 +158,10 @@ class Filter_list(QListWidget):
             item_widget = CustomQWidget(parent=self, id=i)
             item.setSizeHint(item_widget.sizeHint())
             self.addItem(item)
+
+            # Add a New Filter
+            self.additem(add_new_item)
+
             self.setItemWidget(item, item_widget)
 
     def dropEvent(self, QDropEvent):

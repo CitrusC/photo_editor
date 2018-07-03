@@ -5,16 +5,34 @@ from PyQt5 import QtCore
 
 
 class CustomQWidget(QWidget, QListWidgetItem):
+
     def __init__(self, parent=None, item=None, id=0):
         super(CustomQWidget, self).__init__(parent)
         self.item = item
         self.parent_list = parent
-        label = QLabel('item' + str(id))
+        label = QLabel('Add a New Filter')
         self.name = 'item' + str(id)
-        button = QPushButton('button')
+        button = QPushButton('Add')
+        button2 = QPushButton('Apply')
         layout = QHBoxLayout()
         layout.addWidget(label)
         layout.addWidget(button)
+        layout.addWidget(button2)
+
+        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.buildContextMenu)
+        self.setLayout(layout)
+
+    # def __init__(self, parent=None, item=None, id=0):
+    #     super(CustomQWidget, self).__init__(parent)
+    #     self.item = item
+    #     self.parent_list = parent
+    #     label = QLabel('item ' + str(id))
+    #     self.name = 'item' + str(id)
+    #     button = QPushButton('×')
+    #     layout = QHBoxLayout()
+    #     layout.addWidget(label)
+    #     layout.addWidget(button)
 
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.buildContextMenu)
