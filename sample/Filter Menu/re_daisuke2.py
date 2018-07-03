@@ -22,6 +22,10 @@ class CustomQWidget(QWidget, QListWidgetItem):
         self.customContextMenuRequested.connect(self.buildContextMenu)
         self.setLayout(layout)
 
+        # def initUI(self):  # ウインドウの設定
+        #     btn1 = QPushButton("Button01", self)
+        #     btn1.clicked.connect(self.button01Clicked)
+
     def buildContextMenu(self, qPoint):
         menu = QMenu(self)
         menulabels = ['add', 'remove']
@@ -63,6 +67,25 @@ class CustomQWidget(QWidget, QListWidgetItem):
         layout.addWidget(self.slider)
         return layout
 
+    # Tone Curve
+    def get_layout(self, parent):
+        super(CustomQWidget, self).__init__(parent)
+        label = QLabel(self.get_name())
+        layout = QHBoxLayout()
+        layout.addWidget(label)
+        return layout
+
+    # Liner Filter
+    def get_layout(self, parent):
+        super(CustomQWidget, self).__init__(parent)
+        label = QLabel(self.get_name())
+
+        self.mask()
+
+        layout = QHBoxLayout()
+        layout.addWidget(label)
+        return layout
+
     # Median Filter
     def get_layout(self, parent):
         super(CustomQWidget, self).__init__(parent)
@@ -86,6 +109,23 @@ class CustomQWidget(QWidget, QListWidgetItem):
         layout = QHBoxLayout()
         layout.addWidget(label)
         return layout
+
+    # Half Tone Filter
+    def get_layout(self, parent):
+        super(CustomQWidget, self).__init__(parent)
+        label = QLabel(self.get_name())
+        layout = QHBoxLayout()
+        layout.addWidget(label)
+        return layout
+
+    # Frequency Filter
+    def get_layout(self, parent):
+        super(CustomQWidget, self).__init__(parent)
+        label = QLabel(self.get_name())
+        layout = QHBoxLayout()
+        layout.addWidget(label)
+        return layout
+
 
 
     def buildContextMenu(self, qPoint):
