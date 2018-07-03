@@ -1,5 +1,5 @@
 from PyQt5 import QtGui, QtWidgets
-from PyQt5.QtWidgets import QWidget, QListWidget, QListWidgetItem, QAbstractItemView, QMenu
+from PyQt5.QtWidgets import QWidget, QListWidget, QListWidgetItem, QAbstractItemView, QMenu, QMessageBox
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QFileDialog
 import numpy as np
@@ -305,9 +305,13 @@ class Window(QtWidgets.QWidget):
                                                 filter="JPG(*.jpg);;PNG(*.png);;BMP(*.bmp)")
 
         if fname[0]:
-            self.array = np.array(Image.open(fname[0]).convert("RGBA"), np.float32)
-            self.update_image(self.array)
-            self.list.init(self.array)
+            try:
+                self.array = np.array(Image.open(fname[0]).convert("RGBA"), np.float32)
+                self.update_image(self.array)
+                self.list.init(self.array)
+            except:
+                reply = QMessageBox.critical(self, 'Message',
+                                             "The image file is broken.", QMessageBox.Ok)
 
     def saveImage(self):
         if os.name == 'nt':
