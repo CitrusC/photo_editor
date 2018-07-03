@@ -1,13 +1,18 @@
 from abc import ABCMeta, abstractmethod
 import numpy as np
-from PyQt5.QtWidgets import QLabel, QPushButton, QHBoxLayout, QSlider
+from PyQt5.QtWidgets import QLabel, QHBoxLayout, QSlider
 from PyQt5.QtCore import Qt
 
 
 class Filter(metaclass=ABCMeta):
-    isApplied = False
-    image_id = None
-    isUpdate = False
+    def __init__(self):
+        self.before_image_id = None
+        self.after_image_id = None
+        self.isUpdate = False
+        self.parent = None
+
+    def set_parent(self, parent):
+        self.parent = parent
 
     @abstractmethod
     def apply(self, array):
@@ -18,11 +23,14 @@ class Filter(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def get_layout(self, parent):
+    def get_layout(self):
         pass
 
 
 class Nega(Filter):
+    def __init__(self):
+        super().__init__()
+
     def apply(self, array):
         array[:, :, 0] = 255 - array[:, :, 0]
         array[:, :, 1] = 255 - array[:, :, 1]
@@ -30,9 +38,9 @@ class Nega(Filter):
         return array
 
     def get_name(self):
-        return 'Nega filter'
+        return 'Nega filter {} {}'.format(self.before_image_id, self.after_image_id)
 
-    def get_layout(self, parent):
+    def get_layout(self):
         label = QLabel(self.get_name())
         layout = QHBoxLayout()
         layout.addWidget(label)
@@ -40,12 +48,14 @@ class Nega(Filter):
 
 
 class Brightness(Filter):
-    brightness = 0
+    def __init__(self, brightness=0):
+        super().__init__()
+        self.brightness = brightness
 
     def set_parameter(self, brightness):
-        self.isApplied = False
-        self.isUpdate =True
+        self.isUpdate = True
         self.brightness = brightness
+        self.parent.parent_list.update_filter(self)
 
     def apply(self, array):
         array[:, :, 0] = array[:, :, 0] + self.brightness
@@ -54,10 +64,12 @@ class Brightness(Filter):
         array = np.clip(array, 0, 255)
         return array
 
-    def get_layout(self, parent):
+    def get_layout(self):
         label = QLabel(self.get_name())
-        self.slider = QSlider(Qt.Horizontal, parent)
+        self.slider = QSlider(Qt.Horizontal, self.parent)
         self.slider.setRange(-255, 255)
+        self.slider.setValue(self.brightness)
+        print(self.brightness)
         self.slider.sliderReleased.connect(self.release_mouse)
         layout = QHBoxLayout()
         layout.addWidget(label)
@@ -68,10 +80,13 @@ class Brightness(Filter):
         self.set_parameter(self.slider.value())
 
     def get_name(self):
-        return 'Brightness filter'
+        return 'Brightness filter{} {}'.format(self.before_image_id, self.after_image_id)
 
 
 class DoNothing(Filter):
+    def __init__(self):
+        super().__init__()
+
     def apply(self, array):
         pass
 

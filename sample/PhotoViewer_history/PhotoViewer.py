@@ -1,7 +1,5 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtGui import QImage, qRgb
-from PyQt5.QtWidgets import QApplication, QWidget, QListWidget, QVBoxLayout, QLabel, QPushButton, QListWidgetItem, \
-    QHBoxLayout, QAbstractItemView, QMenu
+from PyQt5 import QtGui, QtWidgets
+from PyQt5.QtWidgets import QWidget, QListWidget, QListWidgetItem, QAbstractItemView, QMenu
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QFileDialog
 import numpy as np
@@ -9,6 +7,11 @@ from PIL import Image
 import os
 import Filter
 from History import History
+
+if hasattr(QtCore.Qt, 'AA_EnableHighDpiScaling'):
+    QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
+if hasattr(QtCore.Qt, 'AA_UseHighDpiPixmaps'):
+    QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
 
 
 class PhotoViewer(QtWidgets.QGraphicsView):
@@ -74,13 +77,12 @@ class PhotoViewer(QtWidgets.QGraphicsView):
                 self._zoom = 0
 
 
-# このクラスをフィルタクラスの中に含ませてもいいかも
 class CustomQWidget(QWidget, QListWidgetItem):
     def __init__(self, parent=None, filter_=None):
         super(CustomQWidget, self).__init__(parent)
         self.filter_ = filter_
         self.parent_list = parent
-        layout = filter_.get_layout(self)
+        layout = filter_.get_layout()
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.buildContextMenu)
         self.setLayout(layout)
@@ -95,7 +97,6 @@ class CustomQWidget(QWidget, QListWidgetItem):
         action = menu.exec_(self.mapToGlobal(qPoint))
         for act in actionlist:
             if act == action:
-                print('  - Menu Label is "%s"' % act.text())
                 ac = act.text()
                 if (ac == menulabels[0]):
                     self.parent_list.add_item()
@@ -117,30 +118,30 @@ class Filter_list(QListWidget):
     def init(self, array):
         self.history = History(array)
         self.clear()
-        for i in range(5):
+        for i in range(1):
             self.add_item()
 
     def dropEvent(self, QDropEvent):
         super().dropEvent(QDropEvent)
+        filters = self.history.swap(self.all_filters())
+        self.clear()
+        for f in filters:
+            self.add_filter(f)
 
     def add_item(self):
-        item = QListWidgetItem(self)
-        f = Filter.Nega()
-        self.history.add_filter(f)
-        item_widget = CustomQWidget(parent=self, filter_=f)
-        item.setSizeHint(item_widget.sizeHint())
-        self.addItem(item)
-        self.setItemWidget(item, item_widget)
+        try:
+            f = Filter.Nega()
+            self.history.add_filter(f)
+            self.add_filter(f)
+        except:
+            import traceback
+            traceback.print_exc()
 
     def add_item2(self):
         try:
-            item = QListWidgetItem(self)
             f = Filter.Brightness()
             self.history.add_filter(f)
-            item_widget = CustomQWidget(parent=self, filter_=f)
-            item.setSizeHint(item_widget.sizeHint())
-            self.addItem(item)
-            self.setItemWidget(item, item_widget)
+            self.add_filter(f)
         except:
             import traceback
             traceback.print_exc()
@@ -148,9 +149,12 @@ class Filter_list(QListWidget):
     def add_filter(self, f):
         item = QListWidgetItem(self)
         item_widget = CustomQWidget(parent=self, filter_=f)
+        f.set_parent(item_widget)
         item.setSizeHint(item_widget.sizeHint())
         self.addItem(item)
         self.setItemWidget(item, item_widget)
+        self.parent_.btnUndo.setEnabled(True)
+        self.parent_.btnRedo.setEnabled(False)
 
     def remove_item(self, item):
         for n, i in enumerate(self.all_items()):
@@ -158,20 +162,44 @@ class Filter_list(QListWidget):
                 t_item = self.takeItem(n)
                 t_item = None
                 break
-        self.history.remove_filter(item.filter_)
-
-    def undo(self):
-        array, filters = self.history.undo()
-        self.parent_.update_image(array)
+        filters = self.history.remove_filter(item.filter_)
         self.clear()
-        print(self.count())
+        for f in filters:
+            self.add_filter(f)
+        self.parent_.btnUndo.setEnabled(True)
+        self.parent_.btnRedo.setEnabled(False)
+
+    def update_filter(self, fil):
+        filters = self.history.update_filter(fil)
+        self.clear()
         for f in filters:
             self.add_filter(f)
 
+    def undo(self):
+        array, filters, canUndo = self.history.undo()
+        self.parent_.update_image(array)
+        self.clear()
+        for f in filters:
+            self.add_filter(f)
+        self.parent_.btnUndo.setEnabled(canUndo)
+        self.parent_.btnRedo.setEnabled(True)
+
+    def redo(self):
+        array, filters, canRedo = self.history.redo()
+        self.parent_.update_image(array)
+        self.clear()
+        for f in filters:
+            self.add_filter(f)
+        self.parent_.btnUndo.setEnabled(True)
+        self.parent_.btnRedo.setEnabled(canRedo)
+
     def apply_filters(self):
-        print('app1')
-        self.parent_.update_image(self.history.apply())
-        print('app2')
+        array, filters = self.history.apply()
+        self.parent_.update_image(array)
+        self.clear()
+        for f in filters:
+            self.add_filter(f)
+        self.parent_.btnUndo.setEnabled(True)
 
     def all_filters(self):
         filters = []
@@ -195,7 +223,7 @@ class Window(QtWidgets.QWidget):
         iw = 24  # iconWidth
 
         self.list = Filter_list(self)
-        self.list.setFixedWidth(250)
+        self.list.setFixedWidth(350)
 
         # 'Load image' button
         self.btnLoad = QtWidgets.QToolButton(self)
@@ -227,12 +255,14 @@ class Window(QtWidgets.QWidget):
         self.btnUndo.setFixedSize(bw, bw)
         self.btnUndo.setIconSize(QtCore.QSize(iw, iw))
         self.btnUndo.clicked.connect(self.list.undo)
+        self.btnUndo.setEnabled(False)
         # 'Redo' button
         self.btnRedo = QtWidgets.QToolButton(self)
         self.btnRedo.setIcon(QtGui.QIcon("../icons/redo.png"))
         self.btnRedo.setFixedSize(bw, bw)
         self.btnRedo.setIconSize(QtCore.QSize(iw, iw))
-        # self.btnRedo.clicked.connect(   )
+        self.btnRedo.clicked.connect(self.list.redo)
+        self.btnRedo.setEnabled(False)
 
         # SideBar
         # self.sideBar = QtWidgets.QScrollArea(self)
@@ -290,7 +320,7 @@ class Window(QtWidgets.QWidget):
             pil_img.save(fname[0])
 
     def update_image(self, array):
-        self.array=array;
+        self.array = array;
         self.viewer.setPhoto(self.ndarray_to_qpixmap(array.astype(np.uint8)))
 
     def ndarray_to_qpixmap(self, image):
