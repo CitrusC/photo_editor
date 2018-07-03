@@ -48,9 +48,9 @@ class Nega(Filter):
 
 
 class Brightness(Filter):
-    def __init__(self, brightness=0):
+    def __init__(self):
         super().__init__()
-        self.brightness = brightness
+        self.brightness = 0
 
     def set_parameter(self, brightness):
         self.isUpdate = True
