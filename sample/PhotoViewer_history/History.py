@@ -1,3 +1,6 @@
+import copy
+
+
 class History:
 
     def __init__(self, array):
@@ -51,6 +54,7 @@ class History:
     def update_filter(self, f):
         self.next_filter()
         ud_index = self.filter_list[self.count].index(f)
+        print(self.filter_list[self.count-1][ud_index].brightness)
         for i in range(ud_index, len(self.filter_list[self.count])):
             self.filter_list[self.count][i].before_image_id = self.filter_list[self.count][i - 1].after_image_id
             self.next_image()
@@ -75,6 +79,7 @@ class History:
     def next_filter(self):
         self.count += 1
         self.filter_list.append([])
+        # for i, f in enumerate(self.filter_list[self.count - 1]):
         self.filter_list[self.count] = self.filter_list[self.count - 1].copy()
         self.current.append(self.current[self.count - 1])
         self.redo_max = 0
