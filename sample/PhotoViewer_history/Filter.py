@@ -69,7 +69,6 @@ class Brightness(Filter):
         self.slider = QSlider(Qt.Horizontal, self.parent)
         self.slider.setRange(-255, 255)
         self.slider.setValue(self.brightness)
-        print(self.brightness)
         self.slider.sliderReleased.connect(self.release_mouse)
         layout = QHBoxLayout()
         layout.addWidget(label)
