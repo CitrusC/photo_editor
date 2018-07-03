@@ -48,9 +48,9 @@ class Nega(Filter):
 
 
 class Brightness(Filter):
-    def __init__(self, brightness=0):
+    def __init__(self):
         super().__init__()
-        self.brightness = brightness
+        self.brightness = 0
 
     def set_parameter(self, brightness):
         self.isUpdate = True
@@ -69,7 +69,6 @@ class Brightness(Filter):
         self.slider = QSlider(Qt.Horizontal, self.parent)
         self.slider.setRange(-255, 255)
         self.slider.setValue(self.brightness)
-        print(self.brightness)
         self.slider.sliderReleased.connect(self.release_mouse)
         layout = QHBoxLayout()
         layout.addWidget(label)

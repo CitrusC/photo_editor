@@ -11,7 +11,6 @@ class History:
 
     def add_filter(self, filter_):
         self.next_filter()
-        print('add ', filter_.get_name(), self.image_count)
         if len(self.filter_list[self.count]) == 0:
             filter_.before_image_id = self.image_count
         else:
@@ -21,18 +20,16 @@ class History:
         self.filter_list[self.count].append(filter_)
 
     def remove_filter(self, f):
-        try:
-            self.next_filter()
-            rm_index = self.filter_list[self.count].index(f)
-            self.filter_list[self.count].remove(f)
-            print(len(self.filter_list[self.count]))
-            for i in range(rm_index, len(self.filter_list[self.count])):
+        self.next_filter()
+        rm_index = self.filter_list[self.count].index(f)
+        self.filter_list[self.count].remove(f)
+        for i in range(rm_index, len(self.filter_list[self.count])):
+            if i == 0:
+                self.filter_list[self.count][i].before_image_id = 0
+            else:
                 self.filter_list[self.count][i].before_image_id = self.filter_list[self.count][i - 1].after_image_id
-                self.next_image()
-                self.filter_list[self.count][i].after_image_id = self.image_count
-        except:
-            import traceback
-            traceback.print_exc()
+            self.next_image()
+            self.filter_list[self.count][i].after_image_id = self.image_count
         return self.filter_list[self.count]
 
     def swap(self, filters):
@@ -52,27 +49,21 @@ class History:
         return self.filter_list[self.count]
 
     def update_filter(self, f):
-        try:
-            self.next_filter()
-            ud_index = self.filter_list[self.count].index(f)
-            for i in range(ud_index, len(self.filter_list[self.count])):
-                self.filter_list[self.count][i].before_image_id = self.filter_list[self.count][i - 1].after_image_id
-                self.next_image()
-                self.filter_list[self.count][i].after_image_id = self.image_count
-        except:
-            import traceback
-            traceback.print_exc()
+        self.next_filter()
+        ud_index = self.filter_list[self.count].index(f)
+        for i in range(ud_index, len(self.filter_list[self.count])):
+            self.filter_list[self.count][i].before_image_id = self.filter_list[self.count][i - 1].after_image_id
+            self.next_image()
+            self.filter_list[self.count][i].after_image_id = self.image_count
         return self.filter_list[self.count]
 
     def undo(self):
         if (self.count != 0):
             self.count -= 1
             self.redo_max += 1
-        print(self.count)
         return (self.image_list[self.current[self.count]], self.filter_list[self.count], self.count != 0)
 
     def redo(self):
-        print(self.count)
         if self.redo_max > 0:
             self.count += 1
             self.redo_max -= 1
@@ -96,9 +87,7 @@ class History:
         self.next_filter()
         for i, f in enumerate(self.filter_list[self.count]):
             if self.image_list[f.after_image_id] is not None:
-                print('skip')
                 continue
-            print('apply {}: {} -> {}'.format(f.get_name(), f.before_image_id, f.after_image_id))
             self.image_list[f.after_image_id] = f.apply(self.image_list[f.before_image_id].copy())
         else:
             self.current[self.count] = f.after_image_id
