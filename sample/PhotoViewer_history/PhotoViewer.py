@@ -81,11 +81,15 @@ class CustomQWidget(QWidget, QListWidgetItem):
     def __init__(self, parent=None, filter_=None):
         super(CustomQWidget, self).__init__(parent)
         self.filter_ = filter_
+        self.filter_.set_parent(self)
         self.parent_list = parent
         layout = filter_.get_layout()
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.buildContextMenu)
         self.setLayout(layout)
+
+    def update_layout(self):
+        self.filter_.update_layout()
 
     def buildContextMenu(self, qPoint):
         menu = QMenu(self)
@@ -124,9 +128,11 @@ class Filter_list(QListWidget):
     def dropEvent(self, QDropEvent):
         super().dropEvent(QDropEvent)
         filters = self.history.swap(self.all_filters())
-        self.clear()
-        for f in filters:
-            self.add_filter(f)
+        # self.clear()
+        # for f in filters:
+        #     self.add_filter(f)
+        for f in self.all_filters():
+            f.update_layout()
 
     def add_item(self):
         try:
@@ -163,17 +169,21 @@ class Filter_list(QListWidget):
                 t_item = None
                 break
         filters = self.history.remove_filter(item.filter_)
-        self.clear()
-        for f in filters:
-            self.add_filter(f)
+        # self.clear()
+        # for f in filters:
+            # self.add_filter(f)
+        for f in self.all_filters():
+            f.update_layout()
         self.parent_.btnUndo.setEnabled(True)
         self.parent_.btnRedo.setEnabled(False)
 
     def update_filter(self, fil):
         filters = self.history.update_filter(fil)
-        self.clear()
-        for f in filters:
-            self.add_filter(f)
+        # self.clear()
+        # for f in filters:
+        #     self.add_filter(f)
+        for f in self.all_filters():
+            f.update_layout()
 
     def undo(self):
         array, filters, canUndo = self.history.undo()
@@ -181,24 +191,34 @@ class Filter_list(QListWidget):
         self.clear()
         for f in filters:
             self.add_filter(f)
+        for f in self.all_filters():
+            f.update_layout()
         self.parent_.btnUndo.setEnabled(canUndo)
         self.parent_.btnRedo.setEnabled(True)
 
     def redo(self):
-        array, filters, canRedo = self.history.redo()
-        self.parent_.update_image(array)
-        self.clear()
-        for f in filters:
-            self.add_filter(f)
+        try:
+            array, filters, canRedo = self.history.redo()
+            self.parent_.update_image(array)
+            self.clear()
+            for f in filters:
+                self.add_filter(f)
+            # for f in self.all_filters():
+            #     f.update_layout()
+        except:
+            import traceback
+            traceback.print_exc()
         self.parent_.btnUndo.setEnabled(True)
         self.parent_.btnRedo.setEnabled(canRedo)
 
     def apply_filters(self):
         array, filters = self.history.apply()
         self.parent_.update_image(array)
-        self.clear()
-        for f in filters:
-            self.add_filter(f)
+        # self.clear()
+        # for f in filters:
+        #     self.add_filter(f)
+        for f in self.all_filters():
+            f.update_layout()
         self.parent_.btnUndo.setEnabled(True)
 
     def all_filters(self):

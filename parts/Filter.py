@@ -10,7 +10,6 @@ class Filter(metaclass=ABCMeta):
         self.after_image_id = None
         self.isUpdate = False
         self.parent = None
-        self.layout = None
 
     def set_parent(self, parent):
         self.parent = parent
@@ -21,10 +20,6 @@ class Filter(metaclass=ABCMeta):
 
     @abstractmethod
     def get_name(self):
-        pass
-
-    @abstractmethod
-    def update_layout(self):
         pass
 
     @abstractmethod
@@ -45,14 +40,10 @@ class Nega(Filter):
     def get_name(self):
         return 'Nega filter {} {}'.format(self.before_image_id, self.after_image_id)
 
-    def update_layout(self):
-        self.label.setText(self.get_name())
-
     def get_layout(self):
-        if self.layout is None:
-            self.label = QLabel(self.get_name())
-            layout = QHBoxLayout()
-            layout.addWidget(self.label)
+        label = QLabel(self.get_name())
+        layout = QHBoxLayout()
+        layout.addWidget(label)
         return layout
 
 
@@ -73,20 +64,14 @@ class Brightness(Filter):
         array = np.clip(array, 0, 255)
         return array
 
-    def update_layout(self):
-        self.label.setText(self.get_name())
-        self.slider.setValue(self.brightness)
-
     def get_layout(self):
-        self.label=None
-        self.label = QLabel(self.get_name())
-        self.slider=None
+        label = QLabel(self.get_name())
         self.slider = QSlider(Qt.Horizontal, self.parent)
         self.slider.setRange(-255, 255)
         self.slider.setValue(self.brightness)
         self.slider.sliderReleased.connect(self.release_mouse)
         layout = QHBoxLayout()
-        layout.addWidget(self.label)
+        layout.addWidget(label)
         layout.addWidget(self.slider)
         return layout
 
