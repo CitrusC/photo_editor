@@ -93,7 +93,7 @@ class CustomQWidget(QWidget, QListWidgetItem):
 
     def buildContextMenu(self, qPoint):
         menu = QMenu(self)
-        menulabels = ['add', 'add2', 'remove', 'apply']
+        menulabels = ['Brightness', 'Liner Filter', 'Median Filter', 'Bilateral Filter', 'Half Tone Filter', 'remove', 'apply']
         actionlist = []
         for label in menulabels:
             actionlist.append(menu.addAction(label))
@@ -107,8 +107,14 @@ class CustomQWidget(QWidget, QListWidgetItem):
                 elif (ac == menulabels[1]):
                     self.parent_list.add_item2()
                 elif (ac == menulabels[2]):
-                    self.parent_list.remove_item(self)
+                    self.parent_list.add_item3()
                 elif (ac == menulabels[3]):
+                    self.parent_list.add_item4()
+                elif (ac == menulabels[4]):
+                    self.parent_list.add_item5()
+                elif (ac == menulabels[5]):
+                    self.parent_list.remove_item(self)
+                elif (ac == menulabels[6]):
                     self.parent_list.apply_filters()
 
 
@@ -118,6 +124,13 @@ class Filter_list(QListWidget):
         self.setDragDropMode(QAbstractItemView.InternalMove)
         self.setAlternatingRowColors(True)
         self.parent_ = parent_
+
+        for i in range(10):
+            item = QListWidgetItem(self)
+            item_widget = CustomQWidget(parent=self, id=i)
+            item.setSizeHint(item_widget.sizeHint())
+            self.addItem(item)
+            self.setItemWidget(item, item_widget)
 
     def init(self, array):
         self.history = History(array)
@@ -144,6 +157,33 @@ class Filter_list(QListWidget):
             traceback.print_exc()
 
     def add_item2(self):
+        try:
+            f = Filter.Brightness()
+            self.history.add_filter(f)
+            self.add_filter(f)
+        except:
+            import traceback
+            traceback.print_exc()
+
+    def add_item3(self):
+        try:
+            f = Filter.Brightness()
+            self.history.add_filter(f)
+            self.add_filter(f)
+        except:
+            import traceback
+            traceback.print_exc()
+
+    def add_item4(self):
+        try:
+            f = Filter.Brightness()
+            self.history.add_filter(f)
+            self.add_filter(f)
+        except:
+            import traceback
+            traceback.print_exc()
+
+    def add_item5(self):
         try:
             f = Filter.Brightness()
             self.history.add_filter(f)

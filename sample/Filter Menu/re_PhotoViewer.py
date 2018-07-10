@@ -1,18 +1,15 @@
-from PyQt5 import QtGui, QtWidgets
-from PyQt5.QtWidgets import QWidget, QListWidget, QListWidgetItem, QAbstractItemView, QMenu
-from PyQt5 import QtCore
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import QImage, qRgb
 from PyQt5.QtWidgets import QFileDialog
 import numpy as np
 from PIL import Image
 import os
-import Filter
-from History import History
 
 if hasattr(QtCore.Qt, 'AA_EnableHighDpiScaling'):
     QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
+
 if hasattr(QtCore.Qt, 'AA_UseHighDpiPixmaps'):
     QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
-
 
 class PhotoViewer(QtWidgets.QGraphicsView):
     photoClicked = QtCore.pyqtSignal(QtCore.QPoint)
@@ -77,174 +74,12 @@ class PhotoViewer(QtWidgets.QGraphicsView):
                 self._zoom = 0
 
 
-class CustomQWidget(QWidget, QListWidgetItem):
-    def __init__(self, parent=None, filter_=None):
-        super(CustomQWidget, self).__init__(parent)
-        self.filter_ = filter_
-        self.filter_.set_parent(self)
-        self.parent_list = parent
-        layout = filter_.get_layout()
-        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.customContextMenuRequested.connect(self.buildContextMenu)
-        self.setLayout(layout)
-
-    def update_layout(self):
-        self.filter_.update_layout()
-
-    def buildContextMenu(self, qPoint):
-        menu = QMenu(self)
-        menulabels = ['add', 'add2', 'remove', 'apply']
-        actionlist = []
-        for label in menulabels:
-            actionlist.append(menu.addAction(label))
-
-        action = menu.exec_(self.mapToGlobal(qPoint))
-        for act in actionlist:
-            if act == action:
-                ac = act.text()
-                if (ac == menulabels[0]):
-                    self.parent_list.add_item()
-                elif (ac == menulabels[1]):
-                    self.parent_list.add_item2()
-                elif (ac == menulabels[2]):
-                    self.parent_list.remove_item(self)
-                elif (ac == menulabels[3]):
-                    self.parent_list.apply_filters()
-
-
-class Filter_list(QListWidget):
-    def __init__(self, parent_):
-        super().__init__()
-        self.setDragDropMode(QAbstractItemView.InternalMove)
-        self.setAlternatingRowColors(True)
-        self.parent_ = parent_
-
-    def init(self, array):
-        self.history = History(array)
-        self.clear()
-        for i in range(1):
-            self.add_item()
-
-    def dropEvent(self, QDropEvent):
-        super().dropEvent(QDropEvent)
-        filters = self.history.swap(self.all_filters())
-        # self.clear()
-        # for f in filters:
-        #     self.add_filter(f)
-        for f in self.all_filters():
-            f.update_layout()
-
-    def add_item(self):
-        try:
-            f = Filter.Nega()
-            self.history.add_filter(f)
-            self.add_filter(f)
-        except:
-            import traceback
-            traceback.print_exc()
-
-    def add_item2(self):
-        try:
-            f = Filter.Brightness()
-            self.history.add_filter(f)
-            self.add_filter(f)
-        except:
-            import traceback
-            traceback.print_exc()
-
-    def add_filter(self, f):
-        item = QListWidgetItem(self)
-        item_widget = CustomQWidget(parent=self, filter_=f)
-        f.set_parent(item_widget)
-        item.setSizeHint(item_widget.sizeHint())
-        self.addItem(item)
-        self.setItemWidget(item, item_widget)
-        self.parent_.btnUndo.setEnabled(True)
-        self.parent_.btnRedo.setEnabled(False)
-
-    def remove_item(self, item):
-        for n, i in enumerate(self.all_items()):
-            if i is item:
-                t_item = self.takeItem(n)
-                t_item = None
-                break
-        filters = self.history.remove_filter(item.filter_)
-        # self.clear()
-        # for f in filters:
-            # self.add_filter(f)
-        for f in self.all_filters():
-            f.update_layout()
-        self.parent_.btnUndo.setEnabled(True)
-        self.parent_.btnRedo.setEnabled(False)
-
-    def update_filter(self, fil):
-        filters = self.history.update_filter(fil)
-        # self.clear()
-        # for f in filters:
-        #     self.add_filter(f)
-        for f in self.all_filters():
-            f.update_layout()
-
-    def undo(self):
-        array, filters, canUndo = self.history.undo()
-        self.parent_.update_image(array)
-        self.clear()
-        for f in filters:
-            self.add_filter(f)
-        for f in self.all_filters():
-            f.update_layout()
-        self.parent_.btnUndo.setEnabled(canUndo)
-        self.parent_.btnRedo.setEnabled(True)
-
-    def redo(self):
-        try:
-            array, filters, canRedo = self.history.redo()
-            self.parent_.update_image(array)
-            self.clear()
-            for f in filters:
-                self.add_filter(f)
-            # for f in self.all_filters():
-            #     f.update_layout()
-        except:
-            import traceback
-            traceback.print_exc()
-        self.parent_.btnUndo.setEnabled(True)
-        self.parent_.btnRedo.setEnabled(canRedo)
-
-    def apply_filters(self):
-        array, filters = self.history.apply()
-        self.parent_.update_image(array)
-        # self.clear()
-        # for f in filters:
-        #     self.add_filter(f)
-        for f in self.all_filters():
-            f.update_layout()
-        self.parent_.btnUndo.setEnabled(True)
-
-    def all_filters(self):
-        filters = []
-        for i in self.all_items():
-            filters.append(i.filter_)
-        return filters
-
-    def all_items(self):
-        items = []
-        for i in range(self.count()):
-            item = self.item(i)
-            items.append(self.itemWidget(item))
-        return items
-
-
 class Window(QtWidgets.QWidget):
     def __init__(self):
         super(Window, self).__init__()
         self.viewer = PhotoViewer(self)
         bw = 32  # buttonWidth
         iw = 24  # iconWidth
-
-        self.list = Filter_list(self)
-        self.list.setFixedWidth(350)
-
         # 'Load image' button
         self.btnLoad = QtWidgets.QToolButton(self)
         self.btnLoad.setIcon(QtGui.QIcon("../icons/add_files.png"))
@@ -274,20 +109,18 @@ class Window(QtWidgets.QWidget):
         self.btnUndo.setIcon(QtGui.QIcon("../icons/undo.png"))
         self.btnUndo.setFixedSize(bw, bw)
         self.btnUndo.setIconSize(QtCore.QSize(iw, iw))
-        self.btnUndo.clicked.connect(self.list.undo)
-        self.btnUndo.setEnabled(False)
+        # self.btnUndo.clicked.connect(   )
         # 'Redo' button
         self.btnRedo = QtWidgets.QToolButton(self)
         self.btnRedo.setIcon(QtGui.QIcon("../icons/redo.png"))
         self.btnRedo.setFixedSize(bw, bw)
         self.btnRedo.setIconSize(QtCore.QSize(iw, iw))
-        self.btnRedo.clicked.connect(self.list.redo)
-        self.btnRedo.setEnabled(False)
+        # self.btnRedo.clicked.connect(   )
 
         # SideBar
-        # self.sideBar = QtWidgets.QScrollArea(self)
-        # self.sideBar.setFixedWidth(250)
-        # self.sideBar.setWidgetResizable(True)
+        self.sideBar = QtWidgets.QScrollArea(self)
+        self.sideBar.setFixedWidth(250)
+        self.sideBar.setWidgetResizable(True)
 
         # Arrange layout
         VBlayout = QtWidgets.QVBoxLayout(self)
@@ -308,7 +141,7 @@ class Window(QtWidgets.QWidget):
         EditBar.addWidget(self.btnRedo)
         LeftView.addLayout(EditBar)
         MainView.addLayout(LeftView)
-        MainView.addWidget(self.list)
+        MainView.addWidget(self.sideBar)
         VBlayout.addLayout(MainView)
 
     def fileOpen(self):
@@ -322,9 +155,7 @@ class Window(QtWidgets.QWidget):
                                                 filter="JPG(*.jpg);;PNG(*.png);;BMP(*.bmp)")
 
         if fname[0]:
-            self.array = np.array(Image.open(fname[0]).convert("RGBA"), np.float32)
-            self.update_image(self.array)
-            self.list.init(self.array)
+            self.update_image(np.array(Image.open(fname[0]).convert("RGBA"), np.float32))
 
     def saveImage(self):
         if os.name == 'nt':
@@ -340,7 +171,7 @@ class Window(QtWidgets.QWidget):
             pil_img.save(fname[0])
 
     def update_image(self, array):
-        self.array = array;
+        self.array = array
         self.viewer.setPhoto(self.ndarray_to_qpixmap(array.astype(np.uint8)))
 
     def ndarray_to_qpixmap(self, image):

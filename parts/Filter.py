@@ -2,7 +2,7 @@ from abc import ABCMeta, abstractmethod
 import numpy as np
 from PyQt5.QtWidgets import QLabel, QHBoxLayout, QSlider
 from PyQt5.QtCore import Qt
-
+import numba
 
 class Filter(metaclass=ABCMeta):
     def __init__(self):
@@ -10,7 +10,6 @@ class Filter(metaclass=ABCMeta):
         self.after_image_id = None
         self.isUpdate = False
         self.parent = None
-        self.layout = None
 
     def set_parent(self, parent):
         self.parent = parent
@@ -21,10 +20,6 @@ class Filter(metaclass=ABCMeta):
 
     @abstractmethod
     def get_name(self):
-        pass
-
-    @abstractmethod
-    def update_layout(self):
         pass
 
     @abstractmethod
@@ -45,14 +40,10 @@ class Nega(Filter):
     def get_name(self):
         return 'Nega filter {} {}'.format(self.before_image_id, self.after_image_id)
 
-    def update_layout(self):
-        self.label.setText(self.get_name())
-
     def get_layout(self):
-        if self.layout is None:
-            self.label = QLabel(self.get_name())
-            layout = QHBoxLayout()
-            layout.addWidget(self.label)
+        label = QLabel(self.get_name())
+        layout = QHBoxLayout()
+        layout.addWidget(label)
         return layout
 
 
@@ -73,20 +64,14 @@ class Brightness(Filter):
         array = np.clip(array, 0, 255)
         return array
 
-    def update_layout(self):
-        self.label.setText(self.get_name())
-        self.slider.setValue(self.brightness)
-
     def get_layout(self):
-        self.label=None
-        self.label = QLabel(self.get_name())
-        self.slider=None
+        label = QLabel(self.get_name())
         self.slider = QSlider(Qt.Horizontal, self.parent)
         self.slider.setRange(-255, 255)
         self.slider.setValue(self.brightness)
         self.slider.sliderReleased.connect(self.release_mouse)
         layout = QHBoxLayout()
-        layout.addWidget(self.label)
+        layout.addWidget(label)
         layout.addWidget(self.slider)
         return layout
 
@@ -106,3 +91,56 @@ class DoNothing(Filter):
 
     def get_name(self):
         return 'DoNothing filter'
+
+class Median(Filter):
+    size = 1 # 奇数のみ有効
+
+    def set_parameter(self, size):
+        self.size = size
+
+    @numba.jit
+    def apply(self, array):
+        height, width = array.shape[0], array.shape[1]
+        d = int(self.size / 2)
+        array_c = array.copy()
+        for y in range(d, height - d):
+            for x in range(d, width - d):
+                array_c[y, x, 0] = np.median(array[y - d: y + d, x - d: x + d, 0])
+                array_c[y, x, 1] = np.median(array[y - d: y + d, x - d: x + d, 1])
+                array_c[y, x, 2] = np.median(array[y - d: y + d, x - d: x + d, 2])
+        return array_c
+
+    def get_name(self):
+        return 'Median filter'
+
+    class Linear(Filter):
+        def __init__(self, ):
+            super().__init__()
+
+
+        def set_parameter(self, size, mask):
+            self.size = size
+            self.mask = mask
+
+        @numba.jit
+        def apply(self, array):
+            height, width = array.shape[0], array.shape[1]
+            d = int(self.size / 2)
+            array_c = np.zeros_like(array)
+            array_c[:, :, 3] = array[:, :, 3]
+
+            for j in range(-d, d + 1):
+                for i in range(-d, d + 1):
+                    array_c[d:height - d, d:width - d, 0] += array[d + j:height - d + j, d + i:width - d + i, 0] * \
+                                                             self.mask[j][i]
+                    array_c[d:height - d, d:width - d, 1] += array[d + j:height - d + j, d + i:width - d + i, 1] * \
+                                                             self.mask[j][i]
+                    array_c[d:height - d, d:width - d, 2] += array[d + j:height - d + j, d + i:width - d + i, 2] * \
+                                                             self.mask[j][i]
+            array_c = np.clip(array_c, 0, 255)
+
+
+            return array_c
+
+        def get_name(self):
+            return 'Linear filter'
