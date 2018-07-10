@@ -113,14 +113,16 @@ class Filter_list(QListWidget):
         super().__init__()
         self.setDragDropMode(QAbstractItemView.InternalMove)
         self.setAlternatingRowColors(True)
+        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.buildContextMenu)
         self.parent_ = parent_
         self.history = None
 
     def init(self, array):
         self.history = History(array)
         self.clear()
-        for i in range(1):
-            self.add_item()
+        # for i in range(1):
+        #     self.add_item()
 
     def dropEvent(self, QDropEvent):
         super().dropEvent(QDropEvent)
@@ -141,15 +143,15 @@ class Filter_list(QListWidget):
             if act == action:
                 ac = act.text()
                 if (ac == menulabels[0]):
-                    self.parent_list.add_item(Filter.Brightness())
+                    self.add_item(Filter.Brightness())
                 elif (ac == menulabels[1]):
-                    self.parent_list.add_item(Filter.Nega())
+                    self.add_item(Filter.Nega())
                 elif (ac == menulabels[2]):
-                    self.parent_list.add_item(Filter.Median())
+                    self.add_item(Filter.Median())
                 elif (ac == menulabels[3]):
-                    self.parent_list.add_item(Filter.Liner())
+                    self.add_item(Filter.Liner())
                 elif (ac == menulabels[4]):
-                    self.parent_list.add_item(Filter.FFT2D())
+                    self.add_item(Filter.FFT2D())
 
     def add_item(self, f):
         try:
@@ -285,7 +287,7 @@ class Window(QtWidgets.QWidget):
         font.setPointSize(12)
         self.btnAdd.setFont(font)
         self.btnAdd.setFixedSize(bw * 1.5, bw)
-        # self.btnAdd.clicked.connect(   )
+        self.btnAdd.clicked.connect(self.list.buildContextMenu)
         # 'Apply' button
         self.btnApply = QtWidgets.QToolButton(self)
         self.btnApply.setText("Apply")

@@ -159,8 +159,8 @@ class FFT2D(Filter):
     def apply(self, array):
         # 高速フーリエ変換(2次元)
 
-        # gray = cv2.cvtColor(array, cv2.COLOR_RGB2GRAY)
-        gray = np.array(Image.fromarray(array).convert('L'))
+        gray = cv2.cvtColor(array, cv2.COLOR_RGB2GRAY)
+        # gray = np.array(Image.fromarray(array).convert('L'))
         src = np.fft.fft2(gray)
 
         # 画像サイズ
@@ -187,11 +187,18 @@ class FFT2D(Filter):
 
         himg = Image.fromarray(y)
 
-        # cv2.imwrite("output_L04.jpg", himg)
+        cv2.imwrite("output_L04.jpg", himg)
 
         array_c = np.array(Image.fromarray(himg).convert("RGBA"), np.float32)
+        array_c = np.array(Image.open("output_L04.jpg").convert("RGBA"), np.float32)
 
         return array_c
 
     def get_name(self):
         return 'FFT2D filter'
+
+    def get_layout(self):
+        label = QLabel(self.get_name())
+        layout = QHBoxLayout()
+        layout.addWidget(label)
+        return layout
