@@ -230,7 +230,7 @@ class Window(QtWidgets.QWidget):
 
         # 'Load image' button
         self.btnLoad = QtWidgets.QToolButton(self)
-        self.btnLoad.setIcon(QtGui.QIcon("../icons/add_files.png"))
+        self.btnLoad.setIcon(QtGui.QIcon("../icons/load.png"))
         self.btnLoad.setFixedSize(bw, bw)
         self.btnLoad.setIconSize(QtCore.QSize(iw, iw))
         self.btnLoad.clicked.connect(self.fileOpen)
@@ -266,6 +266,14 @@ class Window(QtWidgets.QWidget):
         self.btnRedo.setIconSize(QtCore.QSize(iw, iw))
         self.btnRedo.clicked.connect(self.list.redo)
         self.btnRedo.setEnabled(False)
+        # 'Add' button
+        self.btnAdd = QtWidgets.QToolButton(self)
+        self.btnAdd.setText("Add")
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.btnAdd.setFont(font)
+        self.btnAdd.setFixedSize(bw * 1.5, bw)
+        # self.btnAdd.clicked.connect(   )
         # 'Apply' button
         self.btnApply = QtWidgets.QToolButton(self)
         self.btnApply.setText("Apply")
@@ -297,7 +305,11 @@ class Window(QtWidgets.QWidget):
         MainView.addLayout(LeftView)
         SideBar = QtWidgets.QVBoxLayout()
         SideBar.addWidget(self.list)
-        SideBar.addWidget(self.btnApply)
+        FilterBar = QtWidgets.QHBoxLayout()
+        FilterBar.addWidget(self.btnAdd)
+        FilterBar.addStretch(1)
+        FilterBar.addWidget(self.btnApply)
+        SideBar.addLayout(FilterBar)
         MainView.addLayout(SideBar)
         # MainView.addWidget(self.list)
         VBlayout.addLayout(MainView)

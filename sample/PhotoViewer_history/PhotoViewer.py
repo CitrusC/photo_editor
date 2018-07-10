@@ -247,7 +247,7 @@ class Window(QtWidgets.QWidget):
 
         # 'Load image' button
         self.btnLoad = QtWidgets.QToolButton(self)
-        self.btnLoad.setIcon(QtGui.QIcon("../icons/add_files.png"))
+        self.btnLoad.setIcon(QtGui.QIcon("../icons/load.png"))
         self.btnLoad.setFixedSize(bw, bw)
         self.btnLoad.setIconSize(QtCore.QSize(iw, iw))
         self.btnLoad.clicked.connect(self.fileOpen)
