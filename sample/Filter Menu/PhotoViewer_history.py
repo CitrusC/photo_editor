@@ -125,6 +125,13 @@ class Filter_list(QListWidget):
         self.setAlternatingRowColors(True)
         self.parent_ = parent_
 
+        for i in range(10):
+            item = QListWidgetItem(self)
+            item_widget = CustomQWidget(parent=self, id=i)
+            item.setSizeHint(item_widget.sizeHint())
+            self.addItem(item)
+            self.setItemWidget(item, item_widget)
+
     def init(self, array):
         self.history = History(array)
         self.clear()
