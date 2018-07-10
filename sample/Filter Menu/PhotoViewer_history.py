@@ -142,15 +142,15 @@ class Filter_list(QListWidget):
             if act == action:
                 ac = act.text()
                 if (ac == menulabels[0]):
-                    self.parent_list.add_item(Filter.Brightness)
+                    self.parent_list.add_item(Filter.Brightness())
                 elif (ac == menulabels[1]):
-                    self.parent_list.add_item(Filter.Nega)
+                    self.parent_list.add_item(Filter.Nega())
                 elif (ac == menulabels[2]):
-                    self.parent_list.add_item(Filter.Median)
+                    self.parent_list.add_item(Filter.Median())
                 elif (ac == menulabels[3]):
-                    self.parent_list.add_item(Filter.Liner)
+                    self.parent_list.add_item(Filter.Liner())
                 elif (ac == menulabels[4]):
-                    self.parent_list.add_item(Filter.FFT2D)
+                    self.parent_list.add_item(Filter.FFT2D())
         ##############
 
     def add_item(self):
