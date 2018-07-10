@@ -190,6 +190,7 @@ class Filter_list(QListWidget):
         super().__init__()
         self.setDragDropMode(QAbstractItemView.InternalMove)
         self.setAlternatingRowColors(True)
+
         for i in range(10):
             item = QListWidgetItem(self)
             item_widget = CustomQWidget(parent=self, id=i)
