@@ -93,7 +93,7 @@ class CustomQWidget(QWidget, QListWidgetItem):
 
     def buildContextMenu(self, qPoint):
         menu = QMenu(self)
-        menulabels = ['Brightness', 'Liner Filter', 'Median Filter', 'Bilateral Filter', 'Half Tone Filter', 'remove', 'apply']
+        menulabels = ['remove', 'apply']
         actionlist = []
         for label in menulabels:
             actionlist.append(menu.addAction(label))
@@ -103,20 +103,9 @@ class CustomQWidget(QWidget, QListWidgetItem):
             if act == action:
                 ac = act.text()
                 if (ac == menulabels[0]):
-                    self.parent_list.add_item()
-                elif (ac == menulabels[1]):
-                    self.parent_list.add_item2()
-                elif (ac == menulabels[2]):
-                    self.parent_list.add_item3()
-                elif (ac == menulabels[3]):
-                    self.parent_list.add_item4()
-                elif (ac == menulabels[4]):
-                    self.parent_list.add_item5()
-                elif (ac == menulabels[5]):
                     self.parent_list.remove_item(self)
-                elif (ac == menulabels[6]):
+                elif (ac == menulabels[1]):
                     self.parent_list.apply_filters()
-
 
 class Filter_list(QListWidget):
     def __init__(self, parent_):
@@ -124,8 +113,6 @@ class Filter_list(QListWidget):
         self.setDragDropMode(QAbstractItemView.InternalMove)
         self.setAlternatingRowColors(True)
         self.parent_ = parent_
-
-
 
     def init(self, array):
         self.history = History(array)
@@ -142,6 +129,7 @@ class Filter_list(QListWidget):
         for f in self.all_filters():
             f.update_layout()
 
+    #####追加#####
     def buildContextMenu(self, qPoint):
         menu = QMenu(self)
         menulabels = ['Brightness', 'Nega', 'Median', 'Liner', 'FFT2D']
@@ -161,9 +149,9 @@ class Filter_list(QListWidget):
                     self.parent_list.add_item(Filter.Median)
                 elif (ac == menulabels[3]):
                     self.parent_list.add_item(Filter.Liner)
-                elif (ac == menulabels[4):
+                elif (ac == menulabels[4]):
                     self.parent_list.add_item(Filter.FFT2D)
-
+        ##############
 
     def add_item(self):
         try:
