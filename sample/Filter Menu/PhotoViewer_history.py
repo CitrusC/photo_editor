@@ -125,12 +125,7 @@ class Filter_list(QListWidget):
         self.setAlternatingRowColors(True)
         self.parent_ = parent_
 
-        for i in range(10):
-            item = QListWidgetItem(self)
-            item_widget = CustomQWidget(parent=self, id=i)
-            item.setSizeHint(item_widget.sizeHint())
-            self.addItem(item)
-            self.setItemWidget(item, item_widget)
+
 
     def init(self, array):
         self.history = History(array)
@@ -146,6 +141,29 @@ class Filter_list(QListWidget):
         #     self.add_filter(f)
         for f in self.all_filters():
             f.update_layout()
+
+    def buildContextMenu(self, qPoint):
+        menu = QMenu(self)
+        menulabels = ['Brightness', 'Nega', 'Median', 'Liner', 'FFT2D']
+        actionlist = []
+        for label in menulabels:
+            actionlist.append(menu.addAction(label))
+
+        action = menu.exec_(self.mapToGlobal(qPoint))
+        for act in actionlist:
+            if act == action:
+                ac = act.text()
+                if (ac == menulabels[0]):
+                    self.parent_list.add_item(Filter.Brightness)
+                elif (ac == menulabels[1]):
+                    self.parent_list.add_item(Filter.Nega)
+                elif (ac == menulabels[2]):
+                    self.parent_list.add_item(Filter.Median)
+                elif (ac == menulabels[3]):
+                    self.parent_list.add_item(Filter.Liner)
+                elif (ac == menulabels[4):
+                    self.parent_list.add_item(Filter.FFT2D)
+
 
     def add_item(self):
         try:
@@ -183,14 +201,6 @@ class Filter_list(QListWidget):
             import traceback
             traceback.print_exc()
 
-    def add_item5(self):
-        try:
-            f = Filter.Brightness()
-            self.history.add_filter(f)
-            self.add_filter(f)
-        except:
-            import traceback
-            traceback.print_exc()
 
     def add_filter(self, f):
         item = QListWidgetItem(self)
