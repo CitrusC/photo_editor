@@ -1,8 +1,8 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QListWidget, QVBoxLayout, QLabel, QPushButton, QListWidgetItem, \
-    QHBoxLayout, QAbstractItemView, QMenu
+    QHBoxLayout, QAbstractItemView, QMenu, QFrame, QSplitter, QStyleFactory
 from PyQt5 import QtCore
-
+from PyQt5.QtCore import Qt
 
 class CustomQWidget(QWidget, QListWidgetItem):
 
@@ -10,29 +10,12 @@ class CustomQWidget(QWidget, QListWidgetItem):
         super(CustomQWidget, self).__init__(parent)
         self.item = item
         self.parent_list = parent
-        label = QLabel('Add a New Filter')
+        label = QLabel('item ' + str(id))
         self.name = 'item' + str(id)
-        button = QPushButton('Add')
-        button2 = QPushButton('Apply')
+        button = QPushButton('×')
         layout = QHBoxLayout()
         layout.addWidget(label)
         layout.addWidget(button)
-        layout.addWidget(button2)
-
-        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.customContextMenuRequested.connect(self.buildContextMenu)
-        self.setLayout(layout)
-
-    # def __init__(self, parent=None, item=None, id=0):
-    #     super(CustomQWidget, self).__init__(parent)
-    #     self.item = item
-    #     self.parent_list = parent
-    #     label = QLabel('item ' + str(id))
-    #     self.name = 'item' + str(id)
-    #     button = QPushButton('×')
-    #     layout = QHBoxLayout()
-    #     layout.addWidget(label)
-    #     layout.addWidget(button)
 
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.buildContextMenu)
@@ -61,7 +44,7 @@ class Filter_list(QListWidget):
         super().__init__()
         self.setDragDropMode(QAbstractItemView.InternalMove)
 
-        for i in range(10):
+        for i in range(5):
             item = QListWidgetItem(self)
             item_widget = CustomQWidget(parent=self, id=i)
             item.setSizeHint(item_widget.sizeHint())
@@ -74,7 +57,7 @@ class Filter_list(QListWidget):
             print(i.name)
         print()
 
-    def add_item(self, item):
+    def add_item(self, item, newItem):
         item = QListWidgetItem(self)
         item_widget = CustomQWidget(parent=self, id=0)
         item.setSizeHint(item_widget.sizeHint())
@@ -95,6 +78,22 @@ class Filter_list(QListWidget):
             items.append(self.itemWidget(item))
         return items
 
+class Function_Buttons(QListWidget):
+    def __init__(self, parent=None, item=None, id=0):
+        super(CustomQWidget, self).__init__(parent)
+        self.item = item
+        # self.parent_list = parent
+        # label = QLabel('item ' + str(id))
+        self.name = 'item' + str(id)
+        button1 = QPushButton('Add')
+        button2 = QPushButton('Apply')
+        layout = QHBoxLayout()
+        layout.addWidget(button1)
+        layout.addWidget(button2)
+
+        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.buildContextMenu)
+        self.setLayout(layout)
 
 class MainWindow(QWidget):
     def __init__(self):
@@ -103,13 +102,17 @@ class MainWindow(QWidget):
         self.show()
 
     def initUI(self):
+
         title = QLabel("Demo for widgets in a QListWidget")
 
         list = Filter_list()
 
+        buttons = Function_Buttons();
+
         window_layout = QVBoxLayout(self)
         window_layout.addWidget(title)
         window_layout.addWidget(list)
+        window_layout.addWidget(buttons)
 
 
 if __name__ == '__main__':
