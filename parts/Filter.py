@@ -4,7 +4,6 @@ from PyQt5.QtWidgets import QLabel, QHBoxLayout, QSlider
 from PyQt5.QtCore import Qt
 from PIL import Image
 import numba
-import cv2
 
 
 class Filter(metaclass=ABCMeta):
@@ -160,7 +159,8 @@ class FFT2D(Filter):
     def apply(self, array):
         # 高速フーリエ変換(2次元)
 
-        gray = cv2.cvtColor(array, cv2.COLOR_RGB2GRAY)
+        # gray = cv2.cvtColor(array, cv2.COLOR_RGB2GRAY)
+        gray = np.array(Image.fromarray(array).convert('L'))
         src = np.fft.fft2(gray)
 
         # 画像サイズ
@@ -187,10 +187,11 @@ class FFT2D(Filter):
 
         himg = Image.fromarray(y)
 
-        cv2.imwrite("output_L04.jpg", np.uint8(self.array))
-        self.array = np.array(Image.open("output_L04.jpg").convert("RGBA"), np.float32)
+        # cv2.imwrite("output_L04.jpg", himg)
 
-        return himg
+        array_c = np.array(Image.fromarray(himg).convert("RGBA"), np.float32)
+
+        return array_c
 
     def get_name(self):
-        return 'DoFFT filter'
+        return 'FFT2D filter'
