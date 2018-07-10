@@ -8,6 +8,7 @@ import Filter
 import numpy as np
 from PIL import Image
 import PyQt5.QtGui as QtGui
+import cv2
 
 
 class MainWindow(QWidget):
@@ -18,6 +19,8 @@ class MainWindow(QWidget):
         self.br = Filter.Brightness()
         self.med = Filter.Median()
         self.med.set_parameter(9)
+        self.dofft = Filter.DoFFT()
+        self.dofft.set_parameter(0.1, 1)
         self.show()
 
     def initUI(self):
@@ -25,7 +28,7 @@ class MainWindow(QWidget):
         self.setWindowTitle('filter_sample')
         # 画像を読み込んで、arrayにセット
         self.array = np.array(Image.open("sample.jpg").convert("RGBA"), np.float32)
-        print(self.array.dtype)
+        #print(self.array.dtype)
         # 画像を読み込んで、ラベルに貼り付け
         pixmap = QPixmap("sample.jpg")
         self.lbl = QLabel(self)
@@ -40,6 +43,9 @@ class MainWindow(QWidget):
         btn3 = QPushButton("Median", self)
         btn3.move(400, 150)
         btn3.clicked.connect(self.button_clicked3)
+        btn4 = QPushButton("FFT", self)
+        btn4.move(400, 170)
+        btn4.clicked.connect(self.button_clicked4)
 
         # 数字のウィジェットを作成
         lcd = QLCDNumber(self)
@@ -55,12 +61,15 @@ class MainWindow(QWidget):
         self.sld.sliderReleased.connect(self.release_mouse)
 
     def ndarray_to_qpixmap(self, image):
+        print("ndary1\n")
         qimage = QtGui.QImage(image.data, image.shape[1], image.shape[0], image.shape[1] * 4,
                               QtGui.QImage.Format_RGBA8888)
+        print("ndary2\n")
         pixmap = QtGui.QPixmap.fromImage(qimage)
         return pixmap
 
     def update_image(self, array):
+        ##print(array)
         self.lbl.setPixmap(self.ndarray_to_qpixmap(array))
         self.update()
 
@@ -79,6 +88,18 @@ class MainWindow(QWidget):
     def button_clicked3(self):
         # フィルタを適用する
         self.array = self.med.apply(self.array)
+        # 画面更新
+        self.update_image(self.array.astype(np.uint8))
+
+    def button_clicked4(self):
+        #img = cv2.imread("sample.jpg")
+        #gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+        #print(gray)
+        # フィルタを適用する
+        self.array = self.dofft.apply(self.array)
+        print(self.array)
+        cv2.imwrite("output_L04.jpg", np.uint8(self.array))
+        self.array = np.array(Image.open("output_L04.jpg").convert("RGBA"), np.float32)
         # 画面更新
         self.update_image(self.array.astype(np.uint8))
 
