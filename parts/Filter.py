@@ -2,7 +2,7 @@ from abc import ABCMeta, abstractmethod
 import numpy as np
 from PyQt5.QtWidgets import QLabel, QHBoxLayout, QSlider
 from PyQt5.QtCore import Qt
-
+import numba
 
 class Filter(metaclass=ABCMeta):
     def __init__(self):
