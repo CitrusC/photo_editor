@@ -85,10 +85,15 @@ class History:
 
     def apply(self):
         self.next_filter()
+        f = None
         for i, f in enumerate(self.filter_list[self.count]):
             if self.image_list[f.after_image_id] is not None:
                 continue
             self.image_list[f.after_image_id] = f.apply(self.image_list[f.before_image_id].copy())
         else:
-            self.current[self.count] = f.after_image_id
+            if f is not None:
+                self.current[self.count] = f.after_image_id
+            else:
+                self.current[self.count] = 0
+
         return (self.image_list[self.current[self.count]], self.filter_list[self.count])

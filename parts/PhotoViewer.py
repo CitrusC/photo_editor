@@ -114,6 +114,7 @@ class Filter_list(QListWidget):
         self.setDragDropMode(QAbstractItemView.InternalMove)
         self.setAlternatingRowColors(True)
         self.parent_ = parent_
+        self.history = None
 
     def init(self, array):
         self.history = History(array)
@@ -194,6 +195,8 @@ class Filter_list(QListWidget):
         self.parent_.btnRedo.setEnabled(canRedo)
 
     def apply_filters(self):
+        if self.history is None:
+            return
         array, filters = self.history.apply()
         self.parent_.update_image(array)
         self.clear()
@@ -271,7 +274,6 @@ class Window(QtWidgets.QWidget):
         self.btnApply.setFont(font)
         self.btnApply.setFixedSize(bw * 2, bw)
         self.btnApply.clicked.connect(self.list.apply_filters)
-        self.btnApply.setEnabled(False)
 
 
         # Arrange layout
