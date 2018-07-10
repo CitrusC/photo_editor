@@ -264,8 +264,14 @@ class Window(QtWidgets.QWidget):
         self.btnRedo.clicked.connect(self.list.redo)
         self.btnRedo.setEnabled(False)
         # 'Apply' button
-        # self.btnApply = QtWidgets.QToolButton(self)
-        # self.btnApply.clicked.connect(self.list.apply_filters)
+        self.btnApply = QtWidgets.QToolButton(self)
+        self.btnApply.setText("Apply")
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.btnApply.setFont(font)
+        self.btnApply.setFixedSize(bw * 2, bw)
+        self.btnApply.clicked.connect(self.list.apply_filters)
+        self.btnApply.setEnabled(False)
 
 
         # Arrange layout
@@ -287,11 +293,11 @@ class Window(QtWidgets.QWidget):
         EditBar.addWidget(self.btnRedo)
         LeftView.addLayout(EditBar)
         MainView.addLayout(LeftView)
-        # SideBar = QtWidgets.QVBoxLayout()
-        # SideBar.addWidget(self.list)
-        # SideBar.addWidget(self.btnApply)
-        # MainView.addLayout(SideBar)
-        MainView.addWidget(self.list)
+        SideBar = QtWidgets.QVBoxLayout()
+        SideBar.addWidget(self.list)
+        SideBar.addWidget(self.btnApply)
+        MainView.addLayout(SideBar)
+        # MainView.addWidget(self.list)
         VBlayout.addLayout(MainView)
 
     def fileOpen(self):
