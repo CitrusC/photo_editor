@@ -303,7 +303,6 @@ class Window(QtWidgets.QWidget):
             fname = QFileDialog.getOpenFileName(self, 'Open file',
                                                 "./",
                                                 filter="JPG(*.jpg);;PNG(*.png);;BMP(*.bmp)")
-
         if fname[0]:
             try:
                 self.array = np.array(Image.open(fname[0]).convert("RGBA"), np.float32)
