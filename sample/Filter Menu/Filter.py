@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
 import numpy as np
-from PyQt5.QtWidgets import QLabel, QHBoxLayout, QSlider
+from PyQt5.QtWidgets import QLabel, QHBoxLayout, QSlider, QComboBox, QApplication
 from PyQt5.QtCore import Qt
 from PIL import Image
 import numba
@@ -30,6 +30,7 @@ class Filter(metaclass=ABCMeta):
         pass
 
 
+
 class Nega(Filter):
     def __init__(self):
         super().__init__()
@@ -48,6 +49,7 @@ class Nega(Filter):
         layout = QHBoxLayout()
         layout.addWidget(label)
         return layout
+
 
 
 class Brightness(Filter):
@@ -85,6 +87,7 @@ class Brightness(Filter):
         return 'Brightness filter{} {}'.format(self.before_image_id, self.after_image_id)
 
 
+
 class DoNothing(Filter):
     def __init__(self):
         super().__init__()
@@ -95,10 +98,12 @@ class DoNothing(Filter):
     def get_name(self):
         return 'DoNothing filter'
 
+
+
 class Median(Filter):
     size = 1 # 奇数のみ有効
 
-    def set_parameter(self, size):
+    def set_parameter(self, size): # サイズの受け取り
         self.size = size
 
     @numba.jit
@@ -116,37 +121,75 @@ class Median(Filter):
     def get_name(self):
         return 'Median filter'
 
-    class Linear(Filter):
-        def __init__(self, ):
-            super().__init__()
+    def get_layout(self):
+
+        label = QLabel(self.get_name())
+        self.lbl = QLabel("Filter Size", self)
+
+        combo = QComboBox(self)
+
+        # フィルタの範囲設定
+        for j in range (1,self.size):
+            combo.addItem("j")
+            j = j + 1
 
 
-        def set_parameter(self, size, mask):
-            self.size = size
-            self.mask = mask
+        combo.move(50, 50)
+        self.lbl.move(50, 150)
 
-        @numba.jit
-        def apply(self, array):
-            height, width = array.shape[0], array.shape[1]
-            d = int(self.size / 2)
-            array_c = np.zeros_like(array)
-            array_c[:, :, 3] = array[:, :, 3]
+        # アイテムが選択されたらonActivated関数の呼び出し
+        combo.activated[str].connect(self.onActivated)
 
-            for j in range(-d, d + 1):
-                for i in range(-d, d + 1):
-                    array_c[d:height - d, d:width - d, 0] += array[d + j:height - d + j, d + i:width - d + i, 0] * \
-                                                             self.mask[j][i]
-                    array_c[d:height - d, d:width - d, 1] += array[d + j:height - d + j, d + i:width - d + i, 1] * \
-                                                             self.mask[j][i]
-                    array_c[d:height - d, d:width - d, 2] += array[d + j:height - d + j, d + i:width - d + i, 2] * \
-                                                             self.mask[j][i]
-            array_c = np.clip(array_c, 0, 255)
+        self.setGeometry(300, 300, 300, 200)
+        self.setWindowTitle('QComboBox')
+        self.show()
+        layout = QHBoxLayout()
+        layout.addWidget(label)
+        layout.addWidget(self.combo)
+
+        return layout
+
+    def onActivated(self, text):
+
+        # ラベルに選択されたアイテムの名前を設定
+        self.lbl.setText(text)
+        # ラベルの長さを調整
+        self.lbl.adjustSize()
 
 
-            return array_c
 
-        def get_name(self):
-            return 'Linear filter'
+class Linear(Filter):
+    def __init__(self, ):
+        super().__init__()
+
+
+    def set_parameter(self, size, mask):
+        self.size = size
+        self.mask = mask
+
+    @numba.jit
+    def apply(self, array):
+        height, width = array.shape[0], array.shape[1]
+        d = int(self.size / 2)
+        array_c = np.zeros_like(array)
+        array_c[:, :, 3] = array[:, :, 3]
+
+        for j in range(-d, d + 1):
+            for i in range(-d, d + 1):
+                array_c[d:height - d, d:width - d, 0] += array[d + j:height - d + j, d + i:width - d + i, 0] * \
+                                                         self.mask[j][i]
+                array_c[d:height - d, d:width - d, 1] += array[d + j:height - d + j, d + i:width - d + i, 1] * \
+                                                         self.mask[j][i]
+                array_c[d:height - d, d:width - d, 2] += array[d + j:height - d + j, d + i:width - d + i, 2] * \
+                                                         self.mask[j][i]
+        array_c = np.clip(array_c, 0, 255)
+
+
+        return array_c
+
+    def get_name(self):
+        return 'Linear filter'
+
 
 
 class FFT2D(Filter):
