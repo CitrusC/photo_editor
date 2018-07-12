@@ -7,6 +7,7 @@ from PIL import Image
 import os
 import Filter
 from History import History
+from PIL import Image
 
 if hasattr(QtCore.Qt, 'AA_EnableHighDpiScaling'):
     QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)

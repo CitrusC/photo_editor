@@ -116,37 +116,37 @@ class Median(Filter):
     def get_name(self):
         return 'Median filter'
 
-    class Linear(Filter):
-        def __init__(self, ):
-            super().__init__()
+class Linear(Filter):
+    def __init__(self, ):
+        super().__init__()
 
 
-        def set_parameter(self, size, mask):
-            self.size = size
-            self.mask = mask
+    def set_parameter(self, size, mask):
+        self.size = size
+        self.mask = mask
 
-        @numba.jit
-        def apply(self, array):
-            height, width = array.shape[0], array.shape[1]
-            d = int(self.size / 2)
-            array_c = np.zeros_like(array)
-            array_c[:, :, 3] = array[:, :, 3]
+    @numba.jit
+    def apply(self, array):
+        height, width = array.shape[0], array.shape[1]
+        d = int(self.size / 2)
+        array_c = np.zeros_like(array)
+        array_c[:, :, 3] = array[:, :, 3]
 
-            for j in range(-d, d + 1):
-                for i in range(-d, d + 1):
-                    array_c[d:height - d, d:width - d, 0] += array[d + j:height - d + j, d + i:width - d + i, 0] * \
-                                                             self.mask[j][i]
-                    array_c[d:height - d, d:width - d, 1] += array[d + j:height - d + j, d + i:width - d + i, 1] * \
-                                                             self.mask[j][i]
-                    array_c[d:height - d, d:width - d, 2] += array[d + j:height - d + j, d + i:width - d + i, 2] * \
-                                                             self.mask[j][i]
-            array_c = np.clip(array_c, 0, 255)
+        for j in range(-d, d + 1):
+            for i in range(-d, d + 1):
+                array_c[d:height - d, d:width - d, 0] += array[d + j:height - d + j, d + i:width - d + i, 0] * \
+                                                         self.mask[j][i]
+                array_c[d:height - d, d:width - d, 1] += array[d + j:height - d + j, d + i:width - d + i, 1] * \
+                                                         self.mask[j][i]
+                array_c[d:height - d, d:width - d, 2] += array[d + j:height - d + j, d + i:width - d + i, 2] * \
+                                                         self.mask[j][i]
+        array_c = np.clip(array_c, 0, 255)
 
 
-            return array_c
+        return array_c
 
-        def get_name(self):
-            return 'Linear filter'
+    def get_name(self):
+        return 'Linear filter'
 
 
 class FFT2D(Filter):
