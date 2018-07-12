@@ -1,5 +1,5 @@
 from PyQt5 import QtGui, QtWidgets
-from PyQt5.QtWidgets import QWidget, QListWidget, QListWidgetItem, QAbstractItemView, QMenu
+from PyQt5.QtWidgets import QWidget, QListWidget, QListWidgetItem, QAbstractItemView, QMenu, QMessageBox
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QFileDialog
 import numpy as np
@@ -7,6 +7,7 @@ from PIL import Image
 import os
 import Filter
 from History import History
+from PIL import Image
 
 if hasattr(QtCore.Qt, 'AA_EnableHighDpiScaling'):
     QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
@@ -81,19 +82,15 @@ class CustomQWidget(QWidget, QListWidgetItem):
     def __init__(self, parent=None, filter_=None):
         super(CustomQWidget, self).__init__(parent)
         self.filter_ = filter_
-        self.filter_.set_parent(self)
         self.parent_list = parent
         layout = filter_.get_layout
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.buildContextMenu)
         self.setLayout(layout)
 
-    def update_layout(self):
-        self.filter_.update_layout()
-
     def buildContextMenu(self, qPoint):
         menu = QMenu(self)
-        menulabels = ['remove', 'apply']
+        menulabels = ['add', 'add2', 'remove', 'apply']
         actionlist = []
         for label in menulabels:
             actionlist.append(menu.addAction(label))
@@ -103,34 +100,39 @@ class CustomQWidget(QWidget, QListWidgetItem):
             if act == action:
                 ac = act.text()
                 if (ac == menulabels[0]):
-                    self.parent_list.remove_item(self)
+                    self.parent_list.add_item()
                 elif (ac == menulabels[1]):
+                    self.parent_list.add_item2()
+                elif (ac == menulabels[2]):
+                    self.parent_list.remove_item(self)
+                elif (ac == menulabels[3]):
                     self.parent_list.apply_filters()
+
 
 class Filter_list(QListWidget):
     def __init__(self, parent_):
         super().__init__()
         self.setDragDropMode(QAbstractItemView.InternalMove)
         self.setAlternatingRowColors(True)
+        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.buildContextMenu)
         self.parent_ = parent_
+        self.history = None
 
     def init(self, array):
         self.history = History(array)
         self.clear()
-        for i in range(1):
-            self.add_item()
+        # for i in range(1):
+        #     self.add_item()
 
     def dropEvent(self, QDropEvent):
         super().dropEvent(QDropEvent)
         filters = self.history.swap(self.all_filters())
-        # self.clear()
-        # for f in filters:
-        #     self.add_filter(f)
-        for f in self.all_filters():
-            f.update_layout()
+        self.clear()
+        for f in filters:
+            self.add_filter(f)
 
-    #####追加#####
-    def buildContextMenu(self, qPoint):
+    def buildContextMenu(self, qPoint): # L:291から
         menu = QMenu(self)
         menulabels = ['Brightness', 'Nega', 'Median', 'Liner', 'FFT2D']
         actionlist = []
@@ -142,53 +144,23 @@ class Filter_list(QListWidget):
             if act == action:
                 ac = act.text()
                 if (ac == menulabels[0]):
-                    self.parent_list.add_item(Filter.Brightness())
+                    self.add_item(Filter.Brightness())
                 elif (ac == menulabels[1]):
-                    self.parent_list.add_item(Filter.Nega())
+                    self.add_item(Filter.Nega())
                 elif (ac == menulabels[2]):
-                    self.parent_list.add_item(Filter.Median())
+                    self.add_item(Filter.Median())
                 elif (ac == menulabels[3]):
-                    self.parent_list.add_item(Filter.Liner())
+                    self.add_item(Filter.Liner())
                 elif (ac == menulabels[4]):
-                    self.parent_list.add_item(Filter.FFT2D())
-        ##############
+                    self.add_item(Filter.FFT2D())
 
-    def add_item(self):
+    def add_item(self, f):
         try:
-            f = Filter.Nega()
             self.history.add_filter(f)
             self.add_filter(f)
         except:
             import traceback
             traceback.print_exc()
-
-    def add_item2(self):
-        try:
-            f = Filter.Brightness()
-            self.history.add_filter(f)
-            self.add_filter(f)
-        except:
-            import traceback
-            traceback.print_exc()
-
-    def add_item3(self):
-        try:
-            f = Filter.Brightness()
-            self.history.add_filter(f)
-            self.add_filter(f)
-        except:
-            import traceback
-            traceback.print_exc()
-
-    def add_item4(self):
-        try:
-            f = Filter.Brightness()
-            self.history.add_filter(f)
-            self.add_filter(f)
-        except:
-            import traceback
-            traceback.print_exc()
-
 
     def add_filter(self, f):
         item = QListWidgetItem(self)
@@ -207,21 +179,17 @@ class Filter_list(QListWidget):
                 t_item = None
                 break
         filters = self.history.remove_filter(item.filter_)
-        # self.clear()
-        # for f in filters:
-            # self.add_filter(f)
-        for f in self.all_filters():
-            f.update_layout()
+        self.clear()
+        for f in filters:
+            self.add_filter(f)
         self.parent_.btnUndo.setEnabled(True)
         self.parent_.btnRedo.setEnabled(False)
 
     def update_filter(self, fil):
         filters = self.history.update_filter(fil)
-        # self.clear()
-        # for f in filters:
-        #     self.add_filter(f)
-        for f in self.all_filters():
-            f.update_layout()
+        self.clear()
+        for f in filters:
+            self.add_filter(f)
 
     def undo(self):
         array, filters, canUndo = self.history.undo()
@@ -229,34 +197,26 @@ class Filter_list(QListWidget):
         self.clear()
         for f in filters:
             self.add_filter(f)
-        for f in self.all_filters():
-            f.update_layout()
         self.parent_.btnUndo.setEnabled(canUndo)
         self.parent_.btnRedo.setEnabled(True)
 
     def redo(self):
-        try:
-            array, filters, canRedo = self.history.redo()
-            self.parent_.update_image(array)
-            self.clear()
-            for f in filters:
-                self.add_filter(f)
-            # for f in self.all_filters():
-            #     f.update_layout()
-        except:
-            import traceback
-            traceback.print_exc()
+        array, filters, canRedo = self.history.redo()
+        self.parent_.update_image(array)
+        self.clear()
+        for f in filters:
+            self.add_filter(f)
         self.parent_.btnUndo.setEnabled(True)
         self.parent_.btnRedo.setEnabled(canRedo)
 
     def apply_filters(self):
+        if self.history is None:
+            return
         array, filters = self.history.apply()
         self.parent_.update_image(array)
-        # self.clear()
-        # for f in filters:
-        #     self.add_filter(f)
-        for f in self.all_filters():
-            f.update_layout()
+        self.clear()
+        for f in filters:
+            self.add_filter(f)
         self.parent_.btnUndo.setEnabled(True)
 
     def all_filters(self):
@@ -285,7 +245,7 @@ class Window(QtWidgets.QWidget):
 
         # 'Load image' button
         self.btnLoad = QtWidgets.QToolButton(self)
-        self.btnLoad.setIcon(QtGui.QIcon("../icons/add_files.png"))
+        self.btnLoad.setIcon(QtGui.QIcon("../icons/load.png"))
         self.btnLoad.setFixedSize(bw, bw)
         self.btnLoad.setIconSize(QtCore.QSize(iw, iw))
         self.btnLoad.clicked.connect(self.fileOpen)
@@ -321,11 +281,22 @@ class Window(QtWidgets.QWidget):
         self.btnRedo.setIconSize(QtCore.QSize(iw, iw))
         self.btnRedo.clicked.connect(self.list.redo)
         self.btnRedo.setEnabled(False)
-
-        # SideBar
-        # self.sideBar = QtWidgets.QScrollArea(self)
-        # self.sideBar.setFixedWidth(250)
-        # self.sideBar.setWidgetResizable(True)
+        # 'Add' button
+        self.btnAdd = QtWidgets.QToolButton(self)
+        self.btnAdd.setText("Add")
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.btnAdd.setFont(font)
+        self.btnAdd.setFixedSize(bw * 1.5, bw)
+        self.btnAdd.clicked.connect(self.list.buildContextMenu) # photoviewer L:135へ
+        # 'Apply' button
+        self.btnApply = QtWidgets.QToolButton(self)
+        self.btnApply.setText("Apply")
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.btnApply.setFont(font)
+        self.btnApply.setFixedSize(bw * 2, bw)
+        self.btnApply.clicked.connect(self.list.apply_filters)
 
         # Arrange layout
         VBlayout = QtWidgets.QVBoxLayout(self)
@@ -346,7 +317,15 @@ class Window(QtWidgets.QWidget):
         EditBar.addWidget(self.btnRedo)
         LeftView.addLayout(EditBar)
         MainView.addLayout(LeftView)
-        MainView.addWidget(self.list)
+        SideBar = QtWidgets.QVBoxLayout()
+        SideBar.addWidget(self.list)
+        FilterBar = QtWidgets.QHBoxLayout()
+        FilterBar.addWidget(self.btnAdd)
+        FilterBar.addStretch(1)
+        FilterBar.addWidget(self.btnApply)
+        SideBar.addLayout(FilterBar)
+        MainView.addLayout(SideBar)
+        # MainView.addWidget(self.list)
         VBlayout.addLayout(MainView)
 
     def fileOpen(self):
@@ -358,11 +337,14 @@ class Window(QtWidgets.QWidget):
             fname = QFileDialog.getOpenFileName(self, 'Open file',
                                                 "./",
                                                 filter="JPG(*.jpg);;PNG(*.png);;BMP(*.bmp)")
-
         if fname[0]:
-            self.array = np.array(Image.open(fname[0]).convert("RGBA"), np.float32)
-            self.update_image(self.array)
-            self.list.init(self.array)
+            try:
+                self.array = np.array(Image.open(fname[0]).convert("RGBA"), np.float32)
+                self.update_image(self.array)
+                self.list.init(self.array)
+            except:
+                reply = QMessageBox.critical(self, 'Message',
+                                             "The image file is broken.", QMessageBox.Ok)
 
     def saveImage(self):
         if os.name == 'nt':

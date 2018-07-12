@@ -1,6 +1,7 @@
 from abc import ABCMeta, abstractmethod
 import numpy as np
-from PyQt5.QtWidgets import QLabel, QHBoxLayout, QSlider, QComboBox, QApplication
+from PyQt5.QtWidgets import QLabel, QHBoxLayout, QSlider, \
+    QGridLayout, QLineEdit, QTextEdit, QWidget, QApplication
 from PyQt5.QtCore import Qt
 from PIL import Image
 import numba
@@ -30,7 +31,6 @@ class Filter(metaclass=ABCMeta):
         pass
 
 
-
 class Nega(Filter):
     def __init__(self):
         super().__init__()
@@ -49,7 +49,6 @@ class Nega(Filter):
         layout = QHBoxLayout()
         layout.addWidget(label)
         return layout
-
 
 
 class Brightness(Filter):
@@ -87,7 +86,6 @@ class Brightness(Filter):
         return 'Brightness filter{} {}'.format(self.before_image_id, self.after_image_id)
 
 
-
 class DoNothing(Filter):
     def __init__(self):
         super().__init__()
@@ -99,11 +97,10 @@ class DoNothing(Filter):
         return 'DoNothing filter'
 
 
-
 class Median(Filter):
     size = 1 # 奇数のみ有効
 
-    def set_parameter(self, size): # サイズの受け取り
+    def set_parameter(self, size):
         self.size = size
 
     @numba.jit
@@ -118,50 +115,19 @@ class Median(Filter):
                 array_c[y, x, 2] = np.median(array[y - d: y + d, x - d: x + d, 2])
         return array_c
 
-    def get_name(self):
-        return 'Median filter'
-
     def get_layout(self):
-
         label = QLabel(self.get_name())
-        self.lbl = QLabel("Filter Size", self)
-
-        combo = QComboBox(self)
-
-        # フィルタの範囲設定
-        for j in range (1,self.size):
-            combo.addItem("j")
-            j = j + 1
-
-
-        combo.move(50, 50)
-        self.lbl.move(50, 150)
-
-        # アイテムが選択されたらonActivated関数の呼び出し
-        combo.activated[str].connect(self.onActivated)
-
-        self.setGeometry(300, 300, 300, 200)
-        self.setWindowTitle('QComboBox')
-        self.show()
         layout = QHBoxLayout()
         layout.addWidget(label)
-        layout.addWidget(self.combo)
-
         return layout
 
-    def onActivated(self, text):
-
-        # ラベルに選択されたアイテムの名前を設定
-        self.lbl.setText(text)
-        # ラベルの長さを調整
-        self.lbl.adjustSize()
-
+    def get_name(self):
+        return 'Median filter'
 
 
 class Linear(Filter):
     def __init__(self, ):
         super().__init__()
-
 
     def set_parameter(self, size, mask):
         self.size = size
@@ -184,36 +150,57 @@ class Linear(Filter):
                                                          self.mask[j][i]
         array_c = np.clip(array_c, 0, 255)
 
-
         return array_c
+
+    def get_layout(self):
+        label = QLabel(self.get_name())
+
+        self.size = QLabel('size')
+        self.mask = QLabel('mask')
+
+        sizeEdit = QLineEdit()
+        maskEdit = QTextEdit()
+
+        # 格子状の配置を作り、各ウィジェットのスペースを空ける
+        grid = QGridLayout()
+        grid.setSpacing(10)
+
+        # ラベルの位置設定
+        grid.addWidget(self.size, 1, 0)
+        # 入力欄の位置設定
+        grid.addWidget(sizeEdit, 1, 1)
+
+        grid.addWidget(self.mask, 2, 0)
+        grid.addWidget(maskEdit, 2, 1)
+
+        self.setLayout(grid)
+
+        self.setGeometry(300, 300, 350, 300)
+
+        layout = QHBoxLayout()
+        layout.addWidget(label)
+        layout.addWidget(grid)
+        return layout
 
     def get_name(self):
         return 'Linear filter'
 
 
-
 class FFT2D(Filter):
-    a = 0.1
-    type = 0
+    def __init__(self):
+        super().__init__()
 
-    def set_parameter(self, a,type):
-        self.a = a
+        self.aaa = 0.1
+        self.type = 0
+
+    def set_parameter(self, aaa,type):
+        self.aaa = aaa
         self.type = type
 
     def apply(self, array):
         # 高速フーリエ変換(2次元)
-
-        gray = cv2.cvtColor(array, cv2.COLOR_RGB2GRAY)
+        gray = np.array(Image.fromarray(array.astype(np.uint8)).convert('L'))
         src = np.fft.fft2(gray)
-
-        # 画像サイズ
-        h, w = src.shape
-
-        # 画像の中心座標
-        cy, cx = int(h / 2), int(w / 2)
-
-        # フィルタのサイズ(矩形の高さと幅)
-        rh, rw = int(self.a * cy), int(self.a * cx)
 
         # 第1象限と第3象限、第1象限と第4象限を入れ替え
         fsrc = np.fft.fftshift(src)
@@ -230,10 +217,39 @@ class FFT2D(Filter):
 
         himg = Image.fromarray(y)
 
-        cv2.imwrite("output_L04.jpg", np.uint8(self.array))
-        self.array = np.array(Image.open("output_L04.jpg").convert("RGBA"), np.float32)
-
-        return himg
+        array_c = np.array(Image.fromarray(y).convert("RGBA"), np.float32)
+        return array_c
 
     def get_name(self):
-        return 'DoFFT filter'
+        return 'FFT2D filter'
+
+    @property
+    def get_layout(self):
+        label = QLabel(self.get_name())
+
+        self.aaa = QLabel('aaa')
+        self.type = QLabel('type')
+
+        aaaEdit = QLineEdit()
+        typeEdit = QTextEdit()
+
+        # 格子状の配置を作り、各ウィジェットのスペースを空ける
+        grid = QGridLayout()
+        grid.setSpacing(10)
+
+        # ラベルの位置設定
+        grid.addWidget(self.aaa, 1, 0)
+        # 入力欄の位置設定
+        grid.addWidget(aaaEdit, 1, 1)
+
+        grid.addWidget(self.type, 2, 0)
+        grid.addWidget(typeEdit, 2, 1)
+
+        self.setLayout(grid)
+
+        self.setGeometry(300, 300, 350, 300)
+
+        layout = QHBoxLayout()
+        layout.addWidget(label)
+        layout.addWidget(grid)
+        return layout
