@@ -158,28 +158,28 @@ class Linear(Filter):
         self.size = QLabel('size')
         self.mask = QLabel('mask')
 
-        sizeEdit = QLineEdit()
-        maskEdit = QTextEdit()
+        self.sizeEdit = QLineEdit()
+        self.maskEdit = QTextEdit()
 
         # 格子状の配置を作り、各ウィジェットのスペースを空ける
-        grid = QGridLayout()
-        grid.setSpacing(10)
+        self.grid = QGridLayout()
+        self.grid.setSpacing(10)
 
         # ラベルの位置設定
-        grid.addWidget(self.size, 1, 0)
+        self.grid.addWidget(self.size, 1, 0)
         # 入力欄の位置設定
-        grid.addWidget(sizeEdit, 1, 1)
+        self.grid.addWidget(self.sizeEdit, 1, 1)
 
-        grid.addWidget(self.mask, 2, 0)
-        grid.addWidget(maskEdit, 2, 1)
+        self.grid.addWidget(self.mask, 2, 0)
+        self.grid.addWidget(self.maskEdit, 2, 1)
 
-        self.setLayout(grid)
+        self.setLayout(self.grid)
 
         self.setGeometry(300, 300, 350, 300)
 
         layout = QHBoxLayout()
         layout.addWidget(label)
-        layout.addWidget(grid)
+        layout.addWidget(self.grid)
         return layout
 
     def get_name(self):
@@ -230,20 +230,20 @@ class FFT2D(Filter):
         self.aaa = QLabel('aaa')
         self.type = QLabel('type')
 
-        aaaEdit = QLineEdit()
-        typeEdit = QTextEdit()
+        self.aaaEdit = QLineEdit()
+        self.typeEdit = QTextEdit()
 
         # 格子状の配置を作り、各ウィジェットのスペースを空ける
-        grid = QGridLayout()
-        grid.setSpacing(10)
+        self.grid = QGridLayout()
+        self.grid.setSpacing(10)
 
         # ラベルの位置設定
-        grid.addWidget(self.aaa, 1, 0)
+        self.grid.addWidget(self.aaa, 1, 0)
         # 入力欄の位置設定
-        grid.addWidget(aaaEdit, 1, 1)
+        self.grid.addWidget(aaaEdit, 1, 1)
 
-        grid.addWidget(self.type, 2, 0)
-        grid.addWidget(typeEdit, 2, 1)
+        self.grid.addWidget(self.type, 2, 0)
+        self.grid.addWidget(typeEdit, 2, 1)
 
         self.setLayout(grid)
 
@@ -251,5 +251,5 @@ class FFT2D(Filter):
 
         layout = QHBoxLayout()
         layout.addWidget(label)
-        layout.addWidget(grid)
+        layout.addWidget(self.grid)
         return layout
