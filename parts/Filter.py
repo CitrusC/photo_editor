@@ -157,34 +157,34 @@ class Linear(Filter):
         return 'Linear filter'
 
     def get_layout(self):
-        label = QLabel(self.get_name())
+        try:
+            label = QLabel(self.get_name())
 
-        self.size = QLabel('size')
-        self.mask = QLabel('mask')
+            self.size = QLabel('size')
+            self.mask = QLabel('mask')
 
-        self.sizeEdit = QLineEdit()
-        self.maskEdit = QTextEdit()
+            self.sizeEdit = QLineEdit()
+            self.maskEdit = QTextEdit()
 
-        # 格子状の配置を作り、各ウィジェットのスペースを空ける
-        self.grid = QGridLayout()
-        self.grid.setSpacing(10)
+            # 格子状の配置を作り、各ウィジェットのスペースを空ける
+            self.grid = QGridLayout()
+            self.grid.setSpacing(10)
 
-        # ラベルの位置設定
-        self.grid.addWidget(self.size, 1, 0)
-        # 入力欄の位置設定
-        self.grid.addWidget(self.sizeEdit, 1, 1)
+            # ラベルの位置設定
+            self.grid.addWidget(self.size, 1, 0)
+            # 入力欄の位置設定
+            self.grid.addWidget(self.sizeEdit, 1, 1)
 
-        self.grid.addWidget(self.mask, 2, 0)
-        self.grid.addWidget(self.maskEdit, 2, 1)
+            self.grid.addWidget(self.mask, 2, 0)
+            self.grid.addWidget(self.maskEdit, 2, 1)
 
-        self.setLayout(self.grid)
-
-        self.setGeometry(300, 300, 350, 300)
-
-        layout = QHBoxLayout()
-        layout.addWidget(label)
-        layout.addWidget(self.grid)
-        return layout
+            layout = QHBoxLayout()
+            layout.addWidget(label)
+            layout.addLayout(self.grid)
+            return layout
+        except:
+            import traceback
+            traceback.print_exc()
 
 
 class FFT2D(Filter):
