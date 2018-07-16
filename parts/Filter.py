@@ -98,7 +98,10 @@ class DoNothing(Filter):
         return 'DoNothing filter'
 
 class Median(Filter):
-    size = 1 # 奇数のみ有効
+    def __init__(self):
+        super().__init__()
+        self.size = 1 # 奇数のみ有効
+
 
     def set_parameter(self, size):
         self.size = size
@@ -127,6 +130,8 @@ class Median(Filter):
 class Linear(Filter):
     def __init__(self, ):
         super().__init__()
+        self.size = 1
+        self.mask = [1]
 
 
     def set_parameter(self, size, mask):
@@ -188,8 +193,10 @@ class Linear(Filter):
 
 
 class FFT2D(Filter):
-    a = 0.1
-    type = 0
+    def __init__(self, ):
+        super().__init__()
+        self.a = 0.1
+        self.type = 0
 
     def set_parameter(self, a,type):
         self.a = a
