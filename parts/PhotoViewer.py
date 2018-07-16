@@ -1,7 +1,7 @@
 from PyQt5 import QtGui, QtWidgets
-from PyQt5.QtWidgets import QWidget, QListWidget, QListWidgetItem, QAbstractItemView, QMenu, QMessageBox
+from PyQt5.QtWidgets import QWidget, QListWidget, QListWidgetItem, QAbstractItemView, QMenu, QMessageBox, QPushButton
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QFileDialog, QAction
 import numpy as np
 from PIL import Image
 import os
@@ -83,7 +83,7 @@ class CustomQWidget(QWidget, QListWidgetItem):
         super(CustomQWidget, self).__init__(parent)
         self.filter_ = filter_
         self.parent_list = parent
-        layout = filter_.get_layout
+        layout = filter_.get_layout()
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.buildContextMenu)
         self.setLayout(layout)
@@ -132,27 +132,9 @@ class Filter_list(QListWidget):
         for f in filters:
             self.add_filter(f)
 
-    def buildContextMenu(self, qPoint):
-        menu = QMenu(self)
-        menulabels = ['Brightness', 'Nega', 'Median', 'Liner', 'FFT2D']
-        actionlist = []
-        for label in menulabels:
-            actionlist.append(menu.addAction(label))
+    def buildContextMenu(self, f):
+        self.add_item(getattr(Filter, f)())
 
-        action = menu.exec_(self.mapToGlobal(qPoint))
-        for act in actionlist:
-            if act == action:
-                ac = act.text()
-                if (ac == menulabels[0]):
-                    self.add_item(Filter.Brightness())
-                elif (ac == menulabels[1]):
-                    self.add_item(Filter.Nega())
-                elif (ac == menulabels[2]):
-                    self.add_item(Filter.Median())
-                elif (ac == menulabels[3]):
-                    self.add_item(Filter.Liner())
-                elif (ac == menulabels[4]):
-                    self.add_item(Filter.FFT2D())
 
     def add_item(self, f):
         try:
@@ -282,13 +264,29 @@ class Window(QtWidgets.QWidget):
         self.btnRedo.clicked.connect(self.list.redo)
         self.btnRedo.setEnabled(False)
         # 'Add' button
-        self.btnAdd = QtWidgets.QToolButton(self)
+        self.btnAdd = QPushButton(self)
         self.btnAdd.setText("Add")
         font = QtGui.QFont()
         font.setPointSize(12)
         self.btnAdd.setFont(font)
         self.btnAdd.setFixedSize(bw * 1.5, bw)
-        self.btnAdd.clicked.connect(self.list.buildContextMenu)
+        mapper = QtCore.QSignalMapper(self)
+        menulabels = ['Brightness', 'Nega', 'Median', 'Liner', 'FFT2D']
+        actions = []
+        for f in menulabels:
+            action = QAction(self)
+            mapper.setMapping(action, f)
+            action.setText(f)
+            action.triggered.connect(mapper.map)
+            actions.append(action)
+        mapper.mapped['QString'].connect(self.list.buildContextMenu)
+
+        self.menu = QMenu(self)
+        self.menu.addActions(actions)
+
+        self.btnAdd.setMenu(self.menu)
+
+
         # 'Apply' button
         self.btnApply = QtWidgets.QToolButton(self)
         self.btnApply.setText("Apply")
