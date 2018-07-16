@@ -114,16 +114,12 @@ class Filter_list(QListWidget):
         super().__init__()
         self.setDragDropMode(QAbstractItemView.InternalMove)
         self.setAlternatingRowColors(True)
-        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.customContextMenuRequested.connect(self.buildContextMenu)
         self.parent_ = parent_
         self.history = None
 
     def init(self, array):
         self.history = History(array)
         self.clear()
-        # for i in range(1):
-        #     self.add_item()
 
     def dropEvent(self, QDropEvent):
         super().dropEvent(QDropEvent)
