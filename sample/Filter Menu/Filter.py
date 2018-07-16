@@ -25,7 +25,6 @@ class Filter(metaclass=ABCMeta):
     @abstractmethod
     def get_name(self):
         pass
-
     @abstractmethod
     def get_layout(self):
         pass

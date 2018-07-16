@@ -1,5 +1,7 @@
 from abc import ABCMeta, abstractmethod
 import numpy as np
+from PyQt5 import QtGui
+from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import QLabel, QHBoxLayout, QSlider, \
     QGridLayout, QLineEdit, QTextEdit, QWidget, QApplication
 from PyQt5.QtCore import Qt
@@ -12,6 +14,7 @@ class Filter(metaclass=ABCMeta):
     def __init__(self):
         self.before_image_id = None
         self.after_image_id = None
+        
         self.isUpdate = False
         self.parent = None
 
@@ -122,10 +125,28 @@ class Median(Filter):
         return 'Median filter'
 
     def get_layout(self):
-        label = QLabel(self.get_name())
-        layout = QHBoxLayout()
-        layout.addWidget(label)
-        return layout
+        try:
+            label = QLabel(self.get_name())
+
+            self.size = QLabel('size')
+
+            self.sizeEdit = QLineEdit()
+
+            # 格子状の配置を作り、各ウィジェットのスペースを空ける
+            self.grid = QGridLayout()
+
+            # ラベルの位置設定
+            self.grid.addWidget(self.size, 1, 0)
+            # 入力欄の位置設定
+            self.grid.addWidget(self.sizeEdit, 1, 1)
+
+            layout = QHBoxLayout( )
+            layout.addWidget(label)
+            layout.addLayout(self.grid)
+            return layout
+        except:
+            import traceback
+            traceback.print_exc()
 
 
 class Linear(Filter):
@@ -164,6 +185,7 @@ class Linear(Filter):
     def get_name(self):
         return 'Linear filter'
 
+    @property
     def get_layout(self):
         try:
             label = QLabel(self.get_name())
@@ -172,7 +194,29 @@ class Linear(Filter):
             mask = QLabel('mask')
 
             self.sizeEdit = QLineEdit()
-            self.maskEdit = QTextEdit()
+            self.maskEdit = QLineEdit()
+
+            # 入力値は整数に限定
+            size_number = self.sizeEdit.QLineEdit.text()
+            try:
+                size = int(size_number)
+            except Exception:
+                QHBoxLayout.about(self, 'Error', 'Input can only be a number')
+                pass
+
+            mask_number = self.sizeEdit.QLineEdit.text()
+            try:
+                mask = int(mask_number)
+            except Exception:
+                QHBoxLayout.about(self, 'Error', 'Input can only be a number')
+                pass
+
+
+
+
+            # # 範囲指定
+            # QIntValidator(0, 500, size)
+            # QIntValidator(0, 500, mask)
 
             # 格子状の配置を作り、各ウィジェットのスペースを空ける
             grid = QGridLayout()
@@ -189,10 +233,18 @@ class Linear(Filter):
             layout = QHBoxLayout()
             layout.addWidget(label)
             layout.addLayout(grid)
+
+            # self.sizeEdit.keydown.connect(self.size.toPlainText())
+            # self.maskEdit.keydown.connect(self.size.toPlainText())
+
+            # self.size = int(self.sizeEdit.text())
+            # self.mask = int(self.maskEdit.text())
+
             return layout
         except:
             import traceback
             traceback.print_exc()
+
 
 
 class FFT2D(Filter):
