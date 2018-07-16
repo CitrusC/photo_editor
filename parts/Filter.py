@@ -97,11 +97,11 @@ class DoNothing(Filter):
     def get_name(self):
         return 'DoNothing filter'
 
+
 class Median(Filter):
     def __init__(self):
         super().__init__()
-        self.size = 1 # 奇数のみ有効
-
+        self.size = 1  # 奇数のみ有効
 
     def set_parameter(self, size):
         self.size = size
@@ -127,12 +127,16 @@ class Median(Filter):
         layout.addWidget(label)
         return layout
 
+
 class Linear(Filter):
     def __init__(self, ):
         super().__init__()
         self.size = 1
-        self.mask = [1]
-
+        self.mask = [[1]]
+        #以下サンプル
+        # self.size = 3
+        # self.mask = np.array([[1, 1, 1],[1, 1, 1],[1, 1, 1]], np.float32)
+        # self.mask/=9
 
     def set_parameter(self, size, mask):
         self.size = size
@@ -155,7 +159,6 @@ class Linear(Filter):
                                                          self.mask[j][i]
         array_c = np.clip(array_c, 0, 255)
 
-
         return array_c
 
     def get_name(self):
@@ -165,27 +168,27 @@ class Linear(Filter):
         try:
             label = QLabel(self.get_name())
 
-            self.size = QLabel('size')
-            self.mask = QLabel('mask')
+            size = QLabel('size')
+            mask = QLabel('mask')
 
             self.sizeEdit = QLineEdit()
             self.maskEdit = QTextEdit()
 
             # 格子状の配置を作り、各ウィジェットのスペースを空ける
-            self.grid = QGridLayout()
-            self.grid.setSpacing(10)
+            grid = QGridLayout()
+            grid.setSpacing(10)
 
             # ラベルの位置設定
-            self.grid.addWidget(self.size, 1, 0)
+            grid.addWidget(size, 1, 0)
             # 入力欄の位置設定
-            self.grid.addWidget(self.sizeEdit, 1, 1)
+            grid.addWidget(self.sizeEdit, 1, 1)
 
-            self.grid.addWidget(self.mask, 2, 0)
-            self.grid.addWidget(self.maskEdit, 2, 1)
+            grid.addWidget(mask, 2, 0)
+            grid.addWidget(self.maskEdit, 2, 1)
 
             layout = QHBoxLayout()
             layout.addWidget(label)
-            layout.addLayout(self.grid)
+            layout.addLayout(grid)
             return layout
         except:
             import traceback
@@ -198,7 +201,7 @@ class FFT2D(Filter):
         self.a = 0.1
         self.type = 0
 
-    def set_parameter(self, a,type):
+    def set_parameter(self, a, type):
         self.a = a
         self.type = type
 
@@ -212,13 +215,13 @@ class FFT2D(Filter):
 
         fsrc_abs = np.absolute(fsrc)
 
-        fsrc_abs[fsrc<1] = 1
+        fsrc_abs[fsrc < 1] = 1
 
         P = np.log10(fsrc)
 
-        P_norm = P/np.amax(P)
+        P_norm = P / np.amax(P)
 
-        y = np.uint8(np.around(P_norm.real*255))
+        y = np.uint8(np.around(P_norm.real * 255))
 
         himg = Image.fromarray(y)
 
