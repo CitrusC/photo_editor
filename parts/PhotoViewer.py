@@ -187,14 +187,18 @@ class Filter_list(QListWidget):
         self.parent_.btnRedo.setEnabled(canRedo)
 
     def apply_filters(self):
-        if self.history is None:
-            return
-        array, filters = self.history.apply()
-        self.parent_.update_image(array)
-        self.clear()
-        for f in filters:
-            self.add_filter(f)
-        self.parent_.btnUndo.setEnabled(True)
+        try:
+            if self.history is None:
+                return
+            array, filters = self.history.apply()
+            self.parent_.update_image(array)
+            self.clear()
+            for f in filters:
+                self.add_filter(f)
+            self.parent_.btnUndo.setEnabled(True)
+        except:
+            import traceback
+            traceback.print_exc()
 
     def all_filters(self):
         filters = []
@@ -276,10 +280,9 @@ class Window(QtWidgets.QWidget):
             actions.append(action)
         mapper.mapped['QString'].connect(self.list.buildContextMenu)
 
-        self.menu = QMenu(self)
-        self.menu.addActions(actions)
-
-        self.btnAdd.setMenu(self.menu)
+        menu = QMenu(self)
+        menu.addActions(actions)
+        self.btnAdd.setMenu(menu)
 
 
         # 'Apply' button

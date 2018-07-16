@@ -80,6 +80,7 @@ class Brightness(Filter):
         return layout
 
     def release_mouse(self):
+        print("run")
         self.set_parameter(self.slider.value())
 
     def get_name(self):
