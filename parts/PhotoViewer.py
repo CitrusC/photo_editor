@@ -3,7 +3,6 @@ from PyQt5.QtWidgets import QWidget, QListWidget, QListWidgetItem, QAbstractItem
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QFileDialog, QAction
 import numpy as np
-from PIL import Image
 import os
 import Filter
 from History import History
@@ -284,7 +283,7 @@ class Window(QtWidgets.QWidget):
 
 
         # 'Apply' button
-        self.btnApply = QtWidgets.QToolButton(self)
+        self.btnApply = QPushButton(self)
         self.btnApply.setText("Apply")
         font = QtGui.QFont()
         font.setPointSize(12)
