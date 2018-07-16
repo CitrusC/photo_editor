@@ -52,7 +52,10 @@ class History:
         self.next_filter()
         ud_index = self.filter_list[self.count].index(f)
         for i in range(ud_index, len(self.filter_list[self.count])):
-            self.filter_list[self.count][i].before_image_id = self.filter_list[self.count][i - 1].after_image_id
+            if i == 0:
+                self.filter_list[self.count][i].before_image_id = 0
+            else:
+                self.filter_list[self.count][i].before_image_id = self.filter_list[self.count][i - 1].after_image_id
             self.next_image()
             self.filter_list[self.count][i].after_image_id = self.image_count
         return self.filter_list[self.count]
