@@ -173,10 +173,6 @@ class Linear(Filter):
         self.grid.addWidget(self.mask, 2, 0)
         self.grid.addWidget(self.maskEdit, 2, 1)
 
-        self.setLayout(self.grid)
-
-        self.setGeometry(300, 300, 350, 300)
-
         layout = QHBoxLayout()
         layout.addWidget(label)
         layout.addWidget(self.grid)
@@ -240,12 +236,12 @@ class FFT2D(Filter):
         # ラベルの位置設定
         self.grid.addWidget(self.aaa, 1, 0)
         # 入力欄の位置設定
-        self.grid.addWidget(aaaEdit, 1, 1)
+        self.grid.addWidget(self.aaaEdit, 1, 1)
 
         self.grid.addWidget(self.type, 2, 0)
-        self.grid.addWidget(typeEdit, 2, 1)
+        self.grid.addWidget(self.typeEdit, 2, 1)
 
-        self.setLayout(grid)
+        self.setLayout(self.grid)
 
         self.setGeometry(300, 300, 350, 300)
 

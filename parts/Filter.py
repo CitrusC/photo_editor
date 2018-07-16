@@ -1,6 +1,7 @@
 from abc import ABCMeta, abstractmethod
 import numpy as np
-from PyQt5.QtWidgets import QLabel, QHBoxLayout, QSlider
+from PyQt5.QtWidgets import QLabel, QHBoxLayout, QSlider, \
+    QGridLayout, QLineEdit, QTextEdit, QWidget, QApplication
 from PyQt5.QtCore import Qt
 from PIL import Image
 import numba
