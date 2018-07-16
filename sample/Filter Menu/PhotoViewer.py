@@ -108,7 +108,6 @@ class CustomQWidget(QWidget, QListWidgetItem):
                 elif (ac == menulabels[3]):
                     self.parent_list.apply_filters()
 
-
 class Filter_list(QListWidget):
     def __init__(self, parent_):
         super().__init__()
@@ -122,8 +121,8 @@ class Filter_list(QListWidget):
     def init(self, array):
         self.history = History(array)
         self.clear()
-        # for i in range(1):
-        #     self.add_item()
+        for i in range(1):
+            self.add_item()
 
     def dropEvent(self, QDropEvent):
         super().dropEvent(QDropEvent)
@@ -132,7 +131,7 @@ class Filter_list(QListWidget):
         for f in filters:
             self.add_filter(f)
 
-    def buildContextMenu(self, qPoint): # L:291から
+    def buildContextMenu(self, qPoint):
         menu = QMenu(self)
         menulabels = ['Brightness', 'Nega', 'Median', 'Liner', 'FFT2D']
         actionlist = []
@@ -288,7 +287,7 @@ class Window(QtWidgets.QWidget):
         font.setPointSize(12)
         self.btnAdd.setFont(font)
         self.btnAdd.setFixedSize(bw * 1.5, bw)
-        self.btnAdd.clicked.connect(self.list.buildContextMenu) # photoviewer L:135へ
+        self.btnAdd.clicked.connect(self.list.buildContextMenu)
         # 'Apply' button
         self.btnApply = QtWidgets.QToolButton(self)
         self.btnApply.setText("Apply")
