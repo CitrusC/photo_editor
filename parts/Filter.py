@@ -1,4 +1,6 @@
 from abc import ABCMeta, abstractmethod
+from fractions import Fraction
+
 import numpy as np
 from PyQt5.QtGui import QIntValidator, QDoubleValidator
 from PyQt5.QtWidgets import QLabel, QHBoxLayout, QSlider, QGridLayout, QLineEdit, QPushButton, QTextEdit
@@ -187,12 +189,18 @@ class Linear(Filter):
         print("c")
         print("size =",self.size)
 
-    def set_parameter2(self, mask):
+    def set_parameter2(self, maskEdit):
+        self.maskEdit = maskEdit
         print("ssas")
-        self.mask = mask
+        # self.mask = mask
         print("11")
+        # ここの受け取り方があっているか
+        print("self.printEdit=",self.maskEdit)
+        print("self.printEdit.toPlainText=", self.maskEdit.toPlainText())
+
         str = self.maskEdit.toPlainText()
         # str = self.maskEdit
+        print("str=",str)
         print("12")
 
         # val = int(str,10)
@@ -209,10 +217,11 @@ class Linear(Filter):
         for l in line:
             data = l.split(',')
             out2 = []
+            print("data=",data)
             print("----")
             for d in data:
                 print(d)
-                out2.append(d)
+                out2.append(float(Fraction(d)))
                 print("----")
             out.append(out2)
 
