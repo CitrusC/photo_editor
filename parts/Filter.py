@@ -197,7 +197,6 @@ class Linear(Filter):
     def get_name(self):
         return 'Linear filter'
 
-    @property
     def get_layout(self):
         try:
             label = QLabel(self.get_name())
