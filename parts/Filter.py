@@ -313,6 +313,8 @@ class FFT2D(Filter):
         layout.addWidget(label)
         return layout
 
+
+
 class Thiza(Filter):
     def set_parameter(self, mask):
         # 4*4の正方行列、0から15の値で型はndarray
@@ -336,4 +338,10 @@ class Thiza(Filter):
         return array
     def get_name(self):
         return 'thiza filter'
+
+    def get_layout(self):
+        label = QLabel(self.get_name())
+        layout = QHBoxLayout()
+        layout.addWidget(label)
+        return layout
 
