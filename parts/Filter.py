@@ -220,14 +220,13 @@ class Linear(Filter):
 
             self.sizeEdit.setValidator(self.validator1)
 
-
             # str = self.sizeEdit.toPlainText()
             str = self.sizeEdit.text()
             str.split()
             # val = int(str,10)
             # mask = np.array(self.str[self.size][self.size])
-            for i in range (self.size):
-                for j in range (self.size):
+            for i in range(self.size):
+                for j in range(self.size):
                     # mask[i][j] = val
                     mask[i][j] = str[i + j]
             # self.maskEdit.setValidator(self.validator2)
@@ -309,14 +308,15 @@ class FFT2D(Filter):
         layout.addWidget(label)
         return layout
 
+
 class Thiza(Filter):
     def set_parameter(self, mask):
         # 4*4の正方行列、0から15の値で型はndarray
-        self.mask=mask
+        self.mask = mask
 
-    def apply(self,array):
-        a = array[:,:,0] * 0.298912 + array[:,:,1] * 0.586611 + array[:,:,2] * 0.114478
-        array[:, :, 0], array[:, :, 1], array[:, :, 2]=a, a, a
+    def apply(self, array):
+        a = array[:, :, 0] * 0.298912 + array[:, :, 1] * 0.586611 + array[:, :, 2] * 0.114478
+        array[:, :, 0], array[:, :, 1], array[:, :, 2] = a, a, a
         H = array.shape[0]
         W = array.shape[1]
         for y in range(H):
@@ -330,20 +330,23 @@ class Thiza(Filter):
                     array[y, x, 1] = 0
                     array[y, x, 2] = 0
         return array
+
     def get_name(self):
         return 'thiza filter'
 
-    class Gray(Filter):
-        def set_parameter(self, mask):
-            # 4*4の正方行列、0から15の値で型はndarray
-            self.mask = mask
+class Grayscale(Filter):
 
-        def apply(self, array):
-            a = array[:, :, 0] * 0.298912 + array[:, :, 1] * 0.586611 + array[:, :, 2] * 0.114478
-            array[:, :, 0], array[:, :, 1], array[:, :, 2] = a, a, a
+    def apply(self, array):
+        a = array[:, :, 0] * 0.298912 + array[:, :, 1] * 0.586611 + array[:, :, 2] * 0.114478
+        array[:, :, 0], array[:, :, 1], array[:, :, 2] = a, a, a
 
-            return array
+        return array
 
-        def get_name(self):
-            return 'gray filter'
+    def get_name(self):
+        return 'Grayscale filter'
 
+    def get_layout(self):
+        label = QLabel(self.get_name())
+        layout = QHBoxLayout()
+        layout.addWidget(label)
+        return layout
