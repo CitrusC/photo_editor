@@ -335,3 +335,17 @@ class Thiza(Filter):
     def get_name(self):
         return 'thiza filter'
 
+    class Gray(Filter):
+        def set_parameter(self, mask):
+            # 4*4の正方行列、0から15の値で型はndarray
+            self.mask = mask
+
+        def apply(self, array):
+            a = array[:, :, 0] * 0.298912 + array[:, :, 1] * 0.586611 + array[:, :, 2] * 0.114478
+            array[:, :, 0], array[:, :, 1], array[:, :, 2] = a, a, a
+
+            return array
+
+        def get_name(self):
+            return 'gray filter'
+
