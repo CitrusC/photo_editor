@@ -116,10 +116,14 @@ class Filter_list(QListWidget):
 
     def dropEvent(self, QDropEvent):
         super().dropEvent(QDropEvent)
-        filters = self.history.swap(self.all_filters())
-        self.clear()
-        for f in filters:
-            self.add_filter(f)
+        try:
+            filters = self.history.swap(self.all_filters())
+            self.clear()
+            for f in filters:
+                self.add_filter(f)
+        except:
+            import traceback
+            traceback.print_exc()
 
     def buildContextMenu(self, f):
         self.add_item(getattr(Filter, f)())
@@ -259,9 +263,9 @@ class Window(QtWidgets.QWidget):
         font = QtGui.QFont()
         font.setPointSize(12)
         self.btnAdd.setFont(font)
-        self.btnAdd.setFixedSize(bw * 1.5, bw)
+        self.btnAdd.setFixedSize(bw * 2, bw)
         mapper = QtCore.QSignalMapper(self)
-        menulabels = ['Brightness', 'Nega', 'Median', 'Linear', 'FFT2D']
+        menulabels = ['Brightness', 'Nega', 'Median', 'Linear', 'FFT2D', 'Grayscale']
         actions = []
         for f in menulabels:
             action = QAction(self)
@@ -343,8 +347,12 @@ class Window(QtWidgets.QWidget):
                                                 "./",
                                                 filter="JPG(*.jpg);;PNG(*.png);;BMP(*.bmp)")
         if fname[0]:
-            pil_img = Image.fromarray(self.array.astype(np.uint8)).convert("RGB")
-            pil_img.save(fname[0])
+            try:
+                pil_img = Image.fromarray(self.array.astype(np.uint8)).convert("RGB")
+                pil_img.save(fname[0])
+            except:
+                reply = QMessageBox.critical(self, 'Message',
+                                             "The image file is not selcted.", QMessageBox.Ok)
 
     def update_image(self, array):
         self.array = array;

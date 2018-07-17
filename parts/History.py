@@ -34,13 +34,16 @@ class History:
 
     def swap(self, filters):
         self.next_filter()
+        ud_index = None
         for i in range(len(self.filter_list[self.count])):
             if self.filter_list[self.count][i] is filters[i]:
                 ud_index = i
                 continue
             else:
-                ud_index += 1
-                break
+                if ud_index is None:
+                    ud_index = 1
+                else:
+                    ud_index += 1
         self.filter_list[self.count] = filters.copy()
         for i in range(ud_index, len(self.filter_list[self.count])):
             self.filter_list[self.count][i].before_image_id = self.filter_list[self.count][i - 1].after_image_id
