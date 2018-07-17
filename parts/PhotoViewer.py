@@ -116,10 +116,14 @@ class Filter_list(QListWidget):
 
     def dropEvent(self, QDropEvent):
         super().dropEvent(QDropEvent)
-        filters = self.history.swap(self.all_filters())
-        self.clear()
-        for f in filters:
-            self.add_filter(f)
+        try:
+            filters = self.history.swap(self.all_filters())
+            self.clear()
+            for f in filters:
+                self.add_filter(f)
+        except:
+            import traceback
+            traceback.print_exc()
 
     def buildContextMenu(self, f):
         self.add_item(getattr(Filter, f)())
@@ -259,7 +263,7 @@ class Window(QtWidgets.QWidget):
         font = QtGui.QFont()
         font.setPointSize(12)
         self.btnAdd.setFont(font)
-        self.btnAdd.setFixedSize(bw * 1.5, bw)
+        self.btnAdd.setFixedSize(bw * 2, bw)
         mapper = QtCore.QSignalMapper(self)
         menulabels = ['Brightness', 'Nega', 'Median', 'Linear', 'FFT2D']
         actions = []

@@ -12,7 +12,7 @@ class Filter(metaclass=ABCMeta):
     def __init__(self):
         self.before_image_id = None
         self.after_image_id = None
-        
+
         self.isUpdate = False
         self.parent = None
 
@@ -105,10 +105,9 @@ class Median(Filter):
         super().__init__()
         self.size = 1  # 奇数のみ有効
 
-    def set_parameter(self):
-        print(self.size)
+    def set_parameter(self, size):
         # self.size=self.slider.value()
-        self.size = int(self.sizeEdit.text())
+        self.size = size
         self.parent.parent_list.update_filter(self)
 
     @numba.jit
@@ -116,7 +115,7 @@ class Median(Filter):
         height, width = array.shape[0], array.shape[1]
         d = int(self.size / 2)
         array_c = array.copy()
-        if(d!=0):
+        if (d != 0):
             for y in range(d, height - d):
                 for x in range(d, width - d):
                     array_c[y, x, 0] = np.median(array[y - d: y + d, x - d: x + d, 0])
@@ -124,14 +123,15 @@ class Median(Filter):
                     array_c[y, x, 2] = np.median(array[y - d: y + d, x - d: x + d, 2])
         return array_c
 
-
     def get_name(self):
         return 'Median filter'
+
+    def clicked(self):
+        self.set_parameter(int(self.sizeEdit.text()))
 
     def get_layout(self):
         try:
             label = QLabel(self.get_name())
-
 
             layout = QHBoxLayout()
 
@@ -141,7 +141,7 @@ class Median(Filter):
             self.sizeEdit.setText(str(self.size))
             self.button = QPushButton(self.parent)
             self.button.setText("apply")
-            self.button.clicked.connect(self.set_parameter)
+            self.button.clicked.connect(self.clicked)
             # self.slider = QSlider(Qt.Horizontal, self.parent)
             # self.slider.setValue(self.size)
             # self.slider.setRange(1, 99)
@@ -175,7 +175,7 @@ class Linear(Filter):
         super().__init__()
         self.size = 1
         self.mask = [[1]]
-        #以下サンプル
+        # 以下サンプル
         # self.size = 3
         # self.mask = np.array([[1, 1, 1],[1, 1, 1],[1, 1, 1]], np.float32)
         # self.mask/=9
@@ -209,7 +209,6 @@ class Linear(Filter):
     def get_layout(self):
         try:
             label = QLabel(self.get_name())
-
 
             size = QLabel('size')
             mask = QLabel('mask')
@@ -252,7 +251,6 @@ class Linear(Filter):
         except:
             import traceback
             traceback.print_exc()
-
 
 
 class FFT2D(Filter):
