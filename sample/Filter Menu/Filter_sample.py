@@ -14,7 +14,7 @@ class Filter(metaclass=ABCMeta):
     def __init__(self):
         self.before_image_id = None
         self.after_image_id = None
-        
+
         self.isUpdate = False
         self.parent = None
 
@@ -128,33 +128,21 @@ class Median(Filter):
         try:
             label = QLabel(self.get_name())
 
+            self.size = QLabel('size')
 
-            size = QLabel('size')
-
-            self.validator = QIntValidator(0, 100)
             self.sizeEdit = QLineEdit()
-            self.sizeEdit.setValidator(self.validator)
 
             # 格子状の配置を作り、各ウィジェットのスペースを空ける
-            grid = QGridLayout()
+            self.grid = QGridLayout()
+
             # ラベルの位置設定
-            grid.addWidget(size, 1, 0)
+            self.grid.addWidget(self.size, 1, 0)
             # 入力欄の位置設定
-            grid.addWidget(self.sizeEdit, 1, 1)
+            self.grid.addWidget(self.sizeEdit, 1, 1)
 
             layout = QHBoxLayout()
             layout.addWidget(label)
-            layout.addLayout(grid)
-
-            if self.sizeEdit.setModified(False):
-                size = self.sizeEdit.int()
-
-            # size = keydown.connect(self.sizeEdit.toPlainText())
-            # mask = keydown.connect(self.maskEdit.toPlainText())
-
-            # self.size = int(self.sizeEdit.text())
-            # self.mask = int(self.maskEdit.text())
-
+            layout.addLayout(self.grid)
             return layout
         except:
             import traceback
@@ -166,7 +154,7 @@ class Linear(Filter):
         super().__init__()
         self.size = 1
         self.mask = [[1]]
-        #以下サンプル
+        # 以下サンプル
         # self.size = 3
         # self.mask = np.array([[1, 1, 1],[1, 1, 1],[1, 1, 1]], np.float32)
         # self.mask/=9
@@ -202,21 +190,41 @@ class Linear(Filter):
         try:
             label = QLabel(self.get_name())
 
-
             size = QLabel('size')
             mask = QLabel('mask')
-
-            self.validator1 = QIntValidator(0, 100)
-            self.validator2 = QIntValidator(0, 100)
 
             self.sizeEdit = QLineEdit()
             self.maskEdit = QLineEdit()
 
-            self.sizeEdit.setValidator(self.validator1)
-            self.maskEdit.setValidator(self.validator2)
+            # 入力値は整数に限定
+            size_number = self.sizeEdit.text()
+            try:
+                size = int(size_number)
+            except:
+                import traceback
+                traceback.print_exc()
+            # except Exception:
+            #     QHBoxLayout.about(self, 'Error', 'Input can only be a number')
+            #     pass
+
+            mask_number = self.sizeEdit.text()
+            try:
+                mask = int(mask_number)
+            except:
+                import traceback
+                traceback.print_exc()
+            # except Exception:
+            #             #             #     QHBoxLayout.about(self, 'Error', 'Input can only be a number')
+            #             #             #     pass
+
+            # # 範囲指定
+            # QIntValidator(0, 500, size)
+            # QIntValidator(0, 500, mask)
 
             # 格子状の配置を作り、各ウィジェットのスペースを空ける
             grid = QGridLayout()
+            grid.setSpacing(10)
+
             # ラベルの位置設定
             grid.addWidget(size, 1, 0)
             # 入力欄の位置設定
@@ -229,12 +237,8 @@ class Linear(Filter):
             layout.addWidget(label)
             layout.addLayout(grid)
 
-            if self.sizeEdit.setModified(False):
-                size = self.sizeEdit.text()
-            if self.sizeEdit.setModified(False):
-                mask = self.maskEdit.text()
-            #             # size = keydown.connect(self.sizeEdit.toPlainText())
-            # mask = keydown.connect(self.maskEdit.toPlainText())
+            # self.sizeEdit.keydown.connect(self.size.toPlainText())
+            # self.maskEdit.keydown.connect(self.size.toPlainText())
 
             # self.size = int(self.sizeEdit.text())
             # self.mask = int(self.maskEdit.text())
@@ -243,7 +247,6 @@ class Linear(Filter):
         except:
             import traceback
             traceback.print_exc()
-
 
 
 class FFT2D(Filter):

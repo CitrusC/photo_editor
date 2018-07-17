@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QWidget, QListWidget, QListWidgetItem, QAbstractItem
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QFileDialog
 import numpy as np
-from PIL import Image
+# from PIL import I
 import os
 import Filter
 from History import History
