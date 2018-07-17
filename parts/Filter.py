@@ -105,7 +105,6 @@ class Median(Filter):
         self.size = 1  # 奇数のみ有効
 
     def set_parameter(self, size):
-        # self.size=self.slider.value()
         self.size = size
         self.parent.parent_list.update_filter(self)
 
@@ -141,27 +140,10 @@ class Median(Filter):
             self.button = QPushButton(self.parent)
             self.button.setText("apply")
             self.button.clicked.connect(self.clicked)
-            # self.slider = QSlider(Qt.Horizontal, self.parent)
-            # self.slider.setValue(self.size)
-            # self.slider.setRange(1, 99)
-            # self.slider.setTickInterval(2)
-            # self.slider.set
-            # self.slider.setSingleStep(2)
-            # self.slider.setPageStep(2)
-            # self.slider.sliderReleased.connect(self.set_parameter)
             layout.addWidget(label)
-            # layout.addWidget(self.slider)
             layout.addWidget(self.sizeEdit)
             layout.addWidget(self.button)
 
-            # if self.sizeEdit.setModified(False):
-            #     self.size = self.sizeEdit.int()
-
-            # size = keydown.connect(self.sizeEdit.toPlainText())
-            # mask = keydown.connect(self.maskEdit.toPlainText())
-
-            # self.size = int(self.sizeEdit.text())
-            # self.mask = int(self.maskEdit.text())
 
             return layout
         except:
@@ -229,7 +211,7 @@ class Linear(Filter):
                 for j in range(self.size):
                     # mask[i][j] = val
                     mask[i][j] = temp[x]
-                    x = x+1
+                    x = x + 1
             # self.maskEdit.setValidator(self.validator2)
 
             # 格子状の配置を作り、各ウィジェットのスペースを空ける
@@ -261,8 +243,6 @@ class Linear(Filter):
             # self.size = int(self.sizeEdit.text())
             # self.mask = int(self.maskEdit.text())
 
-
-
             label = QLabel(self.get_name())
 
             size = QLabel('size')
@@ -286,7 +266,6 @@ class Linear(Filter):
             grid.addWidget(self.maskEdit, 2, 1)
 
             layout = QHBoxLayout()
-
 
             self.sizeEdit.setText(str(self.size))
             self.button = QPushButton(self.parent)
@@ -349,31 +328,38 @@ class FFT2D(Filter):
 class Thiza(Filter):
     def __init__(self, ):
         super().__init__()
-        self.mask=[[0,8,2,10],
-                   [12,4,14,6],
-                   [3,11,1,9],
-                    [15,7,13,5]
-                   ]
+        self.mask = np.array([[0, 8, 2, 10],
+                              [12, 4, 14, 6],
+                              [3, 11, 1, 9],
+                              [15, 7, 13, 5]])
 
     def apply(self, array):
         a = array[:, :, 0] * 0.298912 + array[:, :, 1] * 0.586611 + array[:, :, 2] * 0.114478
         array[:, :, 0], array[:, :, 1], array[:, :, 2] = a, a, a
+        array_c = array.copy()
         H = array.shape[0]
         W = array.shape[1]
         for y in range(H):
             for x in range(W):
                 if (array[y, x, 0] * 16 / 255 >= self.mask[y % self.mask.shape[0], x % self.mask.shape[1]]):
-                    array[y, x, 0] = 255
-                    array[y, x, 1] = 255
-                    array[y, x, 2] = 255
+                    array_c[y, x, 0] = 255
+                    array_c[y, x, 1] = 255
+                    array_c[y, x, 2] = 255
                 else:
-                    array[y, x, 0] = 0
-                    array[y, x, 1] = 0
-                    array[y, x, 2] = 0
-        return array
+                    array_c[y, x, 0] = 0
+                    array_c[y, x, 1] = 0
+                    array_c[y, x, 2] = 0
+        return array_c
 
     def get_name(self):
-        return 'thiza filter'
+        return 'Thiza filter'
+
+    def get_layout(self):
+        label = QLabel(self.get_name())
+        layout = QHBoxLayout()
+        layout.addWidget(label)
+        return layout
+
 
 class Grayscale(Filter):
     def __init__(self, ):
