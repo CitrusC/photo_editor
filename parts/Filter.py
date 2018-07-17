@@ -1,8 +1,7 @@
 from abc import ABCMeta, abstractmethod
 import numpy as np
-from PyQt5 import QtGui
 from PyQt5.QtGui import QIntValidator, QDoubleValidator
-from PyQt5.QtWidgets import QLabel, QHBoxLayout, QSlider, QGridLayout, QLineEdit, QWidget, QApplication
+from PyQt5.QtWidgets import QLabel, QHBoxLayout, QSlider, QGridLayout, QLineEdit, QPushButton
 from PyQt5.QtCore import Qt
 from PIL import Image
 import numba
@@ -105,20 +104,25 @@ class Median(Filter):
         super().__init__()
         self.size = 1  # 奇数のみ有効
 
-    def set_parameter(self, size):
-        self.size = size
+    def set_parameter(self):
+        print(self.size)
+        # self.size=self.slider.value()
+        self.size = int(self.sizeEdit.text())
+        self.parent.parent_list.update_filter(self)
 
     @numba.jit
     def apply(self, array):
         height, width = array.shape[0], array.shape[1]
         d = int(self.size / 2)
         array_c = array.copy()
-        for y in range(d, height - d):
-            for x in range(d, width - d):
-                array_c[y, x, 0] = np.median(array[y - d: y + d, x - d: x + d, 0])
-                array_c[y, x, 1] = np.median(array[y - d: y + d, x - d: x + d, 1])
-                array_c[y, x, 2] = np.median(array[y - d: y + d, x - d: x + d, 2])
+        if(d!=0):
+            for y in range(d, height - d):
+                for x in range(d, width - d):
+                    array_c[y, x, 0] = np.median(array[y - d: y + d, x - d: x + d, 0])
+                    array_c[y, x, 1] = np.median(array[y - d: y + d, x - d: x + d, 1])
+                    array_c[y, x, 2] = np.median(array[y - d: y + d, x - d: x + d, 2])
         return array_c
+
 
     def get_name(self):
         return 'Median filter'
@@ -128,25 +132,30 @@ class Median(Filter):
             label = QLabel(self.get_name())
 
 
-            size = QLabel('size')
+            layout = QHBoxLayout()
 
             self.validator = QIntValidator(0, 100)
             self.sizeEdit = QLineEdit()
             self.sizeEdit.setValidator(self.validator)
-
-            # 格子状の配置を作り、各ウィジェットのスペースを空ける
-            grid = QGridLayout()
-            # ラベルの位置設定
-            grid.addWidget(size, 1, 0)
-            # 入力欄の位置設定
-            grid.addWidget(self.sizeEdit, 1, 1)
-
-            layout = QHBoxLayout()
+            self.sizeEdit.setText(str(self.size))
+            self.button = QPushButton(self.parent)
+            self.button.setText("apply")
+            self.button.clicked.connect(self.set_parameter)
+            # self.slider = QSlider(Qt.Horizontal, self.parent)
+            # self.slider.setValue(self.size)
+            # self.slider.setRange(1, 99)
+            # self.slider.setTickInterval(2)
+            # self.slider.set
+            # self.slider.setSingleStep(2)
+            # self.slider.setPageStep(2)
+            # self.slider.sliderReleased.connect(self.set_parameter)
             layout.addWidget(label)
-            layout.addLayout(grid)
+            # layout.addWidget(self.slider)
+            layout.addWidget(self.sizeEdit)
+            layout.addWidget(self.button)
 
-            if self.sizeEdit.setModified(False):
-                size = self.sizeEdit.int()
+            # if self.sizeEdit.setModified(False):
+            #     self.size = self.sizeEdit.int()
 
             # size = keydown.connect(self.sizeEdit.toPlainText())
             # mask = keydown.connect(self.maskEdit.toPlainText())
@@ -204,14 +213,25 @@ class Linear(Filter):
             size = QLabel('size')
             mask = QLabel('mask')
 
-            self.validator1 = QDoubleValidator(0, 100)
-            self.validator2 = QDoubleValidator(0, 100)
+            self.validator1 = QIntValidator(0, 100)
+            # self.validator2 = QDoubleValidator(0, 100)
 
             self.sizeEdit = QLineEdit()
             self.maskEdit = QLineEdit()
 
             self.sizeEdit.setValidator(self.validator1)
-            self.maskEdit.setValidator(self.validator2)
+
+
+            # str = self.sizeEdit.toPlainText()
+            str = self.sizeEdit.text()
+            str.split()
+            # val = int(str,10)
+            mask = np.array(self.sizeEdit[self.size][self.size])
+            for i in range (self.size):
+                for j in range (self.size):
+                    # mask[i][j] = val
+                    mask[i][j] = str[self.size * self.size]
+            # self.maskEdit.setValidator(self.validator2)
 
             # 格子状の配置を作り、各ウィジェットのスペースを空ける
             grid = QGridLayout()
@@ -230,6 +250,10 @@ class Linear(Filter):
 
             if self.sizeEdit.setModified(False):
                 size = self.sizeEdit.text()
+                # for i in range size:
+                #     maskEdit
+                #     for j in range size:
+
             if self.sizeEdit.setModified(False):
                 mask = self.maskEdit.text()
             #             # size = keydown.connect(self.sizeEdit.toPlainText())

@@ -1,5 +1,5 @@
 from PyQt5 import QtGui, QtWidgets
-from PyQt5.QtWidgets import QWidget, QListWidget, QListWidgetItem, QAbstractItemView, QMenu, QMessageBox, QPushButton
+from PyQt5.QtWidgets import QWidget, QListWidget, QListWidgetItem, QAbstractItemView, QMenu, QMessageBox, QPushButton, QToolButton
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QFileDialog, QAction
 import numpy as np
@@ -181,18 +181,15 @@ class Filter_list(QListWidget):
         self.parent_.btnRedo.setEnabled(canRedo)
 
     def apply_filters(self):
-        try:
-            if self.history is None:
-                return
-            array, filters = self.history.apply()
-            self.parent_.update_image(array)
-            self.clear()
-            for f in filters:
-                self.add_filter(f)
-            self.parent_.btnUndo.setEnabled(True)
-        except:
-            import traceback
-            traceback.print_exc()
+        if self.history is None:
+            return
+        array, filters = self.history.apply()
+        self.parent_.update_image(array)
+        self.clear()
+        for f in filters:
+            self.add_filter(f)
+        self.parent_.btnUndo.setEnabled(True)
+
 
     def all_filters(self):
         filters = []
@@ -219,39 +216,39 @@ class Window(QtWidgets.QWidget):
         self.list.setFixedWidth(350)
 
         # 'Load image' button
-        self.btnLoad = QtWidgets.QToolButton(self)
-        self.btnLoad.setIcon(QtGui.QIcon("../icons/load.png"))
+        self.btnLoad = QToolButton(self)
+        self.btnLoad.setIcon(QtGui.QIcon("icons/load.png"))
         self.btnLoad.setFixedSize(bw, bw)
         self.btnLoad.setIconSize(QtCore.QSize(iw, iw))
         self.btnLoad.clicked.connect(self.fileOpen)
         # 'Export image' button
-        self.btnExport = QtWidgets.QToolButton(self)
-        self.btnExport.setIcon(QtGui.QIcon("../icons/export.png"))
+        self.btnExport = QToolButton(self)
+        self.btnExport.setIcon(QtGui.QIcon("icons/export.png"))
         self.btnExport.setFixedSize(bw, bw)
         self.btnExport.setIconSize(QtCore.QSize(iw, iw))
         self.btnExport.clicked.connect(self.saveImage)
         # 'Zoom in' button
-        self.btnZoomIn = QtWidgets.QToolButton(self)
-        self.btnZoomIn.setIcon(QtGui.QIcon("../icons/zoom_in.png"))
+        self.btnZoomIn = QToolButton(self)
+        self.btnZoomIn.setIcon(QtGui.QIcon("icons/zoom_in.png"))
         self.btnZoomIn.setFixedSize(bw, bw)
         self.btnZoomIn.setIconSize(QtCore.QSize(iw, iw))
         self.btnZoomIn.clicked.connect(self.zoomIn)
         # 'Zoom out' button
-        self.btnZoomOut = QtWidgets.QToolButton(self)
-        self.btnZoomOut.setIcon(QtGui.QIcon("../icons/zoom_out.png"))
+        self.btnZoomOut = QToolButton(self)
+        self.btnZoomOut.setIcon(QtGui.QIcon("icons/zoom_out.png"))
         self.btnZoomOut.setFixedSize(bw, bw)
         self.btnZoomOut.setIconSize(QtCore.QSize(iw, iw))
         self.btnZoomOut.clicked.connect(self.zoomOut)
         # 'Undo' button
-        self.btnUndo = QtWidgets.QToolButton(self)
-        self.btnUndo.setIcon(QtGui.QIcon("../icons/undo.png"))
+        self.btnUndo = QToolButton(self)
+        self.btnUndo.setIcon(QtGui.QIcon("icons/undo.png"))
         self.btnUndo.setFixedSize(bw, bw)
         self.btnUndo.setIconSize(QtCore.QSize(iw, iw))
         self.btnUndo.clicked.connect(self.list.undo)
         self.btnUndo.setEnabled(False)
         # 'Redo' button
-        self.btnRedo = QtWidgets.QToolButton(self)
-        self.btnRedo.setIcon(QtGui.QIcon("../icons/redo.png"))
+        self.btnRedo = QToolButton(self)
+        self.btnRedo.setIcon(QtGui.QIcon("icons/redo.png"))
         self.btnRedo.setFixedSize(bw, bw)
         self.btnRedo.setIconSize(QtCore.QSize(iw, iw))
         self.btnRedo.clicked.connect(self.list.redo)
