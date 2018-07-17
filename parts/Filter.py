@@ -1,9 +1,8 @@
 from abc import ABCMeta, abstractmethod
 import numpy as np
 from PyQt5 import QtGui
-from PyQt5.QtGui import QIntValidator
-from PyQt5.QtWidgets import QLabel, QHBoxLayout, QSlider, \
-    QGridLayout, QLineEdit, QTextEdit, QWidget, QApplication
+from PyQt5.QtGui import QIntValidator, QDoubleValidator
+from PyQt5.QtWidgets import QLabel, QHBoxLayout, QSlider, QGridLayout, QLineEdit, QWidget, QApplication
 from PyQt5.QtCore import Qt
 from PIL import Image
 import numba
@@ -205,8 +204,8 @@ class Linear(Filter):
             size = QLabel('size')
             mask = QLabel('mask')
 
-            self.validator1 = QIntValidator(0, 100)
-            self.validator2 = QIntValidator(0, 100)
+            self.validator1 = QDoubleValidator(0, 100)
+            self.validator2 = QDoubleValidator(0, 100)
 
             self.sizeEdit = QLineEdit()
             self.maskEdit = QLineEdit()
@@ -225,6 +224,7 @@ class Linear(Filter):
             grid.addWidget(self.maskEdit, 2, 1)
 
             layout = QHBoxLayout()
+            # layout = QGridLayout()
             layout.addWidget(label)
             layout.addLayout(grid)
 
