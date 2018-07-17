@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 import numpy as np
 from PyQt5.QtGui import QIntValidator, QDoubleValidator
-from PyQt5.QtWidgets import QLabel, QHBoxLayout, QSlider, QGridLayout, QLineEdit, QPushButton
+from PyQt5.QtWidgets import QLabel, QHBoxLayout, QSlider, QGridLayout, QLineEdit, QPushButton, QTextEdit
 from PyQt5.QtCore import Qt
 from PIL import Image
 import numba
@@ -105,6 +105,7 @@ class Median(Filter):
         self.size = 1  # 奇数のみ有効
 
     def set_parameter(self, size):
+        # self.size=self.slider.value()
         self.size = size
         self.parent.parent_list.update_filter(self)
 
@@ -140,10 +141,27 @@ class Median(Filter):
             self.button = QPushButton(self.parent)
             self.button.setText("apply")
             self.button.clicked.connect(self.clicked)
+            # self.slider = QSlider(Qt.Horizontal, self.parent)
+            # self.slider.setValue(self.size)
+            # self.slider.setRange(1, 99)
+            # self.slider.setTickInterval(2)
+            # self.slider.set
+            # self.slider.setSingleStep(2)
+            # self.slider.setPageStep(2)
+            # self.slider.sliderReleased.connect(self.set_parameter)
             layout.addWidget(label)
+            # layout.addWidget(self.slider)
             layout.addWidget(self.sizeEdit)
             layout.addWidget(self.button)
 
+            # if self.sizeEdit.setModified(False):
+            #     self.size = self.sizeEdit.int()
+
+            # size = keydown.connect(self.sizeEdit.toPlainText())
+            # mask = keydown.connect(self.maskEdit.toPlainText())
+
+            # self.size = int(self.sizeEdit.text())
+            # self.mask = int(self.maskEdit.text())
 
             return layout
         except:
@@ -161,9 +179,51 @@ class Linear(Filter):
         # self.mask = np.array([[1, 1, 1],[1, 1, 1],[1, 1, 1]], np.float32)
         # self.mask/=9
 
-    def set_parameter(self, size, mask):
+    def set_parameter1(self, size):
+        print("a")
         self.size = size
+        print("b")
+        self.parent.parent_list.update_filter(self)
+        print("c")
+        print("size =",self.size)
+
+    def set_parameter2(self, mask):
+        print("ssas")
         self.mask = mask
+        print("11")
+        str = self.maskEdit.toPlainText()
+        # str = self.maskEdit
+        print("12")
+
+        # val = int(str,10)
+        # mask = np.array(self.str[self.size][self.size])
+
+        # line = str.split(self,'\n')
+        line = str.split('\n')
+        out = []
+        print("=====")
+        print(line)
+        print("=====")
+        # data = []
+        print("13")
+        for l in line:
+            data = l.split(',')
+            out2 = []
+            print("----")
+            for d in data:
+                print(d)
+                out2.append(d)
+                print("----")
+            out.append(out2)
+
+        print(out)
+        self.mask = out
+        print("16")
+        print("mask=",self.mask)
+
+
+        self.parent.parent_list.update_filter(self)
+        print("17")
 
     @numba.jit
     def apply(self, array):
@@ -187,96 +247,123 @@ class Linear(Filter):
     def get_name(self):
         return 'Linear filter'
 
+    def clicked(self):
+        print("9")
+        self.set_parameter1(int(self.sizeEdit.text()))
+        print("10")
+        self.set_parameter2(self.maskEdit)
+
     def get_layout(self):
         try:
+            # label = QLabel(self.get_name())
+            #
+            # size = QLabel('size')
+            # mask = QLabel('mask')
+            #
+            # self.validator1 = QIntValidator(0, 100)
+            # # self.validator2 = QDoubleValidator(0, 100)
+            #
+            # self.sizeEdit = QLineEdit()
+            # self.maskEdit = QLineEdit()
+            #
+            # self.sizeEdit.setValidator(self.validator1)
+            #
+            # # str = self.sizeEdit.toPlainText()
+            # str = self.sizeEdit.text()
+            # temp = str.split()
+            # # val = int(str,10)
+            # # mask = np.array(self.str[self.size][self.size])
+            # for i in range(self.size):
+            #     for j in range(self.size):
+            #         # mask[i][j] = val
+            #         mask[i][j] = temp[x]
+            #         x = x+1
+            # # self.maskEdit.setValidator(self.validator2)
+            #
+            # # 格子状の配置を作り、各ウィジェットのスペースを空ける
+            # grid = QGridLayout()
+            # # ラベルの位置設定
+            # grid.addWidget(size, 1, 0)
+            # # 入力欄の位置設定
+            # grid.addWidget(self.sizeEdit, 1, 1)
+            #
+            # grid.addWidget(mask, 2, 0)
+            # grid.addWidget(self.maskEdit, 2, 1)
+            #
+            # layout = QHBoxLayout()
+            # # layout = QGridLayout()
+            # layout.addWidget(label)
+            # layout.addLayout(grid)
+            #
+            # if self.sizeEdit.setModified(False):
+            #     size = self.sizeEdit.text()
+            #     # for i in range size:
+            #     #     maskEdit
+            #     #     for j in range size:
+            #
+            # if self.sizeEdit.setModified(False):
+            #     mask = self.maskEdit.text()
+            # #             # size = keydown.connect(self.sizeEdit.toPlainText())
+            # # mask = keydown.connect(self.maskEdit.toPlainText())
+            #
+            # # self.size = int(self.sizeEdit.text())
+            # # self.mask = int(self.maskEdit.text())
+
+
+
             label = QLabel(self.get_name())
+            print("1")
 
             size = QLabel('size')
             mask = QLabel('mask')
+            print("2")
 
-            self.validator1 = QIntValidator(0, 100)
-            # self.validator2 = QDoubleValidator(0, 100)
+            self.validator = QIntValidator(0, 10000)
 
             self.sizeEdit = QLineEdit()
-            self.maskEdit = QLineEdit()
+            self.maskEdit = QTextEdit()
 
-            self.sizeEdit.setValidator(self.validator1)
 
-            # str = self.sizeEdit.toPlainText()
-            str = self.sizeEdit.text()
-            temp = str.split()
-            # val = int(str,10)
-            # mask = np.array(self.str[self.size][self.size])
-            for i in range(self.size):
-                for j in range(self.size):
-                    # mask[i][j] = val
-                    mask[i][j] = temp[x]
-                    x = x + 1
-            # self.maskEdit.setValidator(self.validator2)
+            self.sizeEdit.setValidator(self.validator)
+            print("3")
 
             # 格子状の配置を作り、各ウィジェットのスペースを空ける
             grid = QGridLayout()
+
             # ラベルの位置設定
-            grid.addWidget(size, 1, 0)
+            # grid.addWidget(label,0, 0)
+            # label.setGeometry(0,0,0,0)
+            grid.addWidget(size, 0, 0)
             # 入力欄の位置設定
-            grid.addWidget(self.sizeEdit, 1, 1)
-
-            grid.addWidget(mask, 2, 0)
-            grid.addWidget(self.maskEdit, 2, 1)
-
-            layout = QHBoxLayout()
-            # layout = QGridLayout()
-            layout.addWidget(label)
-            layout.addLayout(grid)
-
-            if self.sizeEdit.setModified(False):
-                size = self.sizeEdit.text()
-                # for i in range size:
-                #     maskEdit
-                #     for j in range size:
-
-            if self.sizeEdit.setModified(False):
-                mask = self.maskEdit.text()
-            #             # size = keydown.connect(self.sizeEdit.toPlainText())
-            # mask = keydown.connect(self.maskEdit.toPlainText())
-
-            # self.size = int(self.sizeEdit.text())
-            # self.mask = int(self.maskEdit.text())
-
-            label = QLabel(self.get_name())
-
-            size = QLabel('size')
-            mask = QLabel('mask')
-
-            self.validator1 = QIntValidator(0, 100)
-
-            self.sizeEdit = QLineEdit()
-            self.maskEdit = QLineEdit()
-
-            self.sizeEdit.setValidator(self.validator1)
-
-            # 格子状の配置を作り、各ウィジェットのスペースを空ける
-            grid = QGridLayout()
-            # ラベルの位置設定
-            grid.addWidget(size, 1, 0)
-            # 入力欄の位置設定
-            grid.addWidget(self.sizeEdit, 1, 1)
-
-            grid.addWidget(mask, 2, 0)
-            grid.addWidget(self.maskEdit, 2, 1)
+            grid.addWidget(self.sizeEdit, 0, 1)
+            grid.setSpacing(10)
+            grid.addWidget(mask, 1, 0)
+            grid.addWidget(self.maskEdit, 1, 1)
+            print("4")
 
             layout = QHBoxLayout()
 
+            print("5")
             self.sizeEdit.setText(str(self.size))
-            self.button = QPushButton(self.parent)
-            self.button.setText("apply")
-            self.button.clicked.connect(self.set_parameter)
+            # self.sizeEdit.resize(300,400)
+            # setMaximumHeight(label.sizeHint().height() * 2)
+            self.maskEdit.setFixedHeight(self.maskEdit.document().size().height() + self.maskEdit.contentsMargins().top() * 2)
 
+            self.button = QPushButton(self.parent)
+            grid.addWidget(self.button,2,0)
+            print("6")
+            self.button.setText("apply")
+            self.button.clicked.connect(self.clicked)
+            print("7")
             layout.addWidget(label)
             layout.addWidget(self.sizeEdit)
             layout.addLayout(grid)
             layout.addWidget(self.button)
             return layout
+            print("8")
+
+
+
         except:
             import traceback
             traceback.print_exc()
@@ -328,38 +415,31 @@ class FFT2D(Filter):
 class Thiza(Filter):
     def __init__(self, ):
         super().__init__()
-        self.mask = np.array([[0, 8, 2, 10],
-                              [12, 4, 14, 6],
-                              [3, 11, 1, 9],
-                              [15, 7, 13, 5]])
+        self.mask=[[0,8,2,10],
+                   [12,4,14,6],
+                   [3,11,1,9],
+                    [15,7,13,5]
+                   ]
 
     def apply(self, array):
         a = array[:, :, 0] * 0.298912 + array[:, :, 1] * 0.586611 + array[:, :, 2] * 0.114478
         array[:, :, 0], array[:, :, 1], array[:, :, 2] = a, a, a
-        array_c = array.copy()
         H = array.shape[0]
         W = array.shape[1]
         for y in range(H):
             for x in range(W):
                 if (array[y, x, 0] * 16 / 255 >= self.mask[y % self.mask.shape[0], x % self.mask.shape[1]]):
-                    array_c[y, x, 0] = 255
-                    array_c[y, x, 1] = 255
-                    array_c[y, x, 2] = 255
+                    array[y, x, 0] = 255
+                    array[y, x, 1] = 255
+                    array[y, x, 2] = 255
                 else:
-                    array_c[y, x, 0] = 0
-                    array_c[y, x, 1] = 0
-                    array_c[y, x, 2] = 0
-        return array_c
+                    array[y, x, 0] = 0
+                    array[y, x, 1] = 0
+                    array[y, x, 2] = 0
+        return array
 
     def get_name(self):
-        return 'Thiza filter'
-
-    def get_layout(self):
-        label = QLabel(self.get_name())
-        layout = QHBoxLayout()
-        layout.addWidget(label)
-        return layout
-
+        return 'thiza filter'
 
 class Grayscale(Filter):
     def __init__(self, ):
