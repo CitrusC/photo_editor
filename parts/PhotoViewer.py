@@ -1,5 +1,5 @@
 from PyQt5 import QtGui, QtWidgets
-from PyQt5.QtWidgets import QWidget, QListWidget, QListWidgetItem, QAbstractItemView, QMenu, QMessageBox, QPushButton
+from PyQt5.QtWidgets import QWidget, QListWidget, QListWidgetItem, QAbstractItemView, QMenu, QMessageBox, QPushButton, QToolButton
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QFileDialog, QAction
 import numpy as np
@@ -220,38 +220,38 @@ class Window(QtWidgets.QWidget):
         self.list.setFixedWidth(350)
 
         # 'Load image' button
-        self.btnLoad = QtWidgets.QToolButton(self)
+        self.btnLoad = QToolButton(self)
         self.btnLoad.setIcon(QtGui.QIcon("icons/load.png"))
         self.btnLoad.setFixedSize(bw, bw)
         self.btnLoad.setIconSize(QtCore.QSize(iw, iw))
         self.btnLoad.clicked.connect(self.fileOpen)
         # 'Export image' button
-        self.btnExport = QtWidgets.QToolButton(self)
+        self.btnExport = QToolButton(self)
         self.btnExport.setIcon(QtGui.QIcon("icons/export.png"))
         self.btnExport.setFixedSize(bw, bw)
         self.btnExport.setIconSize(QtCore.QSize(iw, iw))
         self.btnExport.clicked.connect(self.saveImage)
         # 'Zoom in' button
-        self.btnZoomIn = QtWidgets.QToolButton(self)
+        self.btnZoomIn = QToolButton(self)
         self.btnZoomIn.setIcon(QtGui.QIcon("icons/zoom_in.png"))
         self.btnZoomIn.setFixedSize(bw, bw)
         self.btnZoomIn.setIconSize(QtCore.QSize(iw, iw))
         self.btnZoomIn.clicked.connect(self.zoomIn)
         # 'Zoom out' button
-        self.btnZoomOut = QtWidgets.QToolButton(self)
+        self.btnZoomOut = QToolButton(self)
         self.btnZoomOut.setIcon(QtGui.QIcon("icons/zoom_out.png"))
         self.btnZoomOut.setFixedSize(bw, bw)
         self.btnZoomOut.setIconSize(QtCore.QSize(iw, iw))
         self.btnZoomOut.clicked.connect(self.zoomOut)
         # 'Undo' button
-        self.btnUndo = QtWidgets.QToolButton(self)
+        self.btnUndo = QToolButton(self)
         self.btnUndo.setIcon(QtGui.QIcon("icons/undo.png"))
         self.btnUndo.setFixedSize(bw, bw)
         self.btnUndo.setIconSize(QtCore.QSize(iw, iw))
         self.btnUndo.clicked.connect(self.list.undo)
         self.btnUndo.setEnabled(False)
         # 'Redo' button
-        self.btnRedo = QtWidgets.QToolButton(self)
+        self.btnRedo = QToolButton(self)
         self.btnRedo.setIcon(QtGui.QIcon("icons/redo.png"))
         self.btnRedo.setFixedSize(bw, bw)
         self.btnRedo.setIconSize(QtCore.QSize(iw, iw))
@@ -347,8 +347,12 @@ class Window(QtWidgets.QWidget):
                                                 "./",
                                                 filter="JPG(*.jpg);;PNG(*.png);;BMP(*.bmp)")
         if fname[0]:
-            pil_img = Image.fromarray(self.array.astype(np.uint8)).convert("RGB")
-            pil_img.save(fname[0])
+            try:
+                pil_img = Image.fromarray(self.array.astype(np.uint8)).convert("RGB")
+                pil_img.save(fname[0])
+            except:
+                reply = QMessageBox.critical(self, 'Message',
+                                             "The image file is not selcted.", QMessageBox.Ok)
 
     def update_image(self, array):
         self.array = array;
