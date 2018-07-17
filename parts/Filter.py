@@ -224,14 +224,14 @@ class Linear(Filter):
 
             # str = self.sizeEdit.toPlainText()
             str = self.sizeEdit.text()
-            str.split()
+            temp = str.split()
             # val = int(str,10)
             # mask = np.array(self.str[self.size][self.size])
             x = 0
             for i in range (self.size):
                 for j in range (self.size):
                     # mask[i][j] = val
-                    mask[i][j] = str[x]
+                    mask[i][j] = temp[x]
                     x = x+1
             # self.maskEdit.setValidator(self.validator2)
 
@@ -264,6 +264,42 @@ class Linear(Filter):
             # self.size = int(self.sizeEdit.text())
             # self.mask = int(self.maskEdit.text())
 
+
+
+            label = QLabel(self.get_name())
+
+            size = QLabel('size')
+            mask = QLabel('mask')
+
+            self.validator1 = QIntValidator(0, 100)
+
+            self.sizeEdit = QLineEdit()
+            self.maskEdit = QLineEdit()
+
+            self.sizeEdit.setValidator(self.validator1)
+
+            # 格子状の配置を作り、各ウィジェットのスペースを空ける
+            grid = QGridLayout()
+            # ラベルの位置設定
+            grid.addWidget(size, 1, 0)
+            # 入力欄の位置設定
+            grid.addWidget(self.sizeEdit, 1, 1)
+
+            grid.addWidget(mask, 2, 0)
+            grid.addWidget(self.maskEdit, 2, 1)
+
+            layout = QHBoxLayout()
+
+
+            self.sizeEdit.setText(str(self.size))
+            self.button = QPushButton(self.parent)
+            self.button.setText("apply")
+            self.button.clicked.connect(self.set_parameter)
+
+            layout.addWidget(label)
+            layout.addWidget(self.sizeEdit)
+            layout.addLayout(grid)
+            layout.addWidget(self.button)
             return layout
         except:
             import traceback
