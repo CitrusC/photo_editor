@@ -333,12 +333,12 @@ class Linear(Filter):
             # ラベルの位置設定
             # grid.addWidget(label,0, 0)
             # label.setGeometry(0,0,0,0)
-            grid.addWidget(size, 0, 0)
+            grid.addWidget(size, 1, 0)
             # 入力欄の位置設定
-            grid.addWidget(self.sizeEdit, 0, 1)
+            grid.addWidget(self.sizeEdit, 1, 1)
             grid.setSpacing(10)
-            grid.addWidget(mask, 1, 0)
-            grid.addWidget(self.maskEdit, 1, 1)
+            grid.addWidget(mask, 2, 0)
+            grid.addWidget(self.maskEdit, 2, 1)
             print("4")
 
             layout = QHBoxLayout()
@@ -350,13 +350,13 @@ class Linear(Filter):
             self.maskEdit.setFixedHeight(self.maskEdit.document().size().height() + self.maskEdit.contentsMargins().top() * 2)
 
             self.button = QPushButton(self.parent)
-            grid.addWidget(self.button,2,0)
+            grid.addWidget(self.button,3,1)
             print("6")
             self.button.setText("apply")
             self.button.clicked.connect(self.clicked)
             print("7")
             layout.addWidget(label)
-            layout.addWidget(self.sizeEdit)
+            # layout.addWidget(self.sizeEdit)
             layout.addLayout(grid)
             layout.addWidget(self.button)
             return layout
