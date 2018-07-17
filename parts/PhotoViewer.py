@@ -343,8 +343,12 @@ class Window(QtWidgets.QWidget):
                                                 "./",
                                                 filter="JPG(*.jpg);;PNG(*.png);;BMP(*.bmp)")
         if fname[0]:
-            pil_img = Image.fromarray(self.array.astype(np.uint8)).convert("RGB")
-            pil_img.save(fname[0])
+            try:
+                pil_img = Image.fromarray(self.array.astype(np.uint8)).convert("RGB")
+                pil_img.save(fname[0])
+            except:
+                reply = QMessageBox.critical(self, 'Message',
+                                             "The image file is not selcted.", QMessageBox.Ok)
 
     def update_image(self, array):
         self.array = array;
