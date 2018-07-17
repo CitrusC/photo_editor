@@ -181,18 +181,15 @@ class Filter_list(QListWidget):
         self.parent_.btnRedo.setEnabled(canRedo)
 
     def apply_filters(self):
-        try:
-            if self.history is None:
-                return
-            array, filters = self.history.apply()
-            self.parent_.update_image(array)
-            self.clear()
-            for f in filters:
-                self.add_filter(f)
-            self.parent_.btnUndo.setEnabled(True)
-        except:
-            import traceback
-            traceback.print_exc()
+        if self.history is None:
+            return
+        array, filters = self.history.apply()
+        self.parent_.update_image(array)
+        self.clear()
+        for f in filters:
+            self.add_filter(f)
+        self.parent_.btnUndo.setEnabled(True)
+
 
     def all_filters(self):
         filters = []
