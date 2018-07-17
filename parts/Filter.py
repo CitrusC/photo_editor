@@ -349,10 +349,11 @@ class FFT2D(Filter):
 class Thiza(Filter):
     def __init__(self, ):
         super().__init__()
-        self.mask=[[]]
-    def set_parameter(self, mask):
-        # 4*4の正方行列、0から15の値で型はndarray
-        self.mask = mask
+        self.mask=[[0,8,2,10],
+                   [12,4,14,6],
+                   [3,11,1,9],
+                    [15,7,13,5]
+                   ]
 
     def apply(self, array):
         a = array[:, :, 0] * 0.298912 + array[:, :, 1] * 0.586611 + array[:, :, 2] * 0.114478
