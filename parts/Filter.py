@@ -204,14 +204,25 @@ class Linear(Filter):
             size = QLabel('size')
             mask = QLabel('mask')
 
-            self.validator1 = QDoubleValidator(0, 100)
-            self.validator2 = QDoubleValidator(0, 100)
+            self.validator1 = QIntValidator(0, 100)
+            # self.validator2 = QDoubleValidator(0, 100)
 
             self.sizeEdit = QLineEdit()
             self.maskEdit = QLineEdit()
 
             self.sizeEdit.setValidator(self.validator1)
-            self.maskEdit.setValidator(self.validator2)
+
+
+            # str = self.sizeEdit.toPlainText()
+            str = self.sizeEdit.text()
+            str.split()
+            # val = int(str,10)
+            mask = np.array(self.sizeEdit[self.size][self.size])
+            for i in range (self.size):
+                for j in range (self.size):
+                    # mask[i][j] = val
+                    mask[i][j] = str[self.size * self.size]
+            # self.maskEdit.setValidator(self.validator2)
 
             # 格子状の配置を作り、各ウィジェットのスペースを空ける
             grid = QGridLayout()
@@ -230,6 +241,10 @@ class Linear(Filter):
 
             if self.sizeEdit.setModified(False):
                 size = self.sizeEdit.text()
+                # for i in range size:
+                #     maskEdit
+                #     for j in range size:
+
             if self.sizeEdit.setModified(False):
                 mask = self.maskEdit.text()
             #             # size = keydown.connect(self.sizeEdit.toPlainText())
