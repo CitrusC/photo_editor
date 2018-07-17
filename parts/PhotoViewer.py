@@ -125,7 +125,7 @@ class Filter_list(QListWidget):
             import traceback
             traceback.print_exc()
 
-    def buildContextMenu(self, f):
+    def addEvent(self, f):
         self.add_item(getattr(Filter, f)())
 
 
@@ -273,7 +273,7 @@ class Window(QtWidgets.QWidget):
             action.setText(f)
             action.triggered.connect(mapper.map)
             actions.append(action)
-        mapper.mapped['QString'].connect(self.list.buildContextMenu)
+        mapper.mapped['QString'].connect(self.list.addEvent)
 
         menu = QMenu(self)
         menu.addActions(actions)
