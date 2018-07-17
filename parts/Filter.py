@@ -226,11 +226,11 @@ class Linear(Filter):
             str = self.sizeEdit.text()
             str.split()
             # val = int(str,10)
-            mask = np.array(self.sizeEdit[self.size][self.size])
+            # mask = np.array(self.str[self.size][self.size])
             for i in range (self.size):
                 for j in range (self.size):
                     # mask[i][j] = val
-                    mask[i][j] = str[self.size * self.size]
+                    mask[i][j] = str[i + j]
             # self.maskEdit.setValidator(self.validator2)
 
             # 格子状の配置を作り、各ウィジェットのスペースを空ける
