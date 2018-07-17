@@ -310,3 +310,28 @@ class FFT2D(Filter):
         layout = QHBoxLayout()
         layout.addWidget(label)
         return layout
+
+class Thiza(Filter):
+    def set_parameter(self, mask):
+        # 4*4の正方行列、0から15の値で型はndarray
+        self.mask=mask
+
+    def apply(self,array):
+        a = array[:,:,0] * 0.298912 + array[:,:,1] * 0.586611 + array[:,:,2] * 0.114478
+        array[:, :, 0], array[:, :, 1], array[:, :, 2]=a, a, a
+        H = array.shape[0]
+        W = array.shape[1]
+        for y in range(H):
+            for x in range(W):
+                if (array[y, x, 0] * 16 / 255 >= self.mask[y % self.mask.shape[0], x % self.mask.shape[1]]):
+                    array[y, x, 0] = 255
+                    array[y, x, 1] = 255
+                    array[y, x, 2] = 255
+                else:
+                    array[y, x, 0] = 0
+                    array[y, x, 1] = 0
+                    array[y, x, 2] = 0
+        return array
+    def get_name(self):
+        return 'thiza filter'
+
