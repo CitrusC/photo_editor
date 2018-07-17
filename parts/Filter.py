@@ -254,7 +254,6 @@ class Linear(Filter):
             traceback.print_exc()
 
 
-
 class FFT2D(Filter):
     def __init__(self, ):
         super().__init__()
