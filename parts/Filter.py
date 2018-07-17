@@ -1,8 +1,7 @@
 from abc import ABCMeta, abstractmethod
 import numpy as np
-from PyQt5 import QtGui
 from PyQt5.QtGui import QIntValidator, QDoubleValidator
-from PyQt5.QtWidgets import QLabel, QHBoxLayout, QSlider, QGridLayout, QLineEdit, QWidget, QApplication, QPushButton
+from PyQt5.QtWidgets import QLabel, QHBoxLayout, QSlider, QGridLayout, QLineEdit, QPushButton
 from PyQt5.QtCore import Qt
 from PIL import Image
 import numba
