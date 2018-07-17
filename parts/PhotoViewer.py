@@ -89,7 +89,7 @@ class CustomQWidget(QWidget, QListWidgetItem):
 
     def buildContextMenu(self, qPoint):
         menu = QMenu(self)
-        menulabels = ['add', 'add2', 'remove', 'apply']
+        menulabels = ['remove']
         actionlist = []
         for label in menulabels:
             actionlist.append(menu.addAction(label))
@@ -99,13 +99,7 @@ class CustomQWidget(QWidget, QListWidgetItem):
             if act == action:
                 ac = act.text()
                 if (ac == menulabels[0]):
-                    self.parent_list.add_item()
-                elif (ac == menulabels[1]):
-                    self.parent_list.add_item2()
-                elif (ac == menulabels[2]):
                     self.parent_list.remove_item(self)
-                elif (ac == menulabels[3]):
-                    self.parent_list.apply_filters()
 
 
 class Filter_list(QListWidget):

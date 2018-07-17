@@ -7,7 +7,6 @@ from PyQt5.QtWidgets import QLabel, QHBoxLayout, QSlider, \
 from PyQt5.QtCore import Qt
 from PIL import Image
 import numba
-import cv2
 
 
 class Filter(metaclass=ABCMeta):
@@ -45,7 +44,8 @@ class Nega(Filter):
         return array
 
     def get_name(self):
-        return 'Nega filter {} {}'.format(self.before_image_id, self.after_image_id)
+        # return 'Nega filter {} {}'.format(self.before_image_id, self.after_image_id)
+        return 'Nega filter'
 
     def get_layout(self):
         label = QLabel(self.get_name())
@@ -83,11 +83,11 @@ class Brightness(Filter):
         return layout
 
     def release_mouse(self):
-        print("run")
         self.set_parameter(self.slider.value())
 
     def get_name(self):
-        return 'Brightness filter{} {}'.format(self.before_image_id, self.after_image_id)
+        # return 'Brightness filter{} {}'.format(self.before_image_id, self.after_image_id)
+        return 'Brightness filter'
 
 
 class DoNothing(Filter):
