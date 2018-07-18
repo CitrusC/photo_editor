@@ -184,21 +184,23 @@ class Linear(Filter):
     def set_parameter1(self, size):
         print("a")
         self.size = size
-        print("b")
+        print("size=",size)
         self.parent.parent_list.update_filter(self)
         print("c")
         print("size =",self.size)
 
-    def set_parameter2(self, mask):
-
+    def set_parameter2(self, aaa):
+        self.aaa = aaa
+        print("aaa=",self.aaa)
         print("ssas")
         # self.mask = mask
         print("11")
         # ここの受け取り方があっているか
         print("self.maskEdit=",self.maskEdit)
         print("self.maskEdit.toPlainText=", self.maskEdit.toPlainText())
-        str = self.maskEdit.toPlainText()
+        # str = self.maskEdit.toPlainText()
         # str = self.maskEdit
+        str = self.aaa
         print("str=",str)
         print("12")
 
@@ -259,7 +261,7 @@ class Linear(Filter):
         print("9")
         self.set_parameter1(int(self.sizeEdit.text()))
         print("10")
-        self.set_parameter2(self.maskEdit)
+        self.set_parameter2(self.maskEdit.toPlainText())
 
     def get_layout(self):
         try:
