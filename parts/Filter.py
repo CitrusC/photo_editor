@@ -189,15 +189,14 @@ class Linear(Filter):
         print("c")
         print("size =",self.size)
 
-    def set_parameter2(self, maskEdit):
-        self.maskEdit = maskEdit
+    def set_parameter2(self, mask):
+
         print("ssas")
         # self.mask = mask
         print("11")
         # ここの受け取り方があっているか
-        print("self.printEdit=",self.maskEdit)
-        print("self.printEdit.toPlainText=", self.maskEdit.toPlainText())
-
+        print("self.maskEdit=",self.maskEdit)
+        print("self.maskEdit.toPlainText=", self.maskEdit.toPlainText())
         str = self.maskEdit.toPlainText()
         # str = self.maskEdit
         print("str=",str)
