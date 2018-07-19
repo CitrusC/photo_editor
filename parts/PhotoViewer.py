@@ -82,10 +82,11 @@ class CustomQWidget(QWidget, QListWidgetItem):
         super(CustomQWidget, self).__init__(parent)
         self.filter_ = filter_
         self.parent_list = parent
-        layout = filter_.get_layout()
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.buildContextMenu)
-        self.setLayout(layout)
+
+    def setLayout(self, QLayout):
+        super().setLayout(QLayout)
 
     def buildContextMenu(self, qPoint):
         menu = QMenu(self)
@@ -141,6 +142,7 @@ class Filter_list(QListWidget):
         item = QListWidgetItem(self)
         item_widget = CustomQWidget(parent=self, filter_=f)
         f.set_parent(item_widget)
+        item_widget.setLayout(f.get_layout())
         item.setSizeHint(item_widget.sizeHint())
         self.addItem(item)
         self.setItemWidget(item, item_widget)

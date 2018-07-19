@@ -60,7 +60,6 @@ class Brightness(Filter):
         self.brightness = 0
 
     def set_parameter(self, brightness):
-        self.isUpdate = True
         self.brightness = brightness
         self.parent.parent_list.update_filter(self)
 
