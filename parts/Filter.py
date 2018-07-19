@@ -1,4 +1,6 @@
 from abc import ABCMeta, abstractmethod
+from fractions import Fraction
+
 import numpy as np
 from PyQt5.QtGui import QIntValidator, QDoubleValidator
 from PyQt5.QtWidgets import QLabel, QHBoxLayout, QSlider, QGridLayout, QLineEdit, QPushButton, QTextEdit
@@ -182,17 +184,24 @@ class Linear(Filter):
     def set_parameter1(self, size):
         print("a")
         self.size = size
-        print("b")
+        print("size=",size)
         self.parent.parent_list.update_filter(self)
         print("c")
         print("size =",self.size)
 
-    def set_parameter2(self, mask):
+    def set_parameter2(self, aaa):
+        self.aaa = aaa
+        print("aaa=",self.aaa)
         print("ssas")
-        self.mask = mask
+        # self.mask = mask
         print("11")
-        str = self.maskEdit.toPlainText()
+        # ここの受け取り方があっているか
+        print("self.maskEdit=",self.maskEdit)
+        print("self.maskEdit.toPlainText=", self.maskEdit.toPlainText())
+        # str = self.maskEdit.toPlainText()
         # str = self.maskEdit
+        str = self.aaa
+        print("str=",str)
         print("12")
 
         # val = int(str,10)
@@ -209,10 +218,11 @@ class Linear(Filter):
         for l in line:
             data = l.split(',')
             out2 = []
+            print("data=",data)
             print("----")
             for d in data:
                 print(d)
-                out2.append(d)
+                out2.append(float(Fraction(d)))
                 print("----")
             out.append(out2)
 
@@ -251,7 +261,7 @@ class Linear(Filter):
         print("9")
         self.set_parameter1(int(self.sizeEdit.text()))
         print("10")
-        self.set_parameter2(self.maskEdit)
+        self.set_parameter2(self.maskEdit.toPlainText())
 
     def get_layout(self):
         try:
@@ -333,12 +343,12 @@ class Linear(Filter):
             # ラベルの位置設定
             # grid.addWidget(label,0, 0)
             # label.setGeometry(0,0,0,0)
-            grid.addWidget(size, 0, 0)
+            grid.addWidget(size, 1, 0)
             # 入力欄の位置設定
-            grid.addWidget(self.sizeEdit, 0, 1)
+            grid.addWidget(self.sizeEdit, 1, 1)
             grid.setSpacing(10)
-            grid.addWidget(mask, 1, 0)
-            grid.addWidget(self.maskEdit, 1, 1)
+            grid.addWidget(mask, 2, 0)
+            grid.addWidget(self.maskEdit, 2, 1)
             print("4")
 
             layout = QHBoxLayout()
@@ -350,13 +360,13 @@ class Linear(Filter):
             self.maskEdit.setFixedHeight(self.maskEdit.document().size().height() + self.maskEdit.contentsMargins().top() * 2)
 
             self.button = QPushButton(self.parent)
-            grid.addWidget(self.button,2,0)
+            grid.addWidget(self.button,3,1)
             print("6")
             self.button.setText("apply")
             self.button.clicked.connect(self.clicked)
             print("7")
             layout.addWidget(label)
-            layout.addWidget(self.sizeEdit)
+            # layout.addWidget(self.sizeEdit)
             layout.addLayout(grid)
             layout.addWidget(self.button)
             return layout
