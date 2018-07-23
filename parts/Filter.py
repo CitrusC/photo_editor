@@ -367,7 +367,7 @@ class Linear(Filter):
             mask.append(out2)
 
         height, width = array.shape[0], array.shape[1]
-        if height != self.size or width != self.size:
+        if len(mask) != self.size or len(mask[0]) != self.size:
             QMessageBox.critical(self.parent.parent_list.parent_, 'Error', "Mask size error.", QMessageBox.Ok)
             return array
         d = int(self.size / 2)
