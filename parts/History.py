@@ -166,6 +166,8 @@ class History:
             # self.filter_list[self.count] = copy.copy(self.filter_list[self.count - 1])
             for i in range(len(self.filter_list[self.count - 1])):
                 n_filter = copy.copy(self.filter_list[self.count - 1][i])
+                n_filter.disconnect()
+                print('disconnect')
                 self.filter_list[self.count].append(n_filter)
         except:
             import traceback

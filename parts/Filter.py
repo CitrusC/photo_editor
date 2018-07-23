@@ -84,6 +84,9 @@ class Brightness(Filter):
         array = np.clip(array, 0, 255)
         return array
 
+    def disconnect(self):
+        self.slider.disconnect()
+
     def get_layout(self):
         label = QLabel(self.get_name())
         self.slider = QSlider(Qt.Horizontal, self.parent)
