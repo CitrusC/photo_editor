@@ -6,7 +6,7 @@
 """
 
 from PyQt5 import QtGui, QtWidgets, QtCore
-from PyQt5.QtWidgets import QMenu, QMessageBox, QPushButton, QToolButton, QFileDialog, QAction, QSplitter, QWidget
+from PyQt5.QtWidgets import QMenu, QMessageBox, QPushButton, QToolButton, QFileDialog, QAction, QSplitter
 import numpy as np
 import os
 from PIL import Image
@@ -24,6 +24,7 @@ from PhotoViewer import PhotoViewer
 class Window(QtWidgets.QWidget):
     def __init__(self):
         super(Window, self).__init__()
+        self.setWindowTitle('Photo Editor')
         self.viewer = PhotoViewer(self)
         bw = 32  # buttonWidth
         iw = 24  # iconWidth
@@ -141,7 +142,7 @@ class Window(QtWidgets.QWidget):
                 self.list.init(self.array)
                 self.btnUndo.setEnabled(False)
                 self.btnRedo.setEnabled(False)
-            except AttributeError:
+            except OSError:
                 QMessageBox.critical(self, 'Error', "The image file is broken.", QMessageBox.Ok)
 
     def save_image(self):
@@ -169,18 +170,22 @@ class Window(QtWidgets.QWidget):
         return pixmap
 
     def zoom_in(self):
-        if self.viewer.hasPhoto():
-            factor = 1.25
-            self.viewer._zoom += 1
-            if self.viewer._zoom > 0:
-                self.viewer.scale(factor, factor)
-            elif self.viewer._zoom == 0:
-                self.viewer.fitInView()
-            else:
-                self.viewer._zoom = 0
+        try:
+            if self.viewer.has_photo():
+                factor = 1.25
+                self.viewer._zoom += 1
+                if self.viewer._zoom > 0:
+                    self.viewer.scale(factor, factor)
+                elif self.viewer._zoom == 0:
+                    self.viewer.fitInView()
+                else:
+                    self.viewer._zoom = 0
+        except:
+            import traceback
+            traceback.print_exc()
 
     def zoom_out(self):
-        if self.viewer.hasPhoto():
+        if self.viewer.has_photo():
             factor = 0.8
             self.viewer._zoom -= 1
             if self.viewer._zoom > 0:
