@@ -1,7 +1,7 @@
 """
 *** File Name           : Filter_list.py
 *** Designer            : 入力
-*** Date                : 2018.07.入力
+*** Date                : 2018.06.05
 *** Function            : 入力
 """
 
@@ -14,7 +14,7 @@ import Filter
 """
 *** Class Name          : FilterList
 *** Designer            : 稲垣 大輔
-*** Date                : 2018.07.入力
+*** Date                : 2018.06.19
 *** Function            : FilterItemを管理する
 """
 
@@ -31,7 +31,7 @@ class FilterList(QListWidget):
     """
     *** Function Name       : set_array()
     *** Designer            : 稲垣 大輔
-    *** Date                : 2018.07.入力
+    *** Date                : 2018.06.19
     *** Function            : arrayの値をセットする
     *** Return              : なし
     """
@@ -43,7 +43,7 @@ class FilterList(QListWidget):
     """
     *** Function Name       : dropEvent()
     *** Designer            : 稲垣 大輔
-    *** Date                : 2018.07.入力
+    *** Date                : 2018.06.19
     *** Function            : フィルタ入れ替えの処理
     *** Return              : なし
     """
@@ -58,7 +58,7 @@ class FilterList(QListWidget):
     """
     *** Function Name       : add_event()
     *** Designer            : 稲垣 大輔
-    *** Date                : 2018.07.入力
+    *** Date                : 2018.06.19
     *** Function            : フィルタを追加する
     *** Return              : なし
     """
@@ -69,7 +69,7 @@ class FilterList(QListWidget):
     """
     *** Function Name       : add_item()
     *** Designer            : 稲垣 大輔
-    *** Date                : 2018.07.入力
+    *** Date                : 2018.06.19
     *** Function            : FilterItemを追加する
     *** Return              : なし
     """
@@ -82,7 +82,7 @@ class FilterList(QListWidget):
     """
     *** Function Name       : create_item()
     *** Designer            : 稲垣 大輔
-    *** Date                : 2018.07.入力
+    *** Date                : 2018.06.19
     *** Function            : FilterItemを生成する
     *** Return              : なし
     """
@@ -100,7 +100,7 @@ class FilterList(QListWidget):
     """
     *** Function Name       : remove_item()
     *** Designer            : 稲垣 大輔
-    *** Date                : 2018.07.入力
+    *** Date                : 2018.06.19
     *** Function            : FilterItemを削除する
     *** Return              : なし
     """
@@ -120,7 +120,7 @@ class FilterList(QListWidget):
     """
     *** Function Name       : update_item()
     *** Designer            : 稲垣 大輔
-    *** Date                : 2018.07.入力
+    *** Date                : 2018.06.19
     *** Function            : FilterItemを更新する
     *** Return              : なし
     """
@@ -133,7 +133,7 @@ class FilterList(QListWidget):
     """
     *** Function Name       : undo()
     *** Designer            : 稲垣 大輔
-    *** Date                : 2018.07.入力
+    *** Date                : 2018.06.19
     *** Function            : FilterListを前の状態に戻す
     *** Return              : なし
     """
@@ -150,7 +150,7 @@ class FilterList(QListWidget):
     """
     *** Function Name       : redo()
     *** Designer            : 稲垣 大輔
-    *** Date                : 2018.07.入力
+    *** Date                : 2018.06.19
     *** Function            : FilterListを次の状態に進める
     *** Return              : なし
     """
@@ -166,7 +166,7 @@ class FilterList(QListWidget):
     """
     *** Function Name       : apply_filters()
     *** Designer            : 稲垣 大輔
-    *** Date                : 2018.07.入力
+    *** Date                : 2018.06.19
     *** Function            : FilterListのFilterを適用する
     *** Return              : なし
     """
@@ -183,7 +183,7 @@ class FilterList(QListWidget):
     """
     *** Function Name       : all_filters()
     *** Designer            : 稲垣 大輔
-    *** Date                : 2018.07.入力
+    *** Date                : 2018.06.19
     *** Function            : すべてのフィルタを返す
     *** Return              : フィルタリスト
     """
@@ -196,7 +196,7 @@ class FilterList(QListWidget):
     """
     *** Function Name       : create_item()
     *** Designer            : 稲垣 大輔
-    *** Date                : 2018.07.入力
+    *** Date                : 2018.06.19
     *** Function            : すべてのFilterItemを返す
     *** Return              : FilterItemリスト
     """
@@ -211,7 +211,7 @@ class FilterList(QListWidget):
 """
 *** Class Name          : FilterItem
 *** Designer            : 稲垣 大輔
-*** Date                : 2018.07.入力
+*** Date                : 2018.06.19
 *** Function            : フィルタとそのレイアウトを管理する
 """
 class FilterItem(QWidget, QListWidgetItem):
@@ -225,7 +225,7 @@ class FilterItem(QWidget, QListWidgetItem):
     """
     *** Function Name       : set_layout()
     *** Designer            : 稲垣 大輔
-    *** Date                : 2018.07.入力
+    *** Date                : 2018.06.19
     *** Function            : レイアウトをセットする
     *** Return              : なし
     """
@@ -235,7 +235,7 @@ class FilterItem(QWidget, QListWidgetItem):
     """
     *** Function Name       : build_context_menu()
     *** Designer            : 稲垣 大輔
-    *** Date                : 2018.07.入力
+    *** Date                : 2018.06.19
     *** Function            : 右クリック時のメニューを表示する
     *** Return              : なし
     """

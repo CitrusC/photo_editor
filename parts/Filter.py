@@ -1,7 +1,7 @@
 """
 *** File Name           : Filter.py
 *** Designer            : 稲垣 大輔
-*** Date                : 2018.07.入力
+*** Date                : 2018.06.05
 *** Function            : 画像処理用のフィルタ処理を管理する。
 """
 
@@ -16,6 +16,13 @@ from PyQt5.QtCore import Qt
 from PIL import Image
 import numba
 
+"""
+*** Class Name          : Filter
+*** Designer            : 稲垣 大輔
+*** Date                : 2018.06.05
+*** Function            : フィルタの抽象クラス
+"""
+
 
 class Filter(metaclass=ABCMeta):
     def __init__(self):
@@ -25,23 +32,71 @@ class Filter(metaclass=ABCMeta):
         self.isUpdate = False
         self.parent = None
 
+    """
+    *** Function Name       : set_id()
+    *** Designer            : 稲垣 大輔
+    *** Date                : 2018.06.05
+    *** Function            : IDをセットする
+    *** Return              : なし
+    """
+
     def set_id(self, id):
         self.id = id
 
+    """
+    *** Function Name       : set_parent()
+    *** Designer            : 稲垣 大輔
+    *** Date                : 2018.06.05
+    *** Function            : 親をセットする
+    *** Return              : なし
+    """
+
     def set_parent(self, parent):
         self.parent = parent
+
+    """
+    *** Function Name       : apply()
+    *** Designer            : 稲垣 大輔
+    *** Date                : 2018.06.05
+    *** Function            : 画像を処理する抽象メソッド
+    *** Return              : なし
+    """
 
     @abstractmethod
     def apply(self, array):
         pass
 
+    """
+    *** Function Name       : apply()
+    *** Designer            : 稲垣 大輔
+    *** Date                : 2018.06.05
+    *** Function            : 名前を取得する抽象メソッド
+    *** Return              : なし
+    """
+
     @abstractmethod
     def get_name(self):
         pass
 
+    """
+    *** Function Name       : get_layout()
+    *** Designer            : 稲垣 大輔
+    *** Date                : 2018.06.05
+    *** Function            : レイアウトを取得する抽象メソッド
+    *** Return              : なし
+    """
+
     @abstractmethod
     def get_layout(self):
         pass
+
+
+"""
+*** Class Name          : Nega
+*** Designer            : 稲垣 大輔
+*** Date                : 2018.06.05
+*** Function            : ネガフィルタのクラス
+"""
 
 
 class Nega(Filter):
@@ -63,6 +118,14 @@ class Nega(Filter):
         layout = QHBoxLayout()
         layout.addWidget(label)
         return layout
+
+
+"""
+*** Class Name          : Brightness
+*** Designer            : 稲垣 大輔
+*** Date                : 2018.06.05
+*** Function            : 明度フィルタのクラス
+"""
 
 
 class Brightness(Filter):
@@ -98,6 +161,14 @@ class Brightness(Filter):
     def get_name(self):
         # return 'Brightness filter{} {}'.format(self.before_image_id, self.after_image_id)
         return 'Brightness filter {}->{}'.format(self.before_image_id, self.after_image_id)
+
+
+"""
+*** Class Name          : Median
+*** Designer            : 高田 康平
+*** Date                : 2018.06.19
+*** Function            : メディアンフィルタのクラス
+"""
 
 
 class Median(Filter):
@@ -147,6 +218,14 @@ class Median(Filter):
         layout.addWidget(self.spinbox)
         layout.addWidget(button)
         return layout
+
+
+"""
+*** Class Name          : Linear
+*** Designer            : 高田 康平
+*** Date                : 2018.06.19
+*** Function            : 線形フィルタのクラス
+"""
 
 
 class Linear(Filter):
@@ -242,6 +321,14 @@ class Linear(Filter):
         return layout
 
 
+"""
+*** Class Name          : FFT2D
+*** Designer            : 劉 号
+*** Date                : 2018.06.19
+*** Function            : 高速フーリエ変換のクラス
+"""
+
+
 class FFT2D(Filter):
     def __init__(self, ):
         super().__init__()
@@ -285,6 +372,14 @@ class FFT2D(Filter):
         return layout
 
 
+"""
+*** Class Name          : Thiza
+*** Designer            : 石渡 諒
+*** Date                : 2018.06.19
+*** Function            : ハーフトーン(ディザ)フィルタのクラス
+"""
+
+
 class Thiza(Filter):
     def __init__(self, ):
         super().__init__()
@@ -320,6 +415,14 @@ class Thiza(Filter):
         return layout
 
 
+"""
+*** Class Name          : Grayscale
+*** Designer            : 石渡 諒
+*** Date                : 2018.06.19
+*** Function            : グレースケールフィルタのクラス
+"""
+
+
 class Grayscale(Filter):
     def __init__(self, ):
         super().__init__()
@@ -337,6 +440,14 @@ class Grayscale(Filter):
         layout = QHBoxLayout()
         layout.addWidget(label)
         return layout
+
+
+"""
+*** Class Name          : Error_diffusion
+*** Designer            : 石渡 諒
+*** Date                : 2018.06.19
+*** Function            : ハーフトーン(誤差拡散)フィルタのクラス
+"""
 
 
 class Error_diffusion(Filter):
@@ -379,6 +490,14 @@ class Error_diffusion(Filter):
         layout = QHBoxLayout()
         layout.addWidget(label)
         return layout
+
+
+"""
+*** Class Name          : Contrast
+*** Designer            : 石渡 諒
+*** Date                : 2018.06.19
+*** Function            : コントラストのクラス
+"""
 
 
 class Contrast(Filter):

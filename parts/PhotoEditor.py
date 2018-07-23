@@ -1,7 +1,7 @@
 """
 *** File Name           : PhotoEditor.py
-*** Designer            : 入力
-*** Date                : 2018.07.入力
+*** Designer            : 邱 雨澄
+*** Date                : 2018.06.05
 *** Function            : 入力
 """
 
@@ -16,7 +16,7 @@ from PhotoViewer import PhotoViewer
 """
 *** Class Name          : Window
 *** Designer            : 邱 雨澄
-*** Date                : 2018.07.入力
+*** Date                : 2018.06.05
 *** Function            : 入力
 """
 
@@ -131,7 +131,7 @@ class Window(QtWidgets.QWidget):
     """
     *** Function Name       : open_image()
     *** Designer            : 井村 舜
-    *** Date                : 2018.07.入力
+    *** Date                : 2018.06.05
     *** Function            : 画像データを読み込む
     *** Return              : 読み込んだ画像
     """
@@ -156,7 +156,7 @@ class Window(QtWidgets.QWidget):
     """
     *** Function Name       : save_image()
     *** Designer            : 高田 康平
-    *** Date                : 2018.07.入力
+    *** Date                : 2018.06.05
     *** Function            : 画像データを読み込む
     *** Return              : 読み込んだ画像
     """
@@ -178,7 +178,7 @@ class Window(QtWidgets.QWidget):
     """
     *** Function Name       : update_image()
     *** Designer            : 稲垣 大輔
-    *** Date                : 2018.07.入力
+    *** Date                : 2018.06.05
     *** Function            : 画像データを更新する
     *** Return              : なし
     """
@@ -190,7 +190,7 @@ class Window(QtWidgets.QWidget):
     """
     *** Function Name       : ndarray_to_qpixmap()
     *** Designer            : 稲垣 大輔
-    *** Date                : 2018.07.入力
+    *** Date                : 2018.06.19
     *** Function            : ndarray型からQPixMap型への変換
     *** Return              : QPixMapのデータ
     """
@@ -204,7 +204,7 @@ class Window(QtWidgets.QWidget):
     """
     *** Function Name       : zoom_in()
     *** Designer            : 劉 号
-    *** Date                : 2018.07.入力
+    *** Date                : 2018.06.05
     *** Function            : _zoomの値増加
     *** Return              : なし
     """
@@ -223,7 +223,7 @@ class Window(QtWidgets.QWidget):
     """
     *** Function Name       : zoom_out()
     *** Designer            : 劉 号
-    *** Date                : 2018.07.入力
+    *** Date                : 2018.06.05
     *** Function            : _zoomの値減少
     *** Return              : なし
     """
