@@ -1,3 +1,10 @@
+"""
+*** File Name           : Filter.py
+*** Designer            : 稲垣 大輔
+*** Date                : 2018.07.入力
+*** Function            : 画像処理用のフィルタ処理を管理する。
+"""
+
 from abc import ABCMeta, abstractmethod
 from fractions import Fraction
 
@@ -104,7 +111,7 @@ class Median(Filter):
     def __init__(self):
         super().__init__()
         self.size = 1  # 奇数のみ有効
-        self.button=None
+        self.button = None
 
     def set_parameter(self, size):
         # self.size=self.slider.value()
@@ -310,31 +317,40 @@ class FFT2D(Filter):
 class Thiza(Filter):
     def __init__(self, ):
         super().__init__()
-        self.mask = [[0, 8, 2, 10],
-                     [12, 4, 14, 6],
-                     [3, 11, 1, 9],
-                     [15, 7, 13, 5]
-                     ]
+        self.mask = np.array([[0, 8, 2, 10],
+                              [12, 4, 14, 6],
+                              [3, 11, 1, 9],
+                              [15, 7, 13, 5]])
 
     def apply(self, array):
-        a = array[:, :, 0] * 0.298912 + array[:, :, 1] * 0.586611 + array[:, :, 2] * 0.114478
-        array[:, :, 0], array[:, :, 1], array[:, :, 2] = a, a, a
-        H = array.shape[0]
-        W = array.shape[1]
-        for y in range(H):
-            for x in range(W):
-                if (array[y, x, 0] * 16 / 255 >= self.mask[y % self.mask.shape[0], x % self.mask.shape[1]]):
-                    array[y, x, 0] = 255
-                    array[y, x, 1] = 255
-                    array[y, x, 2] = 255
-                else:
-                    array[y, x, 0] = 0
-                    array[y, x, 1] = 0
-                    array[y, x, 2] = 0
-        return array
+        try:
+            a = array[:, :, 0] * 0.298912 + array[:, :, 1] * 0.586611 + array[:, :, 2] * 0.114478
+            array[:, :, 0], array[:, :, 1], array[:, :, 2] = a, a, a
+            H = array.shape[0]
+            W = array.shape[1]
+            for y in range(H):
+                for x in range(W):
+                    if (array[y, x, 0] * 16 / 255 >= self.mask[y % self.mask.shape[0], x % self.mask.shape[1]]):
+                        array[y, x, 0] = 255
+                        array[y, x, 1] = 255
+                        array[y, x, 2] = 255
+                    else:
+                        array[y, x, 0] = 0
+                        array[y, x, 1] = 0
+                        array[y, x, 2] = 0
+            return array
+        except:
+            import traceback
+            traceback.print_exc()
 
     def get_name(self):
         return 'thiza filter'
+
+    def get_layout(self):
+        label = QLabel(self.get_name())
+        layout = QHBoxLayout()
+        layout.addWidget(label)
+        return layout
 
 
 class Grayscale(Filter):
