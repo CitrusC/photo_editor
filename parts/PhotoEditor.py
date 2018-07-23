@@ -137,6 +137,8 @@ class Window(QtWidgets.QWidget):
                 self.array = np.array(Image.open(fname[0]).convert("RGBA"), np.float32)
                 self.update_image(self.array)
                 self.list.init(self.array)
+                self.btnUndo.setEnabled(False)
+                self.btnRedo.setEnabled(False)
             except AttributeError:
                 QMessageBox.critical(self, 'Error', "The image file is broken.", QMessageBox.Ok)
 

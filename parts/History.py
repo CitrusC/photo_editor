@@ -88,6 +88,7 @@ class History:
             if ud_index is None:
                 return self.filter_list[self.count]
             self.next_filter()
+            self.filter_list[self.count]=filters
             for i in range(ud_index, len(self.filter_list[self.count])):
                 if i == 0:
                     self.filter_list[self.count][i].before_image_id = 0

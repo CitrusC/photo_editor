@@ -177,7 +177,6 @@ class Linear(Filter):
     @numba.jit
     def apply(self, array):
         line = self.mask.strip().split('\n')
-        print(line)
         mask = []
         for l in line:
             data = l.split(',')
