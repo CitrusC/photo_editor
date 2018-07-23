@@ -10,7 +10,7 @@ from fractions import Fraction
 
 import numpy as np
 from PyQt5.QtGui import QIntValidator, QDoubleValidator
-from PyQt5.QtWidgets import QLabel, QHBoxLayout, QSlider, QGridLayout, QLineEdit, QPushButton, QTextEdit
+from PyQt5.QtWidgets import QLabel, QHBoxLayout, QSlider, QGridLayout, QLineEdit, QPushButton, QTextEdit, QSpinBox
 from PyQt5.QtCore import Qt
 from PIL import Image
 import numba
@@ -107,11 +107,15 @@ class Median(Filter):
     def __init__(self):
         super().__init__()
         self.size = 1  # 奇数のみ有効
-        self.button = None
+        self.before_value = 1
 
     def set_parameter(self, size):
-        # self.size=self.slider.value()
-        self.size = size
+        if size % 2 == 0:
+            self.size = max(1, size - 1)
+            self.spinbox.setValue(self.size)
+        else:
+            self.size = size
+        print(self.size)
         self.parent.parent_list.update_filter(self)
 
     @numba.jit
@@ -131,22 +135,22 @@ class Median(Filter):
         return 'Median filter {}->{}'.format(self.before_image_id, self.after_image_id)
 
     def clicked(self):
-        self.set_parameter(int(self.sizeEdit.text()))
+        self.set_parameter(self.spinbox.value())
+
 
     def get_layout(self):
         label = QLabel(self.get_name())
 
         layout = QHBoxLayout()
-
-        self.validator = QIntValidator(0, 100)
-        self.sizeEdit = QLineEdit()
-        self.sizeEdit.setValidator(self.validator)
-        self.sizeEdit.setText(str(self.size))
+        self.spinbox = QSpinBox()
+        self.spinbox.setValue(self.size)
+        self.spinbox.setSingleStep(2)
+        self.spinbox.setRange(1, 99)
         self.button = QPushButton(self.parent)
         self.button.setText("apply")
         self.button.clicked.connect(self.clicked)
         layout.addWidget(label)
-        layout.addWidget(self.sizeEdit)
+        layout.addWidget(self.spinbox)
         layout.addWidget(self.button)
         return layout
 
