@@ -125,8 +125,7 @@ class Nega(Filter):
     """
 
     def get_name(self):
-        # return 'Nega filter {} {}'.format(self.before_image_id, self.after_image_id)
-        return 'Nega filter {}->{}'.format(self.before_image_id, self.after_image_id)
+        return 'Nega filter'
 
     """
     *** Function Name       : get_layout()
@@ -156,6 +155,13 @@ class Brightness(Filter):
         super().__init__()
         self.brightness = 0
 
+    """
+    *** Function Name       : set_parameter()
+    *** Designer            : 稲垣 大輔
+    *** Date                : 2018.06.05
+    *** Function            : パラメータをセットする
+    *** Return              : なし
+    """
     def set_parameter(self, brightness):
         self.brightness = brightness
         self.parent.parent_list.update_filter(self)
@@ -194,6 +200,13 @@ class Brightness(Filter):
         layout.addWidget(self.slider)
         return layout
 
+    """
+    *** Function Name       : release_mouse()
+    *** Designer            : 稲垣 大輔
+    *** Date                : 2018.06.05
+    *** Function            : スライダー変更時処理
+    *** Return              : なし
+    """
     def release_mouse(self):
         self.set_parameter(self.slider.value())
 
@@ -206,8 +219,7 @@ class Brightness(Filter):
     """
 
     def get_name(self):
-        # return 'Brightness filter{} {}'.format(self.before_image_id, self.after_image_id)
-        return 'Brightness filter {}->{}'.format(self.before_image_id, self.after_image_id)
+        return 'Brightness filter'
 
 
 """
@@ -224,6 +236,13 @@ class Median(Filter):
         self.size = 1  # 奇数のみ有効
         self.before_value = 1
 
+    """
+    *** Function Name       : set_parameter()
+    *** Designer            : 高田 康平
+    *** Date                : 2018.06.19
+    *** Function            : パラメータをセットする
+    *** Return              : なし
+    """
     def set_parameter(self, size):
         if size % 2 == 0:
             self.size = max(1, size - 1)
@@ -262,8 +281,15 @@ class Median(Filter):
     """
 
     def get_name(self):
-        return 'Median filter {}->{}'.format(self.before_image_id, self.after_image_id)
+        return 'Median filter'
 
+    """
+    *** Function Name       : clicked()
+    *** Designer            : 高田 康平
+    *** Date                : 2018.06.19
+    *** Function            : パラメータ変更時処理
+    *** Return              : なし
+    """
     def clicked(self):
         self.set_parameter(self.spinbox.value())
 
@@ -305,6 +331,13 @@ class Linear(Filter):
         self.size = 1
         self.mask = "1"
 
+    """
+    *** Function Name       : set_parameter()
+    *** Designer            : 高田 康平
+    *** Date                : 2018.06.19
+    *** Function            : パラメータのセット
+    *** Return              : なし
+    """
     def set_parameter(self, size, mask):
         if size % 2 == 0:
             self.size = max(1, size - 1)
@@ -367,8 +400,15 @@ class Linear(Filter):
     """
 
     def get_name(self):
-        return 'Linear filter {}->{}'.format(self.before_image_id, self.after_image_id)
+        return 'Linear filter'
 
+    """
+    *** Function Name       : clicked()
+    *** Designer            : 高田 康平
+    *** Date                : 2018.06.19
+    *** Function            : パラメータ変更時処理
+    *** Return              : なし
+    """
     def clicked(self):
         self.set_parameter(self.spinbox.value(), self.maskEdit.toPlainText())
 
@@ -430,6 +470,13 @@ class FFT2D(Filter):
         self.a = 0.1
         self.type = 0
 
+    """
+    *** Function Name       : set_parameter()
+    *** Designer            : 劉 号
+    *** Date                : 2018.06.19
+    *** Function            : パラメータのセット
+    *** Return              : なし
+    """
     def set_parameter(self, a, type):
         self.a = a
         self.type = type
@@ -474,7 +521,7 @@ class FFT2D(Filter):
     """
 
     def get_name(self):
-        return 'FFT2D filter {}->{}'.format(self.before_image_id, self.after_image_id)
+        return 'FFT2D filter'
 
     """
     *** Function Name       : get_layout()
@@ -541,7 +588,7 @@ class Thiza(Filter):
     """
 
     def get_name(self):
-        return 'Thiza filter {}->{}'.format(self.before_image_id, self.after_image_id)
+        return 'Thiza filter'
 
     """
     *** Function Name       : get_layout()
@@ -592,7 +639,7 @@ class Grayscale(Filter):
     """
 
     def get_name(self):
-        return 'Grayscale filter {}->{}'.format(self.before_image_id, self.after_image_id)
+        return 'Grayscale filter'
 
     """
     *** Function Name       : get_layout()
@@ -696,6 +743,13 @@ class Contrast(Filter):
         super().__init__()
         self.contrast = 100
 
+    """
+    *** Function Name       : set_parameter()
+    *** Designer            : 石渡 諒
+    *** Date                : 2018.06.19
+    *** Function            : パラメータのセット
+    *** Return              : なし
+    """
     def set_parameter(self, contrast):
         self.contrast = contrast
         self.parent.parent_list.update_filter(self)
@@ -735,6 +789,13 @@ class Contrast(Filter):
         layout.addWidget(self.slider)
         return layout
 
+    """
+    *** Function Name       : set_parameter()
+    *** Designer            : 石渡 諒
+    *** Date                : 2018.06.19
+    *** Function            : スライダー変更時処理
+    *** Return              : なし
+    """
     def release_mouse(self):
         self.set_parameter(self.slider.value())
 
@@ -747,5 +808,4 @@ class Contrast(Filter):
     """
 
     def get_name(self):
-        # return 'Contrast filter{} {}'.format(self.before_image_id, self.after_image_id)
         return 'Contrast filter'
