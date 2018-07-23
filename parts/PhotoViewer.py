@@ -26,24 +26,24 @@ class PhotoViewer(QtWidgets.QGraphicsView):
         self.setBackgroundBrush(QtGui.QBrush(QtGui.QColor(255, 255, 255)))
         self.setFrameShape(QtWidgets.QFrame.NoFrame)
 
-    def hasPhoto(self):
+    def has_photo(self):
         return not self._empty
 
     def fitInView(self, scale=True):
         rect = QtCore.QRectF(self._photo.pixmap().rect())
         if not rect.isNull():
             self.setSceneRect(rect)
-            if self.hasPhoto():
+            if self.has_photo():
                 unity = self.transform().mapRect(QtCore.QRectF(0, 0, 1, 1))
                 self.scale(1 / unity.width(), 1 / unity.height())
-                viewrect = self.viewport().rect()
-                scenerect = self.transform().mapRect(rect)
-                factor = min(viewrect.width() / scenerect.width(),
-                             viewrect.height() / scenerect.height())
+                view_rect = self.viewport().rect()
+                scene_rect = self.transform().mapRect(rect)
+                factor = min(view_rect.width() / scene_rect.width(),
+                             view_rect.height() / scene_rect.height())
                 self.scale(factor, factor)
             self._zoom = 0
 
-    def setPhoto(self, pixmap=None):
+    def set_photo(self, pixmap=None):
         self._zoom = 0
         if pixmap and not pixmap.isNull():
             self._empty = False
@@ -56,7 +56,7 @@ class PhotoViewer(QtWidgets.QGraphicsView):
         self.fitInView()
 
     def wheelEvent(self, event):
-        if self.hasPhoto():
+        if self.has_photo():
             if event.angleDelta().y() > 0:
                 factor = 1.25
                 self._zoom += 1

@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import QMenu, QMessageBox, QPushButton, QToolButton, QFileD
 import numpy as np
 import os
 from PIL import Image
-from Filter_list import Filter_list
+from FilterList import FilterList
 from PhotoViewer import PhotoViewer
 
 """
@@ -28,7 +28,7 @@ class Window(QtWidgets.QWidget):
         bw = 32  # buttonWidth
         iw = 24  # iconWidth
 
-        self.list = Filter_list(self)
+        self.list = FilterList(self)
         self.list.setFixedWidth(350)
 
         # 'Load image' button
@@ -48,13 +48,13 @@ class Window(QtWidgets.QWidget):
         self.btnZoomIn.setIcon(QtGui.QIcon("icons/zoom_in.png"))
         self.btnZoomIn.setFixedSize(bw, bw)
         self.btnZoomIn.setIconSize(QtCore.QSize(iw, iw))
-        self.btnZoomIn.clicked.connect(self.zoomIn)
+        self.btnZoomIn.clicked.connect(self.zoom_in)
         # 'Zoom out' button
         self.btnZoomOut = QToolButton(self)
         self.btnZoomOut.setIcon(QtGui.QIcon("icons/zoom_out.png"))
         self.btnZoomOut.setFixedSize(bw, bw)
         self.btnZoomOut.setIconSize(QtCore.QSize(iw, iw))
-        self.btnZoomOut.clicked.connect(self.zoomOut)
+        self.btnZoomOut.clicked.connect(self.zoom_out)
         # 'Undo' button
         self.btnUndo = QToolButton(self)
         self.btnUndo.setIcon(QtGui.QIcon("icons/undo.png"))
@@ -85,7 +85,7 @@ class Window(QtWidgets.QWidget):
             action.setText(f)
             action.triggered.connect(mapper.map)
             actions.append(action)
-        mapper.mapped['QString'].connect(self.list.addEvent)
+        mapper.mapped['QString'].connect(self.list.add_event)
 
         menu = QMenu(self)
         menu.addActions(actions)
@@ -101,34 +101,34 @@ class Window(QtWidgets.QWidget):
         self.btnApply.clicked.connect(self.list.apply_filters)
 
         # Arrange layout
-        VBlayout = QtWidgets.QVBoxLayout(self)
-        TopBar = QtWidgets.QHBoxLayout()
-        TopBar.setAlignment(QtCore.Qt.AlignLeft)
-        TopBar.addWidget(self.btnLoad)
-        TopBar.addStretch(1)
-        TopBar.addWidget(self.btnExport)
-        VBlayout.addLayout(TopBar)
-        MainView = QtWidgets.QHBoxLayout()
-        LeftView = QtWidgets.QVBoxLayout()
-        LeftView.addWidget(self.viewer)
-        EditBar = QtWidgets.QHBoxLayout()
-        EditBar.setAlignment(QtCore.Qt.AlignLeft)
-        EditBar.addWidget(self.btnZoomIn)
-        EditBar.addWidget(self.btnZoomOut)
-        EditBar.addWidget(self.btnUndo)
-        EditBar.addWidget(self.btnRedo)
-        LeftView.addLayout(EditBar)
-        MainView.addLayout(LeftView)
-        SideBar = QtWidgets.QVBoxLayout()
-        SideBar.addWidget(self.list)
-        FilterBar = QtWidgets.QHBoxLayout()
-        FilterBar.addWidget(self.btnAdd)
-        FilterBar.addStretch(1)
-        FilterBar.addWidget(self.btnApply)
-        SideBar.addLayout(FilterBar)
-        MainView.addLayout(SideBar)
-        # MainView.addWidget(self.list)
-        VBlayout.addLayout(MainView)
+        v_blayout = QtWidgets.QVBoxLayout(self)
+        top_bar = QtWidgets.QHBoxLayout()
+        top_bar.setAlignment(QtCore.Qt.AlignLeft)
+        top_bar.addWidget(self.btnLoad)
+        top_bar.addStretch(1)
+        top_bar.addWidget(self.btnExport)
+        v_blayout.addLayout(top_bar)
+        main_view = QtWidgets.QHBoxLayout()
+        left_view = QtWidgets.QVBoxLayout()
+        left_view.addWidget(self.viewer)
+        edit_bar = QtWidgets.QHBoxLayout()
+        edit_bar.setAlignment(QtCore.Qt.AlignLeft)
+        edit_bar.addWidget(self.btnZoomIn)
+        edit_bar.addWidget(self.btnZoomOut)
+        edit_bar.addWidget(self.btnUndo)
+        edit_bar.addWidget(self.btnRedo)
+        left_view.addLayout(edit_bar)
+        main_view.addLayout(left_view)
+        side_bar = QtWidgets.QVBoxLayout()
+        side_bar.addWidget(self.list)
+        filter_bar = QtWidgets.QHBoxLayout()
+        filter_bar.addWidget(self.btnAdd)
+        filter_bar.addStretch(1)
+        filter_bar.addWidget(self.btnApply)
+        side_bar.addLayout(filter_bar)
+        main_view.addLayout(side_bar)
+        # main_view.addWidget(self.list)
+        v_blayout.addLayout(main_view)
 
     def file_open(self):
         if os.name == 'nt':
@@ -136,17 +136,14 @@ class Window(QtWidgets.QWidget):
                                                 os.getenv("HOMEDRIVE") + os.getenv("HOMEPATH") + "\\Desktop",
                                                 filter="JPG(*.jpg);;PNG(*.png);;BMP(*.bmp)")
         else:
-            fname = QFileDialog.getOpenFileName(self, 'Open file',
-                                                "./",
-                                                filter="JPG(*.jpg);;PNG(*.png);;BMP(*.bmp)")
+            fname = QFileDialog.getOpenFileName(self, 'Open file', "./", filter="JPG(*.jpg);;PNG(*.png);;BMP(*.bmp)")
         if fname[0]:
             try:
                 self.array = np.array(Image.open(fname[0]).convert("RGBA"), np.float32)
                 self.update_image(self.array)
                 self.list.init(self.array)
-            except OSError:
-                QMessageBox.critical(self, 'Error',
-                                             "The image file is broken.", QMessageBox.Ok)
+            except AttributeError:
+                QMessageBox.critical(self, 'Error', "The image file is broken.", QMessageBox.Ok)
 
     def save_image(self):
         if os.name == 'nt':
@@ -154,21 +151,17 @@ class Window(QtWidgets.QWidget):
                                                 os.getenv("HOMEDRIVE") + os.getenv("HOMEPATH") + "\\Desktop",
                                                 filter="JPG(*.jpg);;PNG(*.png);;BMP(*.bmp)")
         else:
-            fname = QFileDialog.getSaveFileName(self, 'Save file',
-                                                "./",
-                                                filter="JPG(*.jpg);;PNG(*.png);;BMP(*.bmp)")
+            fname = QFileDialog.getSaveFileName(self, 'Save file', "./", filter="JPG(*.jpg);;PNG(*.png);;BMP(*.bmp)")
         if fname[0]:
             try:
                 pil_img = Image.fromarray(self.array.astype(np.uint8)).convert("RGB")
                 pil_img.save(fname[0])
-            except OSError:
-                print(sys.exc_info())
-                QMessageBox.critical(self, 'Message',
-                                             "The image file is not selcted.", QMessageBox.Ok)
+            except AttributeError:
+                QMessageBox.critical(self, 'Error', "The image file is not selcted.", QMessageBox.Ok)
 
     def update_image(self, array):
-        self.array = array;
-        self.viewer.setPhoto(self.ndarray_to_qpixmap(array.astype(np.uint8)))
+        self.array = array
+        self.viewer.set_photo(self.ndarray_to_qpixmap(array.astype(np.uint8)))
 
     def ndarray_to_qpixmap(self, image):
         qimage = QtGui.QImage(image.data, image.shape[1], image.shape[0], image.shape[1] * 4,
@@ -176,7 +169,7 @@ class Window(QtWidgets.QWidget):
         pixmap = QtGui.QPixmap.fromImage(qimage)
         return pixmap
 
-    def zoomIn(self):
+    def zoom_in(self):
         if self.viewer.hasPhoto():
             factor = 1.25
             self.viewer._zoom += 1
@@ -187,7 +180,7 @@ class Window(QtWidgets.QWidget):
             else:
                 self.viewer._zoom = 0
 
-    def zoomOut(self):
+    def zoom_out(self):
         if self.viewer.hasPhoto():
             factor = 0.8
             self.viewer._zoom -= 1
