@@ -6,7 +6,7 @@
 """
 
 from PyQt5 import QtGui, QtWidgets, QtCore
-from PyQt5.QtWidgets import QMenu, QMessageBox, QPushButton, QToolButton, QFileDialog, QAction
+from PyQt5.QtWidgets import QMenu, QMessageBox, QPushButton, QToolButton, QFileDialog, QAction, QSplitter, QWidget
 import numpy as np
 import os
 from PIL import Image
@@ -29,7 +29,7 @@ class Window(QtWidgets.QWidget):
         iw = 24  # iconWidth
 
         self.list = FilterList(self)
-        self.list.setFixedWidth(350)
+        # self.list.setFixedWidth(350)
 
         # 'Load image' button
         self.btnLoad = QToolButton(self)
@@ -101,34 +101,29 @@ class Window(QtWidgets.QWidget):
         self.btnApply.clicked.connect(self.list.apply_filters)
 
         # Arrange layout
-        v_blayout = QtWidgets.QVBoxLayout(self)
+        vb_layout = QtWidgets.QVBoxLayout(self)
+
         top_bar = QtWidgets.QHBoxLayout()
-        top_bar.setAlignment(QtCore.Qt.AlignLeft)
         top_bar.addWidget(self.btnLoad)
         top_bar.addStretch(1)
         top_bar.addWidget(self.btnExport)
-        v_blayout.addLayout(top_bar)
-        main_view = QtWidgets.QHBoxLayout()
-        left_view = QtWidgets.QVBoxLayout()
-        left_view.addWidget(self.viewer)
+        vb_layout.addLayout(top_bar)
+
+        splitter = QSplitter(QtCore.Qt.Horizontal)
+        splitter.addWidget(self.viewer)
+        splitter.addWidget(self.list)
+        vb_layout.addWidget(splitter)
+
         edit_bar = QtWidgets.QHBoxLayout()
-        edit_bar.setAlignment(QtCore.Qt.AlignLeft)
         edit_bar.addWidget(self.btnZoomIn)
         edit_bar.addWidget(self.btnZoomOut)
         edit_bar.addWidget(self.btnUndo)
         edit_bar.addWidget(self.btnRedo)
-        left_view.addLayout(edit_bar)
-        main_view.addLayout(left_view)
-        side_bar = QtWidgets.QVBoxLayout()
-        side_bar.addWidget(self.list)
-        filter_bar = QtWidgets.QHBoxLayout()
-        filter_bar.addWidget(self.btnAdd)
-        filter_bar.addStretch(1)
-        filter_bar.addWidget(self.btnApply)
-        side_bar.addLayout(filter_bar)
-        main_view.addLayout(side_bar)
-        # main_view.addWidget(self.list)
-        v_blayout.addLayout(main_view)
+        edit_bar.addStretch(1)
+        edit_bar.addWidget(self.btnAdd)
+        edit_bar.addWidget(self.btnApply)
+        vb_layout.addLayout(edit_bar)
+
 
     def file_open(self):
         if os.name == 'nt':

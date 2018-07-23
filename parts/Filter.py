@@ -70,8 +70,12 @@ class Brightness(Filter):
         self.brightness = 0
 
     def set_parameter(self, brightness):
-        self.brightness = brightness
-        self.parent.parent_list.update_filter(self)
+        try:
+            self.brightness = brightness
+            self.parent.parent_list.update_filter(self)
+        except:
+            import traceback
+            traceback.print_exc()
 
     def apply(self, array):
         array[:, :, 0] = array[:, :, 0] + self.brightness
