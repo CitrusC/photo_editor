@@ -51,9 +51,15 @@ class History:
     """
 
     def remove_filter(self, f):
+        rm_index = None
+        for i in range(len(self.filter_list[self.count])):
+            if self.filter_list[self.count][i].id == f.id:
+                rm_index = i
+                break
+        if rm_index is None:
+            return self.filter_list[self.count]
         self.next_filter()
-        rm_index = self.filter_list[self.count].index(f)
-        self.filter_list[self.count].remove(f)
+        del self.filter_list[self.count][rm_index]
         for i in range(rm_index, len(self.filter_list[self.count])):
             if i == 0:
                 self.filter_list[self.count][i].before_image_id = 0
@@ -109,8 +115,6 @@ class History:
             if fil.id == f.id:
                 ud_index = i
                 break
-        print(self.filter_list[self.count][ud_index].brightness, f.brightness)
-        print(ud_index)
         self.filter_list[self.count][ud_index] = f
         for i in range(ud_index, len(self.filter_list[self.count])):
             if i == 0:

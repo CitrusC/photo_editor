@@ -77,7 +77,7 @@ class Window(QtWidgets.QWidget):
         self.btnAdd.setFont(font)
         self.btnAdd.setFixedSize(bw * 2, bw)
         mapper = QtCore.QSignalMapper(self)
-        menulabels = ['Brightness', 'Nega', 'Median', 'Linear', 'FFT2D', 'Grayscale', 'Thiza']
+        menulabels = ['Brightness', 'Nega', 'Median', 'Linear', 'FFT2D', 'Grayscale', 'Thiza', 'Error_diffusion', 'Contrast']
         actions = []
         for f in menulabels:
             action = QAction(self)
