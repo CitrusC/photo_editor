@@ -112,6 +112,8 @@ class Window(QtWidgets.QWidget):
         splitter = QSplitter(QtCore.Qt.Horizontal)
         splitter.addWidget(self.viewer)
         splitter.addWidget(self.list)
+        splitter.setSizes((400,200))
+
         vb_layout.addWidget(splitter)
 
         edit_bar = QtWidgets.QHBoxLayout()
@@ -197,6 +199,6 @@ if __name__ == '__main__':
 
     app = QtWidgets.QApplication(sys.argv)
     window = Window()
-    window.setGeometry(500, 300, 800, 600)
+    window.setGeometry(500, 300, 1000, 600)
     window.show()
     sys.exit(app.exec_())
