@@ -125,7 +125,7 @@ class Nega(Filter):
     """
 
     def get_name(self):
-        return 'Nega filter'
+        return 'Nega filter {}->{}'.format(self.before_image_id, self.after_image_id)
 
     """
     *** Function Name       : get_layout()
@@ -219,7 +219,7 @@ class Brightness(Filter):
     """
 
     def get_name(self):
-        return 'Brightness filter'
+        return 'Brightness filter {}->{}'.format(self.before_image_id, self.after_image_id)
 
 
 """
@@ -281,7 +281,7 @@ class Median(Filter):
     """
 
     def get_name(self):
-        return 'Median filter'
+        return 'Median filter {}->{}'.format(self.before_image_id, self.after_image_id)
 
     """
     *** Function Name       : clicked()
@@ -400,7 +400,7 @@ class Linear(Filter):
     """
 
     def get_name(self):
-        return 'Linear filter'
+        return 'Linear filter {}->{}'.format(self.before_image_id, self.after_image_id)
 
     """
     *** Function Name       : clicked()
@@ -521,7 +521,7 @@ class FFT2D(Filter):
     """
 
     def get_name(self):
-        return 'FFT2D filter'
+        return 'FFT2D filter {}->{}'.format(self.before_image_id, self.after_image_id)
 
     """
     *** Function Name       : get_layout()
@@ -588,7 +588,7 @@ class Thiza(Filter):
     """
 
     def get_name(self):
-        return 'Thiza filter'
+        return 'Thiza filter {}->{}'.format(self.before_image_id, self.after_image_id)
 
     """
     *** Function Name       : get_layout()
@@ -639,7 +639,7 @@ class Grayscale(Filter):
     """
 
     def get_name(self):
-        return 'Grayscale filter'
+        return 'Grayscale filter {}->{}'.format(self.before_image_id, self.after_image_id)
 
     """
     *** Function Name       : get_layout()
@@ -713,7 +713,7 @@ class Error_diffusion(Filter):
     """
 
     def get_name(self):
-        return 'Error_diffusion filter'
+        return 'Error_diffusion filter {}->{}'.format(self.before_image_id, self.after_image_id)
 
     """
     *** Function Name       : get_layout()
@@ -808,4 +808,4 @@ class Contrast(Filter):
     """
 
     def get_name(self):
-        return 'Contrast filter'
+        return 'Contrast filter {}->{}'.format(self.before_image_id, self.after_image_id)

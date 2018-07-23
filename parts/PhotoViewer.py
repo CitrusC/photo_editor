@@ -1,6 +1,6 @@
 """
 *** File Name           : PhotoViewer.py
-*** Designer            : 入力
+*** Designer            : 邱 雨澄
 *** Date                : 2018.06.05
 *** Function            : 画像表示部分の管理する
 """

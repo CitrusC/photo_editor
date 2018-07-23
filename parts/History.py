@@ -1,15 +1,15 @@
 """
 *** File Name           : History.py
 *** Designer            : 稲垣 大輔
-*** Date                : 2018.07.入力
+*** Date                : 2018.06.19
 *** Function            : 画像の編集履歴を管理する
 """
 
 """
 *** Class Name          : History
 *** Designer            : 稲垣 大輔
-*** Date                : 2018.07.入力
-*** Function            : 入力
+*** Date                : 2018.06.19
+*** Function            : 履歴の管理
 """
 
 
@@ -27,7 +27,7 @@ class History:
     """
     *** Function Name       : add_filter()
     *** Designer            : 稲垣 大輔
-    *** Date                : 2018.07.入力
+    *** Date                : 2018.06.19
     *** Function            : フィルタ履歴にフィルタを追加する
     *** Return              : なし
     """
@@ -45,7 +45,7 @@ class History:
     """
     *** Function Name       : remove_filter()
     *** Designer            : 稲垣 大輔
-    *** Date                : 2018.07.入力
+    *** Date                : 2018.06.19
     *** Function            : フィルタ履歴から選択されたフィルタを削除する
     *** Return              : 更新後のフィルタリスト
     """
@@ -72,7 +72,7 @@ class History:
     """
     *** Function Name       : swap()
     *** Designer            : 稲垣 大輔
-    *** Date                : 2018.07.入力
+    *** Date                : 2018.06.19
     *** Function            : フィルタの移動を処理する。
     *** Return              : 更新後のフィルタリスト
     """
@@ -104,7 +104,7 @@ class History:
     """
     *** Function Name       : update_filter()
     *** Designer            : 稲垣 大輔
-    *** Date                : 2018.07.入力
+    *** Date                : 2018.06.19
     *** Function            : フィルタのパラメータ更新を記録する。
     *** Return              : 更新後のフィルタリスト
     """
@@ -129,7 +129,7 @@ class History:
     """
     *** Function Name       : undo()
     *** Designer            : 稲垣 大輔
-    *** Date                : 2018.07.入力
+    *** Date                : 2018.06.19
     *** Function            : フィルタリストの状態を一つ戻す。
     *** Return              : 更新後画像, 更新後フィルタリスト, undo可否
     """
@@ -143,7 +143,7 @@ class History:
     """
     *** Function Name       : redo()
     *** Designer            : 稲垣 大輔
-    *** Date                : 2018.07.入力
+    *** Date                : 2018.06.19
     *** Function            : フィルタリストの状態を一つ進める。
     *** Return              : 更新後画像, 更新後フィルタリスト, redo可否
     """
@@ -157,7 +157,7 @@ class History:
     """
     *** Function Name       : next_filter()
     *** Designer            : 稲垣 大輔
-    *** Date                : 2018.07.入力
+    *** Date                : 2018.06.19
     *** Function            : フィルタリストを履歴に格納する。
     *** Return              : なし
     """
@@ -181,7 +181,7 @@ class History:
     """
     *** Function Name       : next_image()
     *** Designer            : 稲垣 大輔
-    *** Date                : 2018.07.入力
+    *** Date                : 2018.06.19
     *** Function            : 画像を履歴に格納する。
     *** Return              : なし
     """
@@ -193,7 +193,7 @@ class History:
     """
     *** Function Name       : apply()
     *** Designer            : 稲垣 大輔
-    *** Date                : 2018.07.入力
+    *** Date                : 2018.06.19
     *** Function            : フィルタリストのフィルタを適用する
     *** Return              : 更新後画像, 更新後フィルタリスト
     """

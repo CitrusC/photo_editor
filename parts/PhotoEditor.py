@@ -17,7 +17,7 @@ from PhotoViewer import PhotoViewer
 *** Class Name          : Window
 *** Designer            : 邱 雨澄
 *** Date                : 2018.06.05
-*** Function            : 入力
+*** Function            : UIの主処理
 """
 
 

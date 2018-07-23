@@ -1,6 +1,6 @@
 """
 *** File Name           : Filter_list.py
-*** Designer            : 入力
+*** Designer            : 稲垣 大輔
 *** Date                : 2018.06.05
 *** Function            : フィルタリストを管理する
 """
