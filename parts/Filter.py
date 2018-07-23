@@ -84,7 +84,6 @@ class Brightness(Filter):
         array = np.clip(array, 0, 255)
         return array
 
-
     def get_layout(self):
         label = QLabel(self.get_name())
         self.slider = QSlider(Qt.Horizontal, self.parent)
@@ -102,17 +101,6 @@ class Brightness(Filter):
     def get_name(self):
         # return 'Brightness filter{} {}'.format(self.before_image_id, self.after_image_id)
         return 'Brightness filter {}->{}'.format(self.before_image_id, self.after_image_id)
-
-
-class DoNothing(Filter):
-    def __init__(self):
-        super().__init__()
-
-    def apply(self, array):
-        pass
-
-    def get_name(self):
-        return 'DoNothing filter'
 
 
 class Median(Filter):
@@ -191,6 +179,7 @@ class Linear(Filter):
         array_c[:, :, 3] = array[:, :, 3]
         if self.size == 1:
             array_c = array * mask[0][0]
+            array_c[:, :, 3] = array[:, :, 3]
             array_c = np.clip(array_c, 0, 255)
             return array_c
 
@@ -392,30 +381,28 @@ class Error_diffusion(Filter):
         layout.addWidget(label)
         return layout
 
+
 class Contrast(Filter):
     def __init__(self):
         super().__init__()
-        self.contrast = 1
-
+        self.contrast = 100
 
     def set_parameter(self, contrast):
         self.contrast = contrast
         self.parent.parent_list.update_filter(self)
 
-
     def apply(self, array):
-        array[:, :, 0] = (array[:, :, 0] - 128) * self.contrast + 128
-        array[:, :, 1] = (array[:, :, 1] - 128) * self.contrast + 128
-        array[:, :, 2] = (array[:, :, 2] - 128) * self.contrast + 128
+        array[:, :, 0] = (array[:, :, 0] - 128) * self.contrast / 100 + 128
+        array[:, :, 1] = (array[:, :, 1] - 128) * self.contrast / 100 + 128
+        array[:, :, 2] = (array[:, :, 2] - 128) * self.contrast / 100 + 128
 
         array = np.clip(array, 0, 255)
         return array
 
-
     def get_layout(self):
         label = QLabel(self.get_name())
         self.slider = QSlider(Qt.Horizontal, self.parent)
-        self.slider.setRange(-255, 255)
+        self.slider.setRange(0, 200)
         self.slider.setValue(self.contrast)
         self.slider.sliderReleased.connect(self.release_mouse)
         layout = QHBoxLayout()
@@ -423,10 +410,8 @@ class Contrast(Filter):
         layout.addWidget(self.slider)
         return layout
 
-
     def release_mouse(self):
         self.set_parameter(self.slider.value())
-
 
     def get_name(self):
         # return 'Contrast filter{} {}'.format(self.before_image_id, self.after_image_id)
