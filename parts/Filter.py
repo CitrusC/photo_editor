@@ -11,7 +11,7 @@ from fractions import Fraction
 import numpy as np
 from PyQt5.QtGui import QIntValidator, QDoubleValidator
 from PyQt5.QtWidgets import QLabel, QHBoxLayout, QSlider, QGridLayout, QLineEdit, QPushButton, QTextEdit, QSpinBox, \
-    QVBoxLayout
+    QVBoxLayout, QTableWidget
 from PyQt5.QtCore import Qt
 from PIL import Image
 import numba
@@ -205,63 +205,68 @@ class Linear(Filter):
         return 'Linear filter {}->{}'.format(self.before_image_id, self.after_image_id)
 
     def clicked(self):
-        # self.set_parameter(int(self.sizeEdit.text()), self.maskEdit.toPlainText())
         self.set_parameter(self.spinbox.value(), self.maskEdit.toPlainText())
 
+    # def change(self):
+    #     try:
+    #         self.maskTable.setRowCount(self.spinbox.value())
+    #         self.maskTable.setColumnCount(self.spinbox.value())
+    #         print(self.maskTable.rowCount(), self.maskTable.columnCount())
+    #         self.maskTable.resizeColumnsToContents()
+    #         self.maskTable.resizeRowsToContents()
+    #         self.maskTable.setFixedHeight(self.maskTable.rowHeight(0) * (self.maskTable.columnCount() + 1.2))
+    #         self.maskTable.setFixedWidth(self.maskTable.rowHeight(0) * (self.maskTable.columnCount() + 1.2))
+    #
+    #         self.layout.addStretch()
+    #
+    #     except:
+    #         import traceback
+    #         traceback.print_exc()
     def get_layout(self):
+        try:
+            label = QLabel(self.get_name())
 
-        label = QLabel(self.get_name())
+            size = QLabel('size')
+            mask = QLabel('mask')
+            self.spinbox = QSpinBox()
+            self.spinbox.setValue(self.size)
+            self.spinbox.setSingleStep(2)
+            self.spinbox.setRange(1, 99)
+            self.maskEdit = QTextEdit()
+            self.maskEdit.setPlainText(self.mask)
+            self.maskEdit.setMaximumHeight(label.sizeHint().width())
+            self.maskEdit.setMaximumWidth(label.sizeHint().width())
+            # self.maskTable=QTableWidget(1,1)
+            # try:
+            #     self.maskTable.resizeColumnsToContents()
+            #     self.maskTable.resizeRowsToContents()
+            #     print(self.maskTable.columnWidth(0), self.maskTable.colorCount())
+            #     self.maskTable.setMaximumHeight(self.maskTable.rowHeight(0)*(self.maskTable.columnCount()+1))
+            #     self.maskTable.setMaximumWidth(self.maskTable.rowHeight(0)*(self.maskTable.columnCount()+1))
+            # except:
+            #     import traceback
+            #     traceback.print_exc()
+            # 格子状の配置を作り、各ウィジェットのスペースを空ける
+            grid = QGridLayout()
+            grid.addWidget(size, 0, 0)
+            grid.addWidget(mask, 1, 0)
+            # 入力欄の位置設定
+            grid.addWidget(self.spinbox, 0, 1)
+            grid.addWidget(self.maskEdit, 1, 1)
+            # grid.addWidget(self.maskTable,2,1)
 
-        size = QLabel('size')
-        mask = QLabel('mask')
-        self.spinbox = QSpinBox()
-        self.spinbox.setValue(self.size)
-        self.spinbox.setSingleStep(2)
-        self.spinbox.setRange(1, 99)
-        # self.validator = QIntValidator(0, 10000)
-        # self.sizeEdit = QLineEdit()
-        self.maskEdit = QTextEdit()
-        # self.sizeEdit.setText(str(self.size))
-        self.maskEdit.setPlainText(self.mask)
-        self.maskEdit.setMaximumHeight(label.sizeHint().width())
-        self.maskEdit.setMaximumWidth(label.sizeHint().width())
 
-        # self.sizeEdit.setValidator(self.validator)
-        # 格子状の配置を作り、各ウィジェットのスペースを空ける
-        grid = QGridLayout()
-
-        grid.addWidget(size, 1, 0)
-        # 入力欄の位置設定
-        grid.addWidget(self.spinbox, 1, 1)
-        grid.setSpacing(10)
-        grid.addWidget(mask, 2, 0)
-        grid.addWidget(self.maskEdit, 2, 1)
-
-        layout = QHBoxLayout()
-        # self.sizeEdit.setText(str(self.size))
-
-        self.button = QPushButton(self.parent)
-        grid.addWidget(self.button, 3, 1)
-        self.button.setText("apply")
-        self.button.clicked.connect(self.clicked)
-        layout.addWidget(label)
-        layout.addLayout(grid)
-        layout.addWidget(self.button)
-
-        # hbox1 = QHBoxLayout()
-        # hbox1.addWidget(size)
-        # hbox1.addWidget(self.sizeEdit)
-        # hbox2 = QHBoxLayout()
-        # hbox2.addWidget(mask)
-        # hbox2.addWidget(self.maskEdit)
-        # vbox1=QVBoxLayout()
-        # vbox1.addLayout(hbox1)
-        # vbox1.addLayout(hbox2)
-        # vbox1.addWidget(self.button)
-        # layout = QHBoxLayout()
-        # layout.addWidget(label)
-        # layout.addLayout(vbox1)
-        return layout
+            self.button = QPushButton(self.parent)
+            grid.addWidget(self.button, 2, 1)
+            self.button.setText("apply")
+            self.button.clicked.connect(self.clicked)
+            layout = QHBoxLayout()
+            # layout.addWidget(label)
+            layout.addLayout(grid)
+            return layout
+        except:
+            import traceback
+            traceback.print_exc()
 
 
 class FFT2D(Filter):
