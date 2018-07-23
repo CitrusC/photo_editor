@@ -20,9 +20,12 @@ class Filter(metaclass=ABCMeta):
     def __init__(self):
         self.before_image_id = None
         self.after_image_id = None
-
+        self.id = None
         self.isUpdate = False
         self.parent = None
+
+    def set_id(self, id):
+        self.id = id
 
     def set_parent(self, parent):
         self.parent = parent
@@ -52,7 +55,7 @@ class Nega(Filter):
 
     def get_name(self):
         # return 'Nega filter {} {}'.format(self.before_image_id, self.after_image_id)
-        return 'Nega filter'
+        return 'Nega filter {}->{}'.format(self.before_image_id, self.after_image_id)
 
     def get_layout(self):
         label = QLabel(self.get_name())
@@ -93,7 +96,7 @@ class Brightness(Filter):
 
     def get_name(self):
         # return 'Brightness filter{} {}'.format(self.before_image_id, self.after_image_id)
-        return 'Brightness filter'
+        return 'Brightness filter {}->{}'.format(self.before_image_id, self.after_image_id)
 
 
 class DoNothing(Filter):
@@ -132,7 +135,7 @@ class Median(Filter):
         return array_c
 
     def get_name(self):
-        return 'Median filter'
+        return 'Median filter {}->{}'.format(self.before_image_id, self.after_image_id)
 
     def clicked(self):
         self.set_parameter(int(self.sizeEdit.text()))
@@ -200,7 +203,7 @@ class Linear(Filter):
         return array_c
 
     def get_name(self):
-        return 'Linear filter'
+        return 'Linear filter {}->{}'.format(self.before_image_id, self.after_image_id)
 
     def clicked(self):
         self.set_parameter(int(self.sizeEdit.text()), self.maskEdit.toPlainText())
@@ -213,7 +216,6 @@ class Linear(Filter):
         mask = QLabel('mask')
 
         self.validator = QIntValidator(0, 10000)
-
         self.sizeEdit = QLineEdit()
         self.maskEdit = QTextEdit()
         self.sizeEdit.setText(str(self.size))
@@ -242,8 +244,6 @@ class Linear(Filter):
         layout.addLayout(grid)
         layout.addWidget(self.button)
         return layout
-
-
 
 
 class FFT2D(Filter):
@@ -280,7 +280,7 @@ class FFT2D(Filter):
         return array_c
 
     def get_name(self):
-        return 'FFT2D filter'
+        return 'FFT2D filter {}->{}'.format(self.before_image_id, self.after_image_id)
 
     def get_layout(self):
         label = QLabel(self.get_name())
@@ -319,7 +319,7 @@ class Thiza(Filter):
             traceback.print_exc()
 
     def get_name(self):
-        return 'thiza filter'
+        return 'Thiza filter {}->{}'.format(self.before_image_id, self.after_image_id)
 
     def get_layout(self):
         label = QLabel(self.get_name())
@@ -338,7 +338,7 @@ class Grayscale(Filter):
         return array
 
     def get_name(self):
-        return 'Grayscale filter'
+        return 'Grayscale filter {}->{}'.format(self.before_image_id, self.after_image_id)
 
     def get_layout(self):
         label = QLabel(self.get_name())

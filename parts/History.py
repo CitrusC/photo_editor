@@ -31,6 +31,7 @@ class History:
     *** Function            : フィルタ履歴にフィルタを追加する
     *** Return              : なし
     """
+
     def add_filter(self, filter_):
         self.next_filter()
         if len(self.filter_list[self.count]) == 0:
@@ -48,6 +49,7 @@ class History:
     *** Function            : フィルタ履歴から選択されたフィルタを削除する
     *** Return              : 更新後のフィルタリスト
     """
+
     def remove_filter(self, f):
         self.next_filter()
         rm_index = self.filter_list[self.count].index(f)
@@ -68,24 +70,29 @@ class History:
     *** Function            : フィルタの移動を処理する。
     *** Return              : 更新後のフィルタリスト
     """
+
     def swap(self, filters):
-        self.next_filter()
-        ud_index = None
-        for i in range(len(self.filter_list[self.count])):
-            if self.filter_list[self.count][i] is filters[i]:
-                ud_index = i
-                continue
-            else:
-                if ud_index is None:
-                    ud_index = 1
+        print('swap')
+        try:
+            ud_index = None
+            for i in range(len(self.filter_list[self.count])):
+                if self.filter_list[self.count][i].id != filters[i].id:
+                    ud_index = i
+                    break
+            if ud_index is None:
+                return self.filter_list[self.count]
+            self.next_filter()
+            for i in range(ud_index, len(self.filter_list[self.count])):
+                if i == 0:
+                    self.filter_list[self.count][i].before_image_id = 0
                 else:
-                    ud_index += 1
-        self.filter_list[self.count] = filters.copy()
-        for i in range(ud_index, len(self.filter_list[self.count])):
-            self.filter_list[self.count][i].before_image_id = self.filter_list[self.count][i - 1].after_image_id
-            self.next_image()
-            self.filter_list[self.count][i].after_image_id = self.image_count
-        return self.filter_list[self.count]
+                    self.filter_list[self.count][i].before_image_id = self.filter_list[self.count][i - 1].after_image_id
+                self.next_image()
+                self.filter_list[self.count][i].after_image_id = self.image_count
+            return self.filter_list[self.count]
+        except:
+            import traceback
+            traceback.print_exc()
 
     """
     *** Function Name       : update_filter()
@@ -94,6 +101,7 @@ class History:
     *** Function            : フィルタのパラメータ更新を記録する。
     *** Return              : 更新後のフィルタリスト
     """
+
     def update_filter(self, f):
         self.next_filter()
         ud_index = self.filter_list[self.count].index(f)
@@ -113,6 +121,7 @@ class History:
     *** Function            : フィルタリストの状態を一つ戻す。
     *** Return              : 更新後画像, 更新後フィルタリスト, undo可否
     """
+
     def undo(self):
         if (self.count != 0):
             self.count -= 1
@@ -126,6 +135,7 @@ class History:
     *** Function            : フィルタリストの状態を一つ進める。
     *** Return              : 更新後画像, 更新後フィルタリスト, redo可否
     """
+
     def redo(self):
         if self.redo_max > 0:
             self.count += 1
@@ -139,10 +149,19 @@ class History:
     *** Function            : フィルタリストを履歴に格納する。
     *** Return              : なし
     """
+
     def next_filter(self):
+        import copy
         self.count += 1
         self.filter_list.append([])
-        self.filter_list[self.count] = self.filter_list[self.count - 1].copy()
+        self.filter_list[self.count].clear()
+        try:
+            # self.filter_list[self.count] = copy.copy(self.filter_list[self.count - 1])
+            for i in range(len(self.filter_list[self.count - 1])):
+                self.filter_list[self.count].append(copy.copy(self.filter_list[self.count - 1][i]))
+        except:
+            import traceback
+            traceback.print_exc()
         self.current.append(self.current[self.count - 1])
         self.redo_max = 0
 
@@ -153,6 +172,7 @@ class History:
     *** Function            : 画像を履歴に格納する。
     *** Return              : なし
     """
+
     def next_image(self):
         self.image_count += 1
         self.image_list.append(None)
@@ -164,6 +184,7 @@ class History:
     *** Function            : フィルタリストのフィルタを適用する
     *** Return              : 更新後画像, 更新後フィルタリスト
     """
+
     def apply(self):
         self.next_filter()
         f = None

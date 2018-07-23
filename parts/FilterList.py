@@ -19,6 +19,7 @@ class FilterList(QListWidget):
         self.setAlternatingRowColors(True)
         self.parent_ = parent_
         self.history = None
+        self.id_count = 0
 
     def init(self, array):
         self.history = History(array)
@@ -35,6 +36,8 @@ class FilterList(QListWidget):
         self.add_item(getattr(Filter, f)())
 
     def add_item(self, f):
+        f.set_id(self.id_count)
+        self.id_count += 1
         self.history.add_filter(f)
         self.add_filter(f)
 
@@ -73,6 +76,7 @@ class FilterList(QListWidget):
         self.parent_.update_image(array)
         self.clear()
         for f in filters:
+            print(f.before_image_id, f.after_image_id)
             self.add_filter(f)
         self.parent_.btnUndo.setEnabled(can_undo)
         self.parent_.btnRedo.setEnabled(True)
