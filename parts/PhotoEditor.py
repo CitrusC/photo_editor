@@ -102,36 +102,28 @@ class Window(QtWidgets.QWidget):
 
         # Arrange layout
         vb_layout = QtWidgets.QVBoxLayout(self)
+
         top_bar = QtWidgets.QHBoxLayout()
-        top_bar.setAlignment(QtCore.Qt.AlignLeft)
         top_bar.addWidget(self.btnLoad)
         top_bar.addStretch(1)
         top_bar.addWidget(self.btnExport)
         vb_layout.addLayout(top_bar)
+
         splitter = QSplitter(QtCore.Qt.Horizontal)
-        left_widget = QWidget()
-        left_view = QtWidgets.QVBoxLayout()
-        left_view.addWidget(self.viewer)
+        splitter.addWidget(self.viewer)
+        splitter.addWidget(self.list)
+        vb_layout.addWidget(splitter)
+
         edit_bar = QtWidgets.QHBoxLayout()
-        edit_bar.setAlignment(QtCore.Qt.AlignLeft)
         edit_bar.addWidget(self.btnZoomIn)
         edit_bar.addWidget(self.btnZoomOut)
         edit_bar.addWidget(self.btnUndo)
         edit_bar.addWidget(self.btnRedo)
-        left_view.addLayout(edit_bar)
-        left_widget.setLayout(left_view)
-        right_widget = QWidget()
-        side_bar = QtWidgets.QVBoxLayout()
-        side_bar.addWidget(self.list)
-        filter_bar = QtWidgets.QHBoxLayout()
-        filter_bar.addWidget(self.btnAdd)
-        filter_bar.addStretch(1)
-        filter_bar.addWidget(self.btnApply)
-        side_bar.addLayout(filter_bar)
-        right_widget.setLayout(side_bar)
-        splitter.addWidget(left_widget)
-        splitter.addWidget(right_widget)
-        vb_layout.addWidget(splitter)
+        edit_bar.addStretch(1)
+        edit_bar.addWidget(self.btnAdd)
+        edit_bar.addWidget(self.btnApply)
+        vb_layout.addLayout(edit_bar)
+
 
     def file_open(self):
         if os.name == 'nt':
