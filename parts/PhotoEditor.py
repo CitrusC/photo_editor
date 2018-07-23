@@ -2,7 +2,7 @@
 *** File Name           : PhotoEditor.py
 *** Designer            : 邱 雨澄
 *** Date                : 2018.06.05
-*** Function            : 入力
+*** Function            : UIの主処理を管理する
 """
 
 from PyQt5 import QtGui, QtWidgets, QtCore

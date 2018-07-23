@@ -2,7 +2,7 @@
 *** File Name           : History.py
 *** Designer            : 稲垣 大輔
 *** Date                : 2018.07.入力
-*** Function            : 画像の編集履歴を管理する。
+*** Function            : 画像の編集履歴を管理する
 """
 
 """

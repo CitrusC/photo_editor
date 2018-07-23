@@ -2,7 +2,7 @@
 *** File Name           : Filter_list.py
 *** Designer            : 入力
 *** Date                : 2018.06.05
-*** Function            : 入力
+*** Function            : フィルタリストを管理する
 """
 
 from PyQt5 import QtCore

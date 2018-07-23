@@ -2,16 +2,15 @@
 *** File Name           : Filter.py
 *** Designer            : 稲垣 大輔
 *** Date                : 2018.06.05
-*** Function            : 画像処理用のフィルタ処理を管理する。
+*** Function            : 画像処理用のフィルタ処理を管理する
 """
 
 from abc import ABCMeta, abstractmethod
 from fractions import Fraction
-
 import numpy as np
 from PyQt5.QtGui import QIntValidator, QDoubleValidator
-from PyQt5.QtWidgets import QLabel, QHBoxLayout, QSlider, QGridLayout, QLineEdit, QPushButton, QTextEdit, QSpinBox, \
-    QVBoxLayout, QTableWidget, QMessageBox
+from PyQt5.QtWidgets import (QLabel, QHBoxLayout, QSlider, QGridLayout, QLineEdit, QPushButton, QTextEdit, QSpinBox,
+                             QVBoxLayout, QTableWidget, QMessageBox)
 from PyQt5.QtCore import Qt
 from PIL import Image
 import numba
@@ -103,15 +102,39 @@ class Nega(Filter):
     def __init__(self):
         super().__init__()
 
+    """
+    *** Function Name       : apply()
+    *** Designer            : 稲垣 大輔
+    *** Date                : 2018.06.05
+    *** Function            : 画像を処理する
+    *** Return              : 処理済み画像
+    """
+
     def apply(self, array):
         array[:, :, 0] = 255 - array[:, :, 0]
         array[:, :, 1] = 255 - array[:, :, 1]
         array[:, :, 2] = 255 - array[:, :, 2]
         return array
 
+    """
+    *** Function Name       : get_name()
+    *** Designer            : 稲垣 大輔
+    *** Date                : 2018.06.05
+    *** Function            : 名前を取得する
+    *** Return              : フィルタ名
+    """
+
     def get_name(self):
         # return 'Nega filter {} {}'.format(self.before_image_id, self.after_image_id)
         return 'Nega filter {}->{}'.format(self.before_image_id, self.after_image_id)
+
+    """
+    *** Function Name       : get_layout()
+    *** Designer            : 稲垣 大輔
+    *** Date                : 2018.06.05
+    *** Function            : レイアウトを取得する
+    *** Return              : レイアウト
+    """
 
     def get_layout(self):
         label = QLabel(self.get_name())
@@ -137,12 +160,28 @@ class Brightness(Filter):
         self.brightness = brightness
         self.parent.parent_list.update_filter(self)
 
+    """
+    *** Function Name       : apply()
+    *** Designer            : 稲垣 大輔
+    *** Date                : 2018.06.05
+    *** Function            : 画像を処理する
+    *** Return              : 処理済み画像
+    """
+
     def apply(self, array):
         array[:, :, 0] = array[:, :, 0] + self.brightness
         array[:, :, 1] = array[:, :, 1] + self.brightness
         array[:, :, 2] = array[:, :, 2] + self.brightness
         array = np.clip(array, 0, 255)
         return array
+
+    """
+    *** Function Name       : get_layout()
+    *** Designer            : 稲垣 大輔
+    *** Date                : 2018.06.05
+    *** Function            : レイアウトを取得する
+    *** Return              : レイアウト
+    """
 
     def get_layout(self):
         label = QLabel(self.get_name())
@@ -157,6 +196,14 @@ class Brightness(Filter):
 
     def release_mouse(self):
         self.set_parameter(self.slider.value())
+
+    """
+    *** Function Name       : get_name()
+    *** Designer            : 稲垣 大輔
+    *** Date                : 2018.06.05
+    *** Function            : 名前を取得する
+    *** Return              : フィルタ名
+    """
 
     def get_name(self):
         # return 'Brightness filter{} {}'.format(self.before_image_id, self.after_image_id)
@@ -185,6 +232,14 @@ class Median(Filter):
             self.size = size
         self.parent.parent_list.update_filter(self)
 
+    """
+    *** Function Name       : apply()
+    *** Designer            : 高田 康平
+    *** Date                : 2018.06.19
+    *** Function            : 画像を処理する
+    *** Return              : 処理済み画像
+    """
+
     @numba.jit
     def apply(self, array):
         height, width = array.shape[0], array.shape[1]
@@ -198,11 +253,27 @@ class Median(Filter):
                     array_c[y, x, 2] = np.median(array[y - d: y + d, x - d: x + d, 2])
         return array_c
 
+    """
+    *** Function Name       : get_name()
+    *** Designer            : 高田 康平
+    *** Date                : 2018.06.19
+    *** Function            : 名前を取得する
+    *** Return              : フィルタ名
+    """
+
     def get_name(self):
         return 'Median filter {}->{}'.format(self.before_image_id, self.after_image_id)
 
     def clicked(self):
         self.set_parameter(self.spinbox.value())
+
+    """
+    *** Function Name       : get_layout()
+    *** Designer            : 高田 康平
+    *** Date                : 2018.06.19
+    *** Function            : レイアウトを取得する
+    *** Return              : レイアウト
+    """
 
     def get_layout(self):
         label = QLabel(self.get_name())
@@ -243,6 +314,14 @@ class Linear(Filter):
         self.mask = mask
         self.parent.parent_list.update_filter(self)
 
+    """
+    *** Function Name       : apply()
+    *** Designer            : 高田 康平
+    *** Date                : 2018.06.19
+    *** Function            : 画像を処理する
+    *** Return              : 処理済み画像
+    """
+
     @numba.jit
     def apply(self, array):
         line = self.mask.strip().split('\n')
@@ -279,11 +358,27 @@ class Linear(Filter):
 
         return array_c
 
+    """
+    *** Function Name       : get_name()
+    *** Designer            : 高田 康平
+    *** Date                : 2018.06.19
+    *** Function            : 名前を取得する
+    *** Return              : フィルタ名
+    """
+
     def get_name(self):
         return 'Linear filter {}->{}'.format(self.before_image_id, self.after_image_id)
 
     def clicked(self):
         self.set_parameter(self.spinbox.value(), self.maskEdit.toPlainText())
+
+    """
+    *** Function Name       : get_layout()
+    *** Designer            : 高田 康平
+    *** Date                : 2018.06.19
+    *** Function            : レイアウトを取得する
+    *** Return              : レイアウト
+    """
 
     def get_layout(self):
         label = QLabel(self.get_name())
@@ -339,6 +434,14 @@ class FFT2D(Filter):
         self.a = a
         self.type = type
 
+    """
+    *** Function Name       : apply()
+    *** Designer            : 劉 号
+    *** Date                : 2018.06.19
+    *** Function            : 画像を処理する
+    *** Return              : 処理済み画像
+    """
+
     def apply(self, array):
         # 高速フーリエ変換(2次元)
         gray = np.array(Image.fromarray(array.astype(np.uint8)).convert('L'))
@@ -362,8 +465,24 @@ class FFT2D(Filter):
         array_c = np.array(Image.fromarray(y).convert("RGBA"), np.float32)
         return array_c
 
+    """
+    *** Function Name       : get_name()
+    *** Designer            : 劉 号
+    *** Date                : 2018.06.19
+    *** Function            : 名前を取得する
+    *** Return              : フィルタ名
+    """
+
     def get_name(self):
         return 'FFT2D filter {}->{}'.format(self.before_image_id, self.after_image_id)
+
+    """
+    *** Function Name       : get_layout()
+    *** Designer            : 劉 号
+    *** Date                : 2018.06.19
+    *** Function            : レイアウトを取得する
+    *** Return              : レイアウト
+    """
 
     def get_layout(self):
         label = QLabel(self.get_name())
@@ -388,6 +507,14 @@ class Thiza(Filter):
                               [3, 11, 1, 9],
                               [15, 7, 13, 5]])
 
+    """
+    *** Function Name       : apply()
+    *** Designer            : 石渡 諒
+    *** Date                : 2018.06.19
+    *** Function            : 画像を処理する
+    *** Return              : 処理済み画像
+    """
+
     def apply(self, array):
         a = array[:, :, 0] * 0.298912 + array[:, :, 1] * 0.586611 + array[:, :, 2] * 0.114478
         array[:, :, 0], array[:, :, 1], array[:, :, 2] = a, a, a
@@ -405,8 +532,24 @@ class Thiza(Filter):
                     array[y, x, 2] = 0
         return array
 
+    """
+    *** Function Name       : get_name()
+    *** Designer            : 石渡 諒
+    *** Date                : 2018.06.19
+    *** Function            : 名前を取得する
+    *** Return              : フィルタ名
+    """
+
     def get_name(self):
         return 'Thiza filter {}->{}'.format(self.before_image_id, self.after_image_id)
+
+    """
+    *** Function Name       : get_layout()
+    *** Designer            : 石渡 諒
+    *** Date                : 2018.06.19
+    *** Function            : レイアウトを取得する
+    *** Return              : レイアウト
+    """
 
     def get_layout(self):
         label = QLabel(self.get_name())
@@ -427,13 +570,37 @@ class Grayscale(Filter):
     def __init__(self, ):
         super().__init__()
 
+    """
+    *** Function Name       : apply()
+    *** Designer            : 石渡 諒
+    *** Date                : 2018.06.19
+    *** Function            : 画像を処理する
+    *** Return              : 処理済み画像
+    """
+
     def apply(self, array):
         a = array[:, :, 0] * 0.298912 + array[:, :, 1] * 0.586611 + array[:, :, 2] * 0.114478
         array[:, :, 0], array[:, :, 1], array[:, :, 2] = a, a, a
         return array
 
+    """
+    *** Function Name       : get_name()
+    *** Designer            : 石渡 諒
+    *** Date                : 2018.06.19
+    *** Function            : 名前を取得する
+    *** Return              : フィルタ名
+    """
+
     def get_name(self):
         return 'Grayscale filter {}->{}'.format(self.before_image_id, self.after_image_id)
+
+    """
+    *** Function Name       : get_layout()
+    *** Designer            : 石渡 諒
+    *** Date                : 2018.06.19
+    *** Function            : レイアウトを取得する
+    *** Return              : レイアウト
+    """
 
     def get_layout(self):
         label = QLabel(self.get_name())
@@ -453,6 +620,14 @@ class Grayscale(Filter):
 class Error_diffusion(Filter):
     def __init__(self, ):
         super().__init__()
+
+    """
+    *** Function Name       : apply()
+    *** Designer            : 石渡 諒
+    *** Date                : 2018.06.19
+    *** Function            : 画像を処理する
+    *** Return              : 処理済み画像
+    """
 
     @numba.jit
     def apply(self, array):
@@ -482,8 +657,24 @@ class Error_diffusion(Filter):
         array_c = np.array(Image.fromarray(gray).convert("RGBA"), np.float32)
         return array_c
 
+    """
+    *** Function Name       : get_name()
+    *** Designer            : 石渡 諒
+    *** Date                : 2018.06.19
+    *** Function            : 名前を取得する
+    *** Return              : フィルタ名
+    """
+
     def get_name(self):
         return 'Error_diffusion filter'
+
+    """
+    *** Function Name       : get_layout()
+    *** Designer            : 石渡 諒
+    *** Date                : 2018.06.19
+    *** Function            : レイアウトを取得する
+    *** Return              : レイアウト
+    """
 
     def get_layout(self):
         label = QLabel(self.get_name())
@@ -509,6 +700,14 @@ class Contrast(Filter):
         self.contrast = contrast
         self.parent.parent_list.update_filter(self)
 
+    """
+    *** Function Name       : apply()
+    *** Designer            : 石渡 諒
+    *** Date                : 2018.06.19
+    *** Function            : 画像を処理する
+    *** Return              : 処理済み画像
+    """
+
     def apply(self, array):
         array[:, :, 0] = (array[:, :, 0] - 128) * self.contrast / 100 + 128
         array[:, :, 1] = (array[:, :, 1] - 128) * self.contrast / 100 + 128
@@ -516,6 +715,14 @@ class Contrast(Filter):
 
         array = np.clip(array, 0, 255)
         return array
+
+    """
+    *** Function Name       : get_layout()
+    *** Designer            : 石渡 諒
+    *** Date                : 2018.06.19
+    *** Function            : レイアウトを取得する
+    *** Return              : レイアウト
+    """
 
     def get_layout(self):
         label = QLabel(self.get_name())
@@ -530,6 +737,14 @@ class Contrast(Filter):
 
     def release_mouse(self):
         self.set_parameter(self.slider.value())
+
+    """
+    *** Function Name       : get_name()
+    *** Designer            : 石渡 諒
+    *** Date                : 2018.06.19
+    *** Function            : 名前を取得する
+    *** Return              : フィルタ名
+    """
 
     def get_name(self):
         # return 'Contrast filter{} {}'.format(self.before_image_id, self.after_image_id)
