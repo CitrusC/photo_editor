@@ -33,7 +33,11 @@ class FilterList(QListWidget):
             self.add_filter(f)
 
     def add_event(self, f):
-        self.add_item(getattr(Filter, f)())
+        try:
+            self.add_item(getattr(Filter, f)())
+        except:
+            import traceback
+            traceback.print_exc()
 
     def add_item(self, f):
         f.set_id(self.id_count)
