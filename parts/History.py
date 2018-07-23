@@ -104,7 +104,14 @@ class History:
 
     def update_filter(self, f):
         self.next_filter()
-        ud_index = self.filter_list[self.count].index(f)
+        ud_index = -1
+        for i, fil in enumerate(self.filter_list[self.count]):
+            if fil.id == f.id:
+                ud_index = i
+                break
+        print(self.filter_list[self.count][ud_index].brightness, f.brightness)
+        print(ud_index)
+        self.filter_list[self.count][ud_index] = f
         for i in range(ud_index, len(self.filter_list[self.count])):
             if i == 0:
                 self.filter_list[self.count][i].before_image_id = 0
@@ -158,7 +165,8 @@ class History:
         try:
             # self.filter_list[self.count] = copy.copy(self.filter_list[self.count - 1])
             for i in range(len(self.filter_list[self.count - 1])):
-                self.filter_list[self.count].append(copy.copy(self.filter_list[self.count - 1][i]))
+                n_filter = copy.copy(self.filter_list[self.count - 1][i])
+                self.filter_list[self.count].append(n_filter)
         except:
             import traceback
             traceback.print_exc()
