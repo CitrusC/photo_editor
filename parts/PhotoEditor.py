@@ -210,19 +210,15 @@ class Window(QtWidgets.QWidget):
     """
 
     def zoom_in(self):
-        try:
-            if self.viewer.has_photo():
-                factor = 1.25
-                self.viewer._zoom += 1
-                if self.viewer._zoom > 0:
-                    self.viewer.scale(factor, factor)
-                elif self.viewer._zoom == 0:
-                    self.viewer.fitInView()
-                else:
-                    self.viewer._zoom = 0
-        except:
-            import traceback
-            traceback.print_exc()
+        if self.viewer.has_photo():
+            factor = 1.25
+            self.viewer._zoom += 1
+            if self.viewer._zoom > 0:
+                self.viewer.scale(factor, factor)
+            elif self.viewer._zoom == 0:
+                self.viewer.fitInView()
+            else:
+                self.viewer._zoom = 0
 
     """
     *** Function Name       : zoom_out()

@@ -155,7 +155,7 @@ class Filter_list(QListWidget):
 
     def add_item(self, f):
         try:
-            self.history.add_filter(f)
+            self.history.create_item(f)
             self.add_filter(f)
         except:
             import traceback

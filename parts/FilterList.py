@@ -15,7 +15,7 @@ import Filter
 *** Class Name          : FilterList
 *** Designer            : 稲垣 大輔
 *** Date                : 2018.07.入力
-*** Function            : 入力
+*** Function            : FilterItemを管理する
 """
 
 
@@ -53,7 +53,7 @@ class FilterList(QListWidget):
         filters = self.history.swap(self.all_filters())
         self.clear()
         for f in filters:
-            self.add_filter(f)
+            self.create_item(f)
 
     """
     *** Function Name       : add_event()
@@ -66,15 +66,29 @@ class FilterList(QListWidget):
     def add_event(self, f):
         self.add_item(getattr(Filter, f)())
 
+    """
+    *** Function Name       : add_item()
+    *** Designer            : 稲垣 大輔
+    *** Date                : 2018.07.入力
+    *** Function            : FilterItemを追加する
+    *** Return              : なし
+    """
     def add_item(self, f):
         f.set_id(self.id_count)
         self.id_count += 1
         self.history.add_filter(f)
-        self.add_filter(f)
+        self.create_item(f)
 
-    def add_filter(self, f):
+    """
+    *** Function Name       : create_item()
+    *** Designer            : 稲垣 大輔
+    *** Date                : 2018.07.入力
+    *** Function            : FilterItemを生成する
+    *** Return              : なし
+    """
+    def create_item(self, f):
         item = QListWidgetItem(self)
-        item_widget = CustomQWidget(parent=self, filter_=f)
+        item_widget = FilterItem(parent=self, filter_=f)
         f.set_parent(item_widget)
         item_widget.setLayout(f.get_layout())
         item.setSizeHint(item_widget.sizeHint())
@@ -83,6 +97,13 @@ class FilterList(QListWidget):
         self.parent_.btnUndo.setEnabled(True)
         self.parent_.btnRedo.setEnabled(False)
 
+    """
+    *** Function Name       : remove_item()
+    *** Designer            : 稲垣 大輔
+    *** Date                : 2018.07.入力
+    *** Function            : FilterItemを削除する
+    *** Return              : なし
+    """
     def remove_item(self, item):
         for n, i in enumerate(self.all_items()):
             if i is item:
@@ -92,35 +113,63 @@ class FilterList(QListWidget):
         filters = self.history.remove_filter(item.filter_)
         self.clear()
         for f in filters:
-            self.add_filter(f)
+            self.create_item(f)
         self.parent_.btnUndo.setEnabled(True)
         self.parent_.btnRedo.setEnabled(False)
 
+    """
+    *** Function Name       : update_item()
+    *** Designer            : 稲垣 大輔
+    *** Date                : 2018.07.入力
+    *** Function            : FilterItemを更新する
+    *** Return              : なし
+    """
     def update_filter(self, fil):
         filters = self.history.update_filter(fil)
         self.clear()
         for f in filters:
-            self.add_filter(f)
+            self.create_item(f)
 
+    """
+    *** Function Name       : undo()
+    *** Designer            : 稲垣 大輔
+    *** Date                : 2018.07.入力
+    *** Function            : FilterListを前の状態に戻す
+    *** Return              : なし
+    """
     def undo(self):
         array, filters, can_undo = self.history.undo()
         self.parent_.update_image(array)
         self.clear()
         for f in filters:
             print(f.before_image_id, f.after_image_id)
-            self.add_filter(f)
+            self.create_item(f)
         self.parent_.btnUndo.setEnabled(can_undo)
         self.parent_.btnRedo.setEnabled(True)
 
+    """
+    *** Function Name       : redo()
+    *** Designer            : 稲垣 大輔
+    *** Date                : 2018.07.入力
+    *** Function            : FilterListを次の状態に進める
+    *** Return              : なし
+    """
     def redo(self):
         array, filters, can_redo = self.history.redo()
         self.parent_.update_image(array)
         self.clear()
         for f in filters:
-            self.add_filter(f)
+            self.create_item(f)
         self.parent_.btnUndo.setEnabled(True)
         self.parent_.btnRedo.setEnabled(can_redo)
 
+    """
+    *** Function Name       : apply_filters()
+    *** Designer            : 稲垣 大輔
+    *** Date                : 2018.07.入力
+    *** Function            : FilterListのFilterを適用する
+    *** Return              : なし
+    """
     def apply_filters(self):
         if self.history is None:
             return
@@ -128,15 +177,29 @@ class FilterList(QListWidget):
         self.parent_.update_image(array)
         self.clear()
         for f in filters:
-            self.add_filter(f)
+            self.create_item(f)
         self.parent_.btnUndo.setEnabled(True)
 
+    """
+    *** Function Name       : all_filters()
+    *** Designer            : 稲垣 大輔
+    *** Date                : 2018.07.入力
+    *** Function            : すべてのフィルタを返す
+    *** Return              : フィルタリスト
+    """
     def all_filters(self):
         filters = []
         for i in self.all_items():
             filters.append(i.filter_)
         return filters
 
+    """
+    *** Function Name       : create_item()
+    *** Designer            : 稲垣 大輔
+    *** Date                : 2018.07.入力
+    *** Function            : すべてのFilterItemを返す
+    *** Return              : FilterItemリスト
+    """
     def all_items(self):
         items = []
         for i in range(self.count()):
@@ -145,17 +208,37 @@ class FilterList(QListWidget):
         return items
 
 
-class CustomQWidget(QWidget, QListWidgetItem):
+"""
+*** Class Name          : FilterItem
+*** Designer            : 稲垣 大輔
+*** Date                : 2018.07.入力
+*** Function            : フィルタとそのレイアウトを管理する
+"""
+class FilterItem(QWidget, QListWidgetItem):
     def __init__(self, parent=None, filter_=None):
-        super(CustomQWidget, self).__init__(parent)
+        super(FilterItem, self).__init__(parent)
         self.filter_ = filter_
         self.parent_list = parent
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.build_context_menu)
 
+    """
+    *** Function Name       : set_layout()
+    *** Designer            : 稲垣 大輔
+    *** Date                : 2018.07.入力
+    *** Function            : レイアウトをセットする
+    *** Return              : なし
+    """
     def setLayout(self, layout):
         super().setLayout(layout)
 
+    """
+    *** Function Name       : build_context_menu()
+    *** Designer            : 稲垣 大輔
+    *** Date                : 2018.07.入力
+    *** Function            : 右クリック時のメニューを表示する
+    *** Return              : なし
+    """
     def build_context_menu(self, q_point):
         menu = QMenu(self)
         menulabels = ['remove']

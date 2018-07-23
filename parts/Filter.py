@@ -11,7 +11,7 @@ from fractions import Fraction
 import numpy as np
 from PyQt5.QtGui import QIntValidator, QDoubleValidator
 from PyQt5.QtWidgets import QLabel, QHBoxLayout, QSlider, QGridLayout, QLineEdit, QPushButton, QTextEdit, QSpinBox, \
-    QVBoxLayout, QTableWidget
+    QVBoxLayout, QTableWidget, QMessageBox
 from PyQt5.QtCore import Qt
 from PIL import Image
 import numba
@@ -71,12 +71,8 @@ class Brightness(Filter):
         self.brightness = 0
 
     def set_parameter(self, brightness):
-        try:
-            self.brightness = brightness
-            self.parent.parent_list.update_filter(self)
-        except:
-            import traceback
-            traceback.print_exc()
+        self.brightness = brightness
+        self.parent.parent_list.update_filter(self)
 
     def apply(self, array):
         array[:, :, 0] = array[:, :, 0] + self.brightness
@@ -144,12 +140,12 @@ class Median(Filter):
         self.spinbox.setValue(self.size)
         self.spinbox.setSingleStep(2)
         self.spinbox.setRange(1, 99)
-        self.button = QPushButton(self.parent)
-        self.button.setText("apply")
-        self.button.clicked.connect(self.clicked)
+        button = QPushButton(self.parent)
+        button.setText("apply")
+        button.clicked.connect(self.clicked)
         layout.addWidget(label)
         layout.addWidget(self.spinbox)
-        layout.addWidget(self.button)
+        layout.addWidget(button)
         return layout
 
 
@@ -180,6 +176,9 @@ class Linear(Filter):
             mask.append(out2)
 
         height, width = array.shape[0], array.shape[1]
+        if height != self.size or width != self.size:
+            QMessageBox.critical(self.parent.parent_list.parent_, 'Error', "Mask size error.", QMessageBox.Ok)
+            return array
         d = int(self.size / 2)
         array_c = np.zeros_like(array)
         array_c[:, :, 3] = array[:, :, 3]
@@ -207,66 +206,40 @@ class Linear(Filter):
     def clicked(self):
         self.set_parameter(self.spinbox.value(), self.maskEdit.toPlainText())
 
-    # def change(self):
-    #     try:
-    #         self.maskTable.setRowCount(self.spinbox.value())
-    #         self.maskTable.setColumnCount(self.spinbox.value())
-    #         print(self.maskTable.rowCount(), self.maskTable.columnCount())
-    #         self.maskTable.resizeColumnsToContents()
-    #         self.maskTable.resizeRowsToContents()
-    #         self.maskTable.setFixedHeight(self.maskTable.rowHeight(0) * (self.maskTable.columnCount() + 1.2))
-    #         self.maskTable.setFixedWidth(self.maskTable.rowHeight(0) * (self.maskTable.columnCount() + 1.2))
-    #
-    #         self.layout.addStretch()
-    #
-    #     except:
-    #         import traceback
-    #         traceback.print_exc()
     def get_layout(self):
-        try:
-            label = QLabel(self.get_name())
+        label = QLabel(self.get_name())
 
-            size = QLabel('size')
-            mask = QLabel('mask')
-            self.spinbox = QSpinBox()
-            self.spinbox.setValue(self.size)
-            self.spinbox.setSingleStep(2)
-            self.spinbox.setRange(1, 99)
-            self.maskEdit = QTextEdit()
-            self.maskEdit.setPlainText(self.mask)
-            self.maskEdit.setMaximumHeight(label.sizeHint().width())
-            self.maskEdit.setMaximumWidth(label.sizeHint().width())
-            # self.maskTable=QTableWidget(1,1)
-            # try:
-            #     self.maskTable.resizeColumnsToContents()
-            #     self.maskTable.resizeRowsToContents()
-            #     print(self.maskTable.columnWidth(0), self.maskTable.colorCount())
-            #     self.maskTable.setMaximumHeight(self.maskTable.rowHeight(0)*(self.maskTable.columnCount()+1))
-            #     self.maskTable.setMaximumWidth(self.maskTable.rowHeight(0)*(self.maskTable.columnCount()+1))
-            # except:
-            #     import traceback
-            #     traceback.print_exc()
-            # 格子状の配置を作り、各ウィジェットのスペースを空ける
-            grid = QGridLayout()
-            grid.addWidget(size, 0, 0)
-            grid.addWidget(mask, 1, 0)
-            # 入力欄の位置設定
-            grid.addWidget(self.spinbox, 0, 1)
-            grid.addWidget(self.maskEdit, 1, 1)
-            # grid.addWidget(self.maskTable,2,1)
+        size = QLabel('size')
+        mask = QLabel('mask')
+        self.spinbox = QSpinBox()
+        self.spinbox.setValue(self.size)
+        self.spinbox.setSingleStep(2)
+        self.spinbox.setRange(1, 99)
+        self.maskEdit = QTextEdit()
+        self.maskEdit.setPlainText(self.mask)
+        self.maskEdit.setMaximumHeight(label.sizeHint().width())
+        self.maskEdit.setMaximumWidth(label.sizeHint().width())
 
+        # 格子状の配置を作り、各ウィジェットのスペースを空ける
+        grid = QGridLayout()
 
-            self.button = QPushButton(self.parent)
-            grid.addWidget(self.button, 2, 1)
-            self.button.setText("apply")
-            self.button.clicked.connect(self.clicked)
-            layout = QHBoxLayout()
-            # layout.addWidget(label)
-            layout.addLayout(grid)
-            return layout
-        except:
-            import traceback
-            traceback.print_exc()
+        grid.addWidget(size, 0, 0)
+        # 入力欄の位置設定
+        grid.addWidget(self.spinbox, 0, 1)
+        grid.setSpacing(5)
+        grid.addWidget(mask, 1, 0)
+        grid.addWidget(self.maskEdit, 1, 1)
+
+        layout = QHBoxLayout()
+
+        self.button = QPushButton(self.parent)
+        grid.addWidget(self.button, 2, 1)
+        self.button.setText("apply")
+        self.button.clicked.connect(self.clicked)
+        layout.addWidget(label)
+        layout.addLayout(grid)
+        layout.addWidget(self.button)
+        return layout
 
 
 class FFT2D(Filter):
@@ -321,25 +294,21 @@ class Thiza(Filter):
                               [15, 7, 13, 5]])
 
     def apply(self, array):
-        try:
-            a = array[:, :, 0] * 0.298912 + array[:, :, 1] * 0.586611 + array[:, :, 2] * 0.114478
-            array[:, :, 0], array[:, :, 1], array[:, :, 2] = a, a, a
-            h = array.shape[0]
-            w = array.shape[1]
-            for y in range(h):
-                for x in range(w):
-                    if (array[y, x, 0] * 16 / 255 >= self.mask[y % self.mask.shape[0], x % self.mask.shape[1]]):
-                        array[y, x, 0] = 255
-                        array[y, x, 1] = 255
-                        array[y, x, 2] = 255
-                    else:
-                        array[y, x, 0] = 0
-                        array[y, x, 1] = 0
-                        array[y, x, 2] = 0
-            return array
-        except:
-            import traceback
-            traceback.print_exc()
+        a = array[:, :, 0] * 0.298912 + array[:, :, 1] * 0.586611 + array[:, :, 2] * 0.114478
+        array[:, :, 0], array[:, :, 1], array[:, :, 2] = a, a, a
+        h = array.shape[0]
+        w = array.shape[1]
+        for y in range(h):
+            for x in range(w):
+                if (array[y, x, 0] * 16 / 255 >= self.mask[y % self.mask.shape[0], x % self.mask.shape[1]]):
+                    array[y, x, 0] = 255
+                    array[y, x, 1] = 255
+                    array[y, x, 2] = 255
+                else:
+                    array[y, x, 0] = 0
+                    array[y, x, 1] = 0
+                    array[y, x, 2] = 0
+        return array
 
     def get_name(self):
         return 'Thiza filter {}->{}'.format(self.before_image_id, self.after_image_id)

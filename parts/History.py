@@ -205,6 +205,7 @@ class History:
             if self.image_list[f.after_image_id] is not None:
                 continue
             self.image_list[f.after_image_id] = f.apply(self.image_list[f.before_image_id].copy())
+            print('apply', f.get_name())
         else:
             if f is not None:
                 self.current[self.count] = f.after_image_id
