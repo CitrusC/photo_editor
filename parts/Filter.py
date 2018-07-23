@@ -10,7 +10,8 @@ from fractions import Fraction
 
 import numpy as np
 from PyQt5.QtGui import QIntValidator, QDoubleValidator
-from PyQt5.QtWidgets import QLabel, QHBoxLayout, QSlider, QGridLayout, QLineEdit, QPushButton, QTextEdit, QSpinBox
+from PyQt5.QtWidgets import QLabel, QHBoxLayout, QSlider, QGridLayout, QLineEdit, QPushButton, QTextEdit, QSpinBox, \
+    QVBoxLayout
 from PyQt5.QtCore import Qt
 from PIL import Image
 import numba
@@ -115,7 +116,6 @@ class Median(Filter):
             self.spinbox.setValue(self.size)
         else:
             self.size = size
-        print(self.size)
         self.parent.parent_list.update_filter(self)
 
     @numba.jit
@@ -137,10 +137,8 @@ class Median(Filter):
     def clicked(self):
         self.set_parameter(self.spinbox.value())
 
-
     def get_layout(self):
         label = QLabel(self.get_name())
-
         layout = QHBoxLayout()
         self.spinbox = QSpinBox()
         self.spinbox.setValue(self.size)
@@ -162,8 +160,12 @@ class Linear(Filter):
         self.mask = "1"
 
     def set_parameter(self, size, mask):
+        if size % 2 == 0:
+            self.size = max(1, size - 1)
+            self.spinbox.setValue(self.size)
+        else:
+            self.size = size
         self.mask = mask
-        self.size = size
         self.parent.parent_list.update_filter(self)
 
     @numba.jit
@@ -203,7 +205,8 @@ class Linear(Filter):
         return 'Linear filter {}->{}'.format(self.before_image_id, self.after_image_id)
 
     def clicked(self):
-        self.set_parameter(int(self.sizeEdit.text()), self.maskEdit.toPlainText())
+        # self.set_parameter(int(self.sizeEdit.text()), self.maskEdit.toPlainText())
+        self.set_parameter(self.spinbox.value(), self.maskEdit.toPlainText())
 
     def get_layout(self):
 
@@ -211,27 +214,31 @@ class Linear(Filter):
 
         size = QLabel('size')
         mask = QLabel('mask')
-
-        self.validator = QIntValidator(0, 10000)
-        self.sizeEdit = QLineEdit()
+        self.spinbox = QSpinBox()
+        self.spinbox.setValue(self.size)
+        self.spinbox.setSingleStep(2)
+        self.spinbox.setRange(1, 99)
+        # self.validator = QIntValidator(0, 10000)
+        # self.sizeEdit = QLineEdit()
         self.maskEdit = QTextEdit()
-        self.sizeEdit.setText(str(self.size))
+        # self.sizeEdit.setText(str(self.size))
         self.maskEdit.setPlainText(self.mask)
+        self.maskEdit.setMaximumHeight(label.sizeHint().width())
+        self.maskEdit.setMaximumWidth(label.sizeHint().width())
 
-        self.sizeEdit.setValidator(self.validator)
-
+        # self.sizeEdit.setValidator(self.validator)
         # 格子状の配置を作り、各ウィジェットのスペースを空ける
         grid = QGridLayout()
 
         grid.addWidget(size, 1, 0)
         # 入力欄の位置設定
-        grid.addWidget(self.sizeEdit, 1, 1)
+        grid.addWidget(self.spinbox, 1, 1)
         grid.setSpacing(10)
         grid.addWidget(mask, 2, 0)
         grid.addWidget(self.maskEdit, 2, 1)
 
         layout = QHBoxLayout()
-        self.sizeEdit.setText(str(self.size))
+        # self.sizeEdit.setText(str(self.size))
 
         self.button = QPushButton(self.parent)
         grid.addWidget(self.button, 3, 1)
@@ -240,6 +247,20 @@ class Linear(Filter):
         layout.addWidget(label)
         layout.addLayout(grid)
         layout.addWidget(self.button)
+
+        # hbox1 = QHBoxLayout()
+        # hbox1.addWidget(size)
+        # hbox1.addWidget(self.sizeEdit)
+        # hbox2 = QHBoxLayout()
+        # hbox2.addWidget(mask)
+        # hbox2.addWidget(self.maskEdit)
+        # vbox1=QVBoxLayout()
+        # vbox1.addLayout(hbox1)
+        # vbox1.addLayout(hbox2)
+        # vbox1.addWidget(self.button)
+        # layout = QHBoxLayout()
+        # layout.addWidget(label)
+        # layout.addLayout(vbox1)
         return layout
 
 
