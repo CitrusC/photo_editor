@@ -112,7 +112,7 @@ class Window(QtWidgets.QWidget):
         splitter = QSplitter(QtCore.Qt.Horizontal)
         splitter.addWidget(self.viewer)
         splitter.addWidget(self.list)
-        splitter.setSizes((400,200))
+        splitter.setSizes((600,300))
 
         vb_layout.addWidget(splitter)
 
