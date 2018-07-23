@@ -14,7 +14,7 @@ from FilterList import FilterList
 from PhotoViewer import PhotoViewer
 
 """
-*** Class Name          : PhotoViewer
+*** Class Name          : Window
 *** Designer            : 邱 雨澄
 *** Date                : 2018.07.入力
 *** Function            : 入力
@@ -37,7 +37,7 @@ class Window(QtWidgets.QWidget):
         self.btnLoad.setIcon(QtGui.QIcon("icons/load.png"))
         self.btnLoad.setFixedSize(bw, bw)
         self.btnLoad.setIconSize(QtCore.QSize(iw, iw))
-        self.btnLoad.clicked.connect(self.file_open)
+        self.btnLoad.clicked.connect(self.open_image)
         # 'Export image' button
         self.btnExport = QToolButton(self)
         self.btnExport.setIcon(QtGui.QIcon("icons/export.png"))
@@ -78,7 +78,8 @@ class Window(QtWidgets.QWidget):
         self.btnAdd.setFont(font)
         self.btnAdd.setFixedSize(bw * 2, bw)
         mapper = QtCore.QSignalMapper(self)
-        menulabels = ['Brightness', 'Nega', 'Median', 'Linear', 'FFT2D', 'Grayscale', 'Thiza', 'Error_diffusion', 'Contrast']
+        menulabels = ['Brightness', 'Nega', 'Median', 'Linear', 'FFT2D', 'Grayscale', 'Thiza', 'Error_diffusion',
+                      'Contrast']
         actions = []
         for f in menulabels:
             action = QAction(self)
@@ -113,7 +114,7 @@ class Window(QtWidgets.QWidget):
         splitter = QSplitter(QtCore.Qt.Horizontal)
         splitter.addWidget(self.viewer)
         splitter.addWidget(self.list)
-        splitter.setSizes((600,300))
+        splitter.setSizes((600, 300))
 
         vb_layout.addWidget(splitter)
 
@@ -127,8 +128,15 @@ class Window(QtWidgets.QWidget):
         edit_bar.addWidget(self.btnApply)
         vb_layout.addLayout(edit_bar)
 
+    """
+    *** Function Name       : open_image()
+    *** Designer            : 井村 舜
+    *** Date                : 2018.07.入力
+    *** Function            : 画像データを読み込む
+    *** Return              : 読み込んだ画像
+    """
 
-    def file_open(self):
+    def open_image(self):
         if os.name == 'nt':
             fname = QFileDialog.getOpenFileName(self, 'Open file',
                                                 os.getenv("HOMEDRIVE") + os.getenv("HOMEPATH") + "\\Desktop",
@@ -139,11 +147,19 @@ class Window(QtWidgets.QWidget):
             try:
                 self.array = np.array(Image.open(fname[0]).convert("RGBA"), np.float32)
                 self.update_image(self.array)
-                self.list.init(self.array)
+                self.list.set_array(self.array)
                 self.btnUndo.setEnabled(False)
                 self.btnRedo.setEnabled(False)
             except OSError:
                 QMessageBox.critical(self, 'Error', "The image file is broken.", QMessageBox.Ok)
+
+    """
+    *** Function Name       : save_image()
+    *** Designer            : 高田 康平
+    *** Date                : 2018.07.入力
+    *** Function            : 画像データを読み込む
+    *** Return              : 読み込んだ画像
+    """
 
     def save_image(self):
         if os.name == 'nt':
@@ -159,15 +175,39 @@ class Window(QtWidgets.QWidget):
             except AttributeError:
                 QMessageBox.critical(self, 'Error', "The image file is not selcted.", QMessageBox.Ok)
 
+    """
+    *** Function Name       : update_image()
+    *** Designer            : 稲垣 大輔
+    *** Date                : 2018.07.入力
+    *** Function            : 画像データを更新する
+    *** Return              : なし
+    """
+
     def update_image(self, array):
         self.array = array
         self.viewer.set_photo(self.ndarray_to_qpixmap(array.astype(np.uint8)))
+
+    """
+    *** Function Name       : ndarray_to_qpixmap()
+    *** Designer            : 稲垣 大輔
+    *** Date                : 2018.07.入力
+    *** Function            : ndarray型からQPixMap型への変換
+    *** Return              : QPixMapのデータ
+    """
 
     def ndarray_to_qpixmap(self, image):
         qimage = QtGui.QImage(image.data, image.shape[1], image.shape[0], image.shape[1] * 4,
                               QtGui.QImage.Format_RGBA8888)
         pixmap = QtGui.QPixmap.fromImage(qimage)
         return pixmap
+
+    """
+    *** Function Name       : zoom_in()
+    *** Designer            : 劉 号
+    *** Date                : 2018.07.入力
+    *** Function            : _zoomの値増加
+    *** Return              : なし
+    """
 
     def zoom_in(self):
         try:
@@ -184,6 +224,13 @@ class Window(QtWidgets.QWidget):
             import traceback
             traceback.print_exc()
 
+    """
+    *** Function Name       : zoom_out()
+    *** Designer            : 劉 号
+    *** Date                : 2018.07.入力
+    *** Function            : _zoomの値減少
+    *** Return              : なし
+    """
     def zoom_out(self):
         if self.viewer.has_photo():
             factor = 0.8

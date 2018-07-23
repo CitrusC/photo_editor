@@ -8,6 +8,12 @@
 from PyQt5 import QtGui, QtWidgets, QtCore
 
 
+"""
+*** Class Name          : PhotoViewer
+*** Designer            : 邱 雨澄
+*** Date                : 2018.07.入力
+*** Function            : 入力
+"""
 class PhotoViewer(QtWidgets.QGraphicsView):
     photoClicked = QtCore.pyqtSignal(QtCore.QPoint)
 

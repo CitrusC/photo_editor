@@ -11,6 +11,13 @@ from PyQt5.QtWidgets import QWidget, QListWidget, QListWidgetItem, QAbstractItem
 from History import History
 import Filter
 
+"""
+*** Class Name          : FilterList
+*** Designer            : 稲垣 大輔
+*** Date                : 2018.07.入力
+*** Function            : 入力
+"""
+
 
 class FilterList(QListWidget):
     def __init__(self, parent_):
@@ -21,9 +28,25 @@ class FilterList(QListWidget):
         self.history = None
         self.id_count = 0
 
-    def init(self, array):
+    """
+    *** Function Name       : set_array()
+    *** Designer            : 稲垣 大輔
+    *** Date                : 2018.07.入力
+    *** Function            : arrayの値をセットする
+    *** Return              : なし
+    """
+
+    def set_array(self, array):
         self.history = History(array)
         self.clear()
+
+    """
+    *** Function Name       : dropEvent()
+    *** Designer            : 稲垣 大輔
+    *** Date                : 2018.07.入力
+    *** Function            : フィルタ入れ替えの処理
+    *** Return              : なし
+    """
 
     def dropEvent(self, drop_event):
         super().dropEvent(drop_event)
@@ -32,12 +55,16 @@ class FilterList(QListWidget):
         for f in filters:
             self.add_filter(f)
 
+    """
+    *** Function Name       : add_event()
+    *** Designer            : 稲垣 大輔
+    *** Date                : 2018.07.入力
+    *** Function            : フィルタを追加する
+    *** Return              : なし
+    """
+
     def add_event(self, f):
-        try:
-            self.add_item(getattr(Filter, f)())
-        except:
-            import traceback
-            traceback.print_exc()
+        self.add_item(getattr(Filter, f)())
 
     def add_item(self, f):
         f.set_id(self.id_count)
