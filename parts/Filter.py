@@ -110,6 +110,7 @@ class Nega(Filter):
     *** Return              : 処理済み画像
     """
 
+    @numba.jit
     def apply(self, array):
         array[:, :, 0] = 255 - array[:, :, 0]
         array[:, :, 1] = 255 - array[:, :, 1]
@@ -174,6 +175,7 @@ class Brightness(Filter):
     *** Return              : 処理済み画像
     """
 
+    @numba.jit
     def apply(self, array):
         array[:, :, 0] = array[:, :, 0] + self.brightness
         array[:, :, 1] = array[:, :, 1] + self.brightness
@@ -489,6 +491,7 @@ class FFT2D(Filter):
     *** Return              : 処理済み画像
     """
 
+    @numba.jit
     def apply(self, array):
         # 高速フーリエ変換(2次元)
         gray = np.array(Image.fromarray(array.astype(np.uint8)).convert('L'))
@@ -562,6 +565,7 @@ class Thiza(Filter):
     *** Return              : 処理済み画像
     """
 
+    @numba.jit
     def apply(self, array):
         a = array[:, :, 0] * 0.298912 + array[:, :, 1] * 0.586611 + array[:, :, 2] * 0.114478
         array[:, :, 0], array[:, :, 1], array[:, :, 2] = a, a, a
@@ -625,6 +629,7 @@ class Grayscale(Filter):
     *** Return              : 処理済み画像
     """
 
+    @numba.jit
     def apply(self, array):
         a = array[:, :, 0] * 0.298912 + array[:, :, 1] * 0.586611 + array[:, :, 2] * 0.114478
         array[:, :, 0], array[:, :, 1], array[:, :, 2] = a, a, a
@@ -762,6 +767,7 @@ class Contrast(Filter):
     *** Return              : 処理済み画像
     """
 
+    @numba.jit
     def apply(self, array):
         array[:, :, 0] = (array[:, :, 0] - 128) * self.contrast / 100 + 128
         array[:, :, 1] = (array[:, :, 1] - 128) * self.contrast / 100 + 128
