@@ -64,7 +64,8 @@ class FilterList(QListWidget):
     """
 
     def add_event(self, f):
-        self.add_item(getattr(Filter, f)())
+        if self.history is not None:
+            self.add_item(getattr(Filter, f)())
 
     """
     *** Function Name       : add_item()
@@ -142,7 +143,6 @@ class FilterList(QListWidget):
         self.parent_.update_image(array)
         self.clear()
         for f in filters:
-            print(f.before_image_id, f.after_image_id)
             self.create_item(f)
         self.parent_.btnUndo.setEnabled(can_undo)
         self.parent_.btnRedo.setEnabled(True)

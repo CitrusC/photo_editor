@@ -78,7 +78,6 @@ class History:
     """
 
     def swap(self, filters):
-        print('swap')
         try:
             ud_index = None
             for i in range(len(self.filter_list[self.count])):
@@ -87,8 +86,8 @@ class History:
                     break
             if ud_index is None:
                 return self.filter_list[self.count]
-            self.next_filter()
-            self.filter_list[self.count]=filters
+            self.next_filter(filters)
+
             for i in range(ud_index, len(self.filter_list[self.count])):
                 if i == 0:
                     self.filter_list[self.count][i].before_image_id = 0
@@ -96,6 +95,7 @@ class History:
                     self.filter_list[self.count][i].before_image_id = self.filter_list[self.count][i - 1].after_image_id
                 self.next_image()
                 self.filter_list[self.count][i].after_image_id = self.image_count
+
             return self.filter_list[self.count]
         except:
             import traceback
@@ -162,7 +162,7 @@ class History:
     *** Return              : なし
     """
 
-    def next_filter(self):
+    def next_filter(self, filters=None):
         import copy
         self.count += 1
         self.filter_list.append([])
@@ -170,7 +170,10 @@ class History:
         try:
             # self.filter_list[self.count] = copy.copy(self.filter_list[self.count - 1])
             for i in range(len(self.filter_list[self.count - 1])):
-                n_filter = copy.copy(self.filter_list[self.count - 1][i])
+                if(filters is None):
+                    n_filter = copy.copy(self.filter_list[self.count - 1][i])
+                else:
+                    n_filter = copy.copy(filters[i])
                 self.filter_list[self.count].append(n_filter)
         except:
             import traceback
